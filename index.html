@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>佐藤夏輝 - ポートフォリオ</title>
+    <title>NatsukiSato - ポートフォリオ</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="styles.css" rel="stylesheet">
 </head>
@@ -26,6 +26,9 @@
                 </li>
                 <li class="nav-item">
                     <a href="#projects" class="nav-link">プロジェクト</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#gallery" class="nav-link">作品集</a>
                 </li>
                 <li class="nav-item">
                     <a href="#contact" class="nav-link">お問い合わせ</a>
@@ -262,6 +265,139 @@
             </div>
         </div>
     </section>
+
+    <!-- 作品集セクション -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <h2 class="section-title">作品集</h2>
+            
+            <!-- カテゴリーフィルター -->
+            <div class="gallery-filters">
+                <button class="filter-btn active" data-filter="all">すべて</button>
+                <button class="filter-btn" data-filter="3d-print">3Dプリント作品</button>
+                <button class="filter-btn" data-filter="concept">コンセプト作品</button>
+            </div>
+
+            <!-- 作品ギャラリー -->
+            <div class="gallery-grid">
+                <!-- 3Dプリント作品 -->
+                <div class="gallery-item" data-category="3d-print">
+                    <div class="gallery-image">
+                        <i class="fas fa-cube fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="phone-stand">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>スマートフォンスタンド</h4>
+                        <p>エルゴノミクスを考慮した多機能スタンド</p>
+                        <span class="gallery-status completed">完成</span>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="3d-print">
+                    <div class="gallery-image">
+                        <i class="fas fa-cog fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="gear-mechanism">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>歯車機構パズル</h4>
+                        <p>教育用の組み立て式歯車システム</p>
+                        <span class="gallery-status completed">完成</span>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="3d-print">
+                    <div class="gallery-image">
+                        <i class="fas fa-tools fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="desk-organizer">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>デスクオーガナイザー</h4>
+                        <p>モジュラー設計の文房具収納</p>
+                        <span class="gallery-status completed">完成</span>
+                    </div>
+                </div>
+
+                <!-- コンセプト作品 -->
+                <div class="gallery-item" data-category="concept">
+                    <div class="gallery-image">
+                        <i class="fas fa-lightbulb fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="smart-lamp">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>スマートランプ</h4>
+                        <p>AI搭載の適応照明システム</p>
+                        <span class="gallery-status concept">構想中</span>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="concept">
+                    <div class="gallery-image">
+                        <i class="fas fa-seedling fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="plant-monitor">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>植物モニタリングシステム</h4>
+                        <p>IoTセンサーによる自動水やりシステム</p>
+                        <span class="gallery-status concept">構想中</span>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="concept">
+                    <div class="gallery-image">
+                        <i class="fas fa-robot fa-3x"></i>
+                        <div class="gallery-overlay">
+                            <button class="view-btn" data-work="assembly-robot">詳細を見る</button>
+                        </div>
+                    </div>
+                    <div class="gallery-info">
+                        <h4>自動組立ロボット</h4>
+                        <p>3Dプリント部品の自動組立システム</p>
+                        <span class="gallery-status concept">構想中</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- モーダルウィンドウ -->
+    <div id="workModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <span id="modalStatus" class="gallery-status"></span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <i id="modalIcon" class="fa-4x"></i>
+                </div>
+                <div class="modal-info">
+                    <p id="modalDescription"></p>
+                    <div class="modal-details">
+                        <h4>技術仕様</h4>
+                        <ul id="modalSpecs"></ul>
+                    </div>
+                    <div class="modal-progress" id="modalProgress">
+                        <h4>進捗状況</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <span class="progress-text"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- お問い合わせセクション -->
     <section id="contact" class="contact">

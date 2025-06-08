@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     // アニメーション対象要素の監視
-    const animateElements = document.querySelectorAll('.skill-category, .project-card, .highlight');
+    const animateElements = document.querySelectorAll('.skill-category, .project-card, .highlight, .gallery-item');
     animateElements.forEach(el => {
         observer.observe(el);
     });
@@ -127,6 +127,184 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    });
+
+    // ギャラリーフィルター機能
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // アクティブボタンの切り替え
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            const filterValue = this.getAttribute('data-filter');
+
+            // ギャラリーアイテムのフィルタリング
+            galleryItems.forEach(item => {
+                const category = item.getAttribute('data-category');
+                
+                if (filterValue === 'all' || category === filterValue) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+
+    // 作品データ
+    const worksData = {
+        'phone-stand': {
+            title: 'スマートフォンスタンド',
+            status: 'completed',
+            icon: 'fas fa-cube',
+            description: '人間工学に基づいて設計された多機能スマートフォンスタンド。角度調整機能と充電ケーブル用の溝を備え、デスクワークの効率を向上させます。',
+            specs: [
+                '材質: PLA樹脂',
+                'サイズ: 120mm x 80mm x 95mm',
+                '対応デバイス: 4-7インチスマートフォン',
+                '印刷時間: 約3時間',
+                '後処理: サンディング + 塗装'
+            ],
+            progress: 100
+        },
+        'gear-mechanism': {
+            title: '歯車機構パズル',
+            status: 'completed',
+            icon: 'fas fa-cog',
+            description: '教育用途を想定した組み立て式歯車システム。複数の歯車を組み合わせることで、機械工学の基礎概念を学習できます。',
+            specs: [
+                '材質: PETG樹脂',
+                '歯車数: 8個',
+                'ギア比: 1:2, 1:3, 1:4',
+                '印刷時間: 約5時間',
+                'サポート材: 不要'
+            ],
+            progress: 100
+        },
+        'desk-organizer': {
+            title: 'デスクオーガナイザー',
+            status: 'completed',
+            icon: 'fas fa-tools',
+            description: 'モジュラー設計により自由にカスタマイズできるデスクオーガナイザー。必要に応じて部品を追加・削除でき、様々なワークスペースに対応します。',
+            specs: [
+                '材質: ABS樹脂',
+                'モジュール数: 6種類',
+                '接続方式: マグネット + 嵌合',
+                '印刷時間: 約8時間（全セット）',
+                'カラー: グレー、ブラック、ホワイト'
+            ],
+            progress: 100
+        },
+        'smart-lamp': {
+            title: 'スマートランプ',
+            status: 'concept',
+            icon: 'fas fa-lightbulb',
+            description: 'AI搭載の適応照明システム。時間帯、環境光、ユーザーの活動パターンを学習し、最適な照明環境を自動的に提供します。',
+            specs: [
+                '予定材質: PC樹脂 + アルミニウム',
+                'センサー: 環境光、人感、RGB',
+                '制御: ESP32マイコン',
+                'AI機能: 機械学習ベースの自動調整',
+                '接続: Wi-Fi、Bluetooth'
+            ],
+            progress: 25
+        },
+        'plant-monitor': {
+            title: '植物モニタリングシステム',
+            status: 'concept',
+            icon: 'fas fa-seedling',
+            description: 'IoTセンサーによる自動植物管理システム。土壌湿度、光量、温度を監視し、最適なタイミングで水やりを実行します。',
+            specs: [
+                '予定材質: PETG樹脂 + 防水コーティング',
+                'センサー: 土壌湿度、温湿度、照度',
+                'ポンプ: ペリスタリックポンプ',
+                '制御: Arduino Nano',
+                'アプリ: Flutter製モバイルアプリ'
+            ],
+            progress: 40
+        },
+        'assembly-robot': {
+            title: '自動組立ロボット',
+            status: 'concept',
+            icon: 'fas fa-robot',
+            description: '3Dプリント部品の自動組立を行うロボットシステム。画像認識により部品を識別し、プログラムされた手順で組立作業を実行します。',
+            specs: [
+                '予定材質: アルミニウムフレーム',
+                'アクチュエータ: ステッピングモーター',
+                '画像認識: OpenCV + TensorFlow',
+                '制御: Raspberry Pi 4',
+                'プログラミング: Python + ROS'
+            ],
+            progress: 15
+        }
+    };
+
+    // モーダル機能
+    const modal = document.getElementById('workModal');
+    const closeBtn = document.querySelector('.close');
+    const viewButtons = document.querySelectorAll('.view-btn');
+
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const workId = this.getAttribute('data-work');
+            const workData = worksData[workId];
+            
+            if (workData) {
+                // モーダルに内容を設定
+                document.getElementById('modalTitle').textContent = workData.title;
+                document.getElementById('modalStatus').textContent = workData.status === 'completed' ? '完成' : '構想中';
+                document.getElementById('modalStatus').className = `gallery-status ${workData.status}`;
+                document.getElementById('modalIcon').className = `${workData.icon} fa-4x`;
+                document.getElementById('modalDescription').textContent = workData.description;
+                
+                // 技術仕様のリスト作成
+                const specsList = document.getElementById('modalSpecs');
+                specsList.innerHTML = '';
+                workData.specs.forEach(spec => {
+                    const li = document.createElement('li');
+                    li.textContent = spec;
+                    specsList.appendChild(li);
+                });
+                
+                // 進捗バーの設定
+                const progressFill = document.querySelector('.progress-fill');
+                const progressText = document.querySelector('.progress-text');
+                progressFill.style.width = `${workData.progress}%`;
+                progressText.textContent = `${workData.progress}%`;
+                
+                // 構想中の場合は進捗セクションを表示
+                const progressSection = document.getElementById('modalProgress');
+                progressSection.style.display = workData.status === 'concept' ? 'block' : 'none';
+                
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    });
+
+    // モーダルを閉じる
+    closeBtn.addEventListener('click', closeModal);
+    
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // ESCキーでモーダルを閉じる
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.display === 'block') {
+            closeModal();
+        }
     });
 
     // パフォーマンス最適化のための画像遅延読み込み
