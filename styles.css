@@ -8,7 +8,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
+    color: #e0e0e0;
+    background: #1a1a1a;
     overflow-x: hidden;
 }
 
@@ -23,11 +24,12 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(26, 26, 26, 0.95);
     backdrop-filter: blur(10px);
     z-index: 1000;
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 20px rgba(138, 43, 226, 0.3);
     transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(138, 43, 226, 0.2);
 }
 
 .nav-container {
@@ -41,7 +43,7 @@ body {
 }
 
 .nav-logo h2 {
-    color: #2c3e50;
+    color: #bb86fc;
     font-weight: 700;
     font-size: 1.5rem;
 }
@@ -54,14 +56,14 @@ body {
 
 .nav-link {
     text-decoration: none;
-    color: #333;
+    color: #e0e0e0;
     font-weight: 500;
     transition: color 0.3s ease;
     position: relative;
 }
 
 .nav-link:hover {
-    color: #3498db;
+    color: #bb86fc;
 }
 
 .nav-link::after {
@@ -71,7 +73,7 @@ body {
     height: 2px;
     bottom: -5px;
     left: 0;
-    background-color: #3498db;
+    background-color: #bb86fc;
     transition: width 0.3s ease;
 }
 
@@ -88,19 +90,33 @@ body {
 .bar {
     width: 25px;
     height: 3px;
-    background-color: #333;
+    background-color: #e0e0e0;
     margin: 3px 0;
     transition: 0.3s;
 }
 
 /* ヒーローセクション */
 .hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 50%, #1a1a1a 100%);
     color: white;
     padding: 120px 0 80px;
     min-height: 100vh;
     display: flex;
     align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(138, 43, 226, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(187, 134, 252, 0.15) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .hero-container {
@@ -111,13 +127,15 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 50px;
     align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-title {
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 20px;
-    background: linear-gradient(45deg, #fff, #f0f0f0);
+    background: linear-gradient(45deg, #bb86fc, #e0e0e0, #bb86fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -126,14 +144,14 @@ body {
 .hero-subtitle {
     font-size: 1.5rem;
     margin-bottom: 20px;
-    color: #e8f4fd;
+    color: #bb86fc;
 }
 
 .hero-description {
     font-size: 1.1rem;
     margin-bottom: 30px;
     line-height: 1.8;
-    color: #ddd;
+    color: #c0c0c0;
 }
 
 .hero-buttons {
@@ -156,15 +174,15 @@ body {
 }
 
 .btn-primary {
-    background: #3498db;
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     color: white;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
 }
 
 .btn-primary:hover {
-    background: #2980b9;
+    background: linear-gradient(45deg, #7221c4, #9c6dfc);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.6);
 }
 
 .btn-secondary {
@@ -174,8 +192,8 @@ body {
 }
 
 .btn-secondary:hover {
-    background: white;
-    color: #667eea;
+    background: #bb86fc;
+    color: #1a1a1a;
     transform: translateY(-2px);
 }
 
@@ -188,17 +206,18 @@ body {
 .profile-image {
     width: 300px;
     height: 300px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(187, 134, 252, 0.1);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(187, 134, 252, 0.3);
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.3);
 }
 
 .profile-image i {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(187, 134, 252, 0.9);
 }
 
 /* セクション共通 */
@@ -207,7 +226,7 @@ body {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 50px;
-    color: #2c3e50;
+    color: #bb86fc;
     position: relative;
 }
 
@@ -219,14 +238,14 @@ body {
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background: linear-gradient(45deg, #3498db, #2ecc71);
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     border-radius: 2px;
 }
 
 /* 自己紹介セクション */
 .about {
     padding: 100px 0;
-    background: #f8f9fa;
+    background: #1f1f1f;
 }
 
 .about-content {
@@ -238,14 +257,14 @@ body {
 .about-text h3 {
     font-size: 1.8rem;
     margin-bottom: 30px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .about-text p {
     font-size: 1.1rem;
     margin-bottom: 20px;
     line-height: 1.8;
-    color: #666;
+    color: #c0c0c0;
 }
 
 .about-highlights {
@@ -256,12 +275,13 @@ body {
 }
 
 .highlight {
-    background: white;
+    background: #2a2a2a;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 25px rgba(138, 43, 226, 0.2);
     transition: transform 0.3s ease;
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .highlight:hover {
@@ -270,25 +290,25 @@ body {
 
 .highlight i {
     font-size: 2.5rem;
-    color: #3498db;
+    color: #bb86fc;
     margin-bottom: 20px;
 }
 
 .highlight h4 {
     font-size: 1.3rem;
     margin-bottom: 15px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .highlight p {
-    color: #666;
+    color: #c0c0c0;
     line-height: 1.6;
 }
 
 /* スキルセクション */
 .skills {
     padding: 100px 0;
-    background: white;
+    background: #1a1a1a;
 }
 
 .skills-grid {
@@ -298,22 +318,23 @@ body {
 }
 
 .skill-category {
-    background: #f8f9fa;
+    background: #2a2a2a;
     padding: 40px 30px;
     border-radius: 15px;
     text-align: center;
     transition: transform 0.3s ease;
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .skill-category:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
 }
 
 .skill-category h3 {
     font-size: 1.5rem;
     margin-bottom: 30px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .skill-items {
@@ -326,20 +347,21 @@ body {
     align-items: center;
     gap: 15px;
     padding: 15px;
-    background: white;
+    background: #1a1a1a;
     border-radius: 10px;
     transition: all 0.3s ease;
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .skill-item:hover {
-    background: #3498db;
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     color: white;
     transform: translateX(5px);
 }
 
 .skill-item i {
     font-size: 1.5rem;
-    color: #3498db;
+    color: #bb86fc;
     transition: color 0.3s ease;
 }
 
@@ -354,7 +376,7 @@ body {
 /* プロジェクトセクション */
 .projects {
     padding: 100px 0;
-    background: #f8f9fa;
+    background: #1f1f1f;
 }
 
 .projects-grid {
@@ -364,20 +386,21 @@ body {
 }
 
 .project-card {
-    background: white;
+    background: #2a2a2a;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 25px rgba(138, 43, 226, 0.2);
     transition: all 0.3s ease;
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .project-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 40px rgba(138, 43, 226, 0.4);
 }
 
 .project-image {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2d1b69 0%, #8a2be2 100%);
     color: white;
     padding: 40px;
     text-align: center;
@@ -390,11 +413,11 @@ body {
 .project-content h3 {
     font-size: 1.4rem;
     margin-bottom: 15px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .project-content p {
-    color: #666;
+    color: #c0c0c0;
     line-height: 1.7;
     margin-bottom: 20px;
 }
@@ -406,18 +429,19 @@ body {
 }
 
 .tag {
-    background: #e3f2fd;
-    color: #1976d2;
+    background: rgba(187, 134, 252, 0.2);
+    color: #bb86fc;
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
     font-weight: 500;
+    border: 1px solid rgba(187, 134, 252, 0.3);
 }
 
 /* 作品集セクション */
 .gallery {
     padding: 100px 0;
-    background: white;
+    background: #1a1a1a;
 }
 
 .gallery-filters {
@@ -430,9 +454,9 @@ body {
 
 .filter-btn {
     padding: 12px 30px;
-    border: 2px solid #3498db;
+    border: 2px solid #bb86fc;
     background: transparent;
-    color: #3498db;
+    color: #bb86fc;
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -442,10 +466,10 @@ body {
 
 .filter-btn:hover,
 .filter-btn.active {
-    background: #3498db;
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.4);
 }
 
 .gallery-grid {
@@ -455,18 +479,19 @@ body {
 }
 
 .gallery-item {
-    background: white;
+    background: #2a2a2a;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 25px rgba(138, 43, 226, 0.2);
     transition: all 0.3s ease;
     opacity: 1;
     transform: scale(1);
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .gallery-item:hover {
     transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 40px rgba(138, 43, 226, 0.4);
 }
 
 .gallery-item.hidden {
@@ -477,7 +502,7 @@ body {
 
 .gallery-image {
     position: relative;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2d1b69 0%, #8a2be2 100%);
     color: white;
     padding: 40px;
     text-align: center;
@@ -508,7 +533,7 @@ body {
 
 .view-btn {
     padding: 12px 25px;
-    background: #3498db;
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     color: white;
     border: none;
     border-radius: 25px;
@@ -518,7 +543,7 @@ body {
 }
 
 .view-btn:hover {
-    background: #2980b9;
+    background: linear-gradient(45deg, #7221c4, #9c6dfc);
     transform: scale(1.05);
 }
 
@@ -529,11 +554,11 @@ body {
 .gallery-info h4 {
     font-size: 1.3rem;
     margin-bottom: 10px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .gallery-info p {
-    color: #666;
+    color: #c0c0c0;
     line-height: 1.6;
     margin-bottom: 15px;
 }
@@ -569,7 +594,7 @@ body {
 }
 
 .modal-content {
-    background-color: white;
+    background-color: #2a2a2a;
     margin: 5% auto;
     padding: 0;
     border-radius: 15px;
@@ -579,6 +604,7 @@ body {
     overflow-y: auto;
     position: relative;
     animation: modalFadeIn 0.3s ease;
+    border: 1px solid rgba(187, 134, 252, 0.2);
 }
 
 @keyframes modalFadeIn {
@@ -606,11 +632,11 @@ body {
 }
 
 .close:hover {
-    color: #333;
+    color: #bb86fc;
 }
 
 .modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2d1b69 0%, #8a2be2 100%);
     color: white;
     padding: 30px;
     border-radius: 15px 15px 0 0;
@@ -632,7 +658,7 @@ body {
 }
 
 .modal-image {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2d1b69 0%, #8a2be2 100%);
     color: white;
     padding: 40px;
     border-radius: 15px;
@@ -644,13 +670,13 @@ body {
 }
 
 .modal-info h4 {
-    color: #2c3e50;
+    color: #bb86fc;
     margin-bottom: 15px;
     font-size: 1.2rem;
 }
 
 .modal-info p {
-    color: #666;
+    color: #c0c0c0;
     line-height: 1.7;
     margin-bottom: 25px;
 }
@@ -666,8 +692,8 @@ body {
 
 .modal-details li {
     padding: 8px 0;
-    border-bottom: 1px solid #eee;
-    color: #666;
+    border-bottom: 1px solid rgba(187, 134, 252, 0.2);
+    color: #c0c0c0;
 }
 
 .modal-details li:last-child {
@@ -677,29 +703,30 @@ body {
 .progress-bar {
     width: 100%;
     height: 10px;
-    background: #e9ecef;
+    background: #1a1a1a;
     border-radius: 5px;
     overflow: hidden;
     margin: 10px 0;
+    border: 1px solid rgba(187, 134, 252, 0.2);
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(45deg, #3498db, #2ecc71);
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
     border-radius: 5px;
     transition: width 0.3s ease;
 }
 
 .progress-text {
     font-size: 0.9rem;
-    color: #666;
+    color: #c0c0c0;
     font-weight: 500;
 }
 
 /* お問い合わせセクション */
 .contact {
     padding: 100px 0;
-    background: #f8f9fa;
+    background: #1f1f1f;
 }
 
 .contact-content {
@@ -712,11 +739,11 @@ body {
 .contact-info h3 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color: #bb86fc;
 }
 
 .contact-info p {
-    color: #666;
+    color: #c0c0c0;
     line-height: 1.7;
     margin-bottom: 40px;
 }
@@ -735,29 +762,30 @@ body {
 
 .contact-method i {
     font-size: 1.5rem;
-    color: #3498db;
+    color: #bb86fc;
     width: 40px;
 }
 
 .contact-method h4 {
-    color: #2c3e50;
+    color: #bb86fc;
     margin-bottom: 5px;
 }
 
 .contact-method a {
-    color: #3498db;
+    color: #bb86fc;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .contact-method a:hover {
-    color: #2980b9;
+    color: #8a2be2;
 }
 
 .contact-form {
-    background: #f8f9fa;
+    background: #2a2a2a;
     padding: 40px;
     border-radius: 15px;
+    border: 1px solid rgba(187, 134, 252, 0.1);
 }
 
 .form-group {
@@ -767,7 +795,7 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #2c3e50;
+    color: #bb86fc;
     font-weight: 500;
 }
 
@@ -775,17 +803,19 @@ body {
 .form-group textarea {
     width: 100%;
     padding: 15px;
-    border: 2px solid #e1e8ed;
+    border: 2px solid rgba(187, 134, 252, 0.3);
     border-radius: 10px;
     font-size: 1rem;
     transition: border-color 0.3s ease;
-    background: white;
+    background: #1a1a1a;
+    color: #e0e0e0;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: #bb86fc;
+    box-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
 }
 
 .form-group textarea {
@@ -795,10 +825,11 @@ body {
 
 /* フッター */
 .footer {
-    background: #2c3e50;
+    background: #0f0f0f;
     color: white;
     padding: 40px 0;
     text-align: center;
+    border-top: 1px solid rgba(187, 134, 252, 0.2);
 }
 
 .footer-content {
@@ -821,7 +852,7 @@ body {
 }
 
 .footer-social a:hover {
-    color: #3498db;
+    color: #bb86fc;
 }
 
 /* レスポンシブデザイン */
@@ -835,12 +866,13 @@ body {
         left: -100%;
         top: 80px;
         flex-direction: column;
-        background-color: white;
+        background-color: #1a1a1a;
         width: 100%;
         text-align: center;
         transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 10px 27px rgba(138, 43, 226, 0.3);
         padding: 20px 0;
+        border: 1px solid rgba(187, 134, 252, 0.1);
     }
 
     .nav-menu.active {
