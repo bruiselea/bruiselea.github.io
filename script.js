@@ -168,7 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 '印刷時間: 約3時間',
                 '後処理: サンディング + 塗装'
             ],
-            progress: 100
+            progress: 100,
+            purchaseLink: '', // 販売開始時にここにリンクを設定 (例: 'https://store.example.com/phone-stand')
+            price: '¥2,980'
         },
         'gear-mechanism': {
             title: '歯車機構パズル',
@@ -182,7 +184,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 '印刷時間: 約5時間',
                 'サポート材: 不要'
             ],
-            progress: 100
+            progress: 100,
+            purchaseLink: '', // 販売開始時にここにリンクを設定 (例: 'https://store.example.com/gear-mechanism')
+            price: '¥4,500'
         },
         'desk-organizer': {
             title: 'デスクオーガナイザー',
@@ -196,7 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 '印刷時間: 約8時間（全セット）',
                 'カラー: グレー、ブラック、ホワイト'
             ],
-            progress: 100
+            progress: 100,
+            purchaseLink: '', // 販売開始時にここにリンクを設定 (例: 'https://store.example.com/desk-organizer')
+            price: '¥6,800'
         },
         'smart-lamp': {
             title: 'スマートランプ',
@@ -279,6 +285,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 構想中の場合は進捗セクションを表示
                 const progressSection = document.getElementById('modalProgress');
                 progressSection.style.display = workData.status === 'concept' ? 'block' : 'none';
+                
+                // 購入ボタンの設定
+                const purchaseBtn = document.getElementById('purchaseBtn');
+                const inquiryBtn = document.getElementById('inquiryBtn');
+                
+                if (workData.status === 'completed' && workData.price) {
+                    purchaseBtn.style.display = 'flex';
+                    
+                    // 価格をボタンに表示
+                    const btnText = purchaseBtn.querySelector('i').nextSibling;
+                    if (btnText) {
+                        btnText.textContent = ` ${workData.price}で購入`;
+                    } else {
+                        purchaseBtn.innerHTML = `<i class="fas fa-shopping-cart"></i> ${workData.price}で購入`;
+                    }
+                    
+                    // 購入リンクが設定されている場合は有効化
+                    if (workData.purchaseLink) {
+                        purchaseBtn.disabled = false;
+                        purchaseBtn.onclick = () => {
+                            window.open(workData.purchaseLink, '_blank');
+                        };
+                    } else {
+                        purchaseBtn.disabled = true;
+                        purchaseBtn.title = '販売準備中です';
+                    }
+                } else {
+                    purchaseBtn.style.display = 'none';
+                }
+                
+                // お問い合わせボタンの機能
+                inquiryBtn.onclick = () => {
+                    closeModal();
+                    // お問い合わせセクションにスクロール
+                    const contactSection = document.getElementById('contact');
+                    if (contactSection) {
+                        const headerOffset = 80;
+                        const elementPosition = contactSection.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                        
+                        // 作品名をお問い合わせフォームの件名に設定
+                        setTimeout(() => {
+                            const subjectField = document.querySelector('input[name="subject"]');
+                            if (subjectField) {
+                                subjectField.value = `${workData.title}について`;
+                            }
+                        }, 500);
+                    }
+                };
                 
                 modal.style.display = 'block';
                 document.body.style.overflow = 'hidden';

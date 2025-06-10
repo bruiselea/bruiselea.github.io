@@ -563,6 +563,23 @@ body {
     margin-bottom: 15px;
 }
 
+.gallery-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.gallery-price {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #bb86fc;
+    background: rgba(187, 134, 252, 0.1);
+    padding: 4px 12px;
+    border-radius: 15px;
+    border: 1px solid rgba(187, 134, 252, 0.3);
+}
+
 .gallery-status {
     padding: 6px 15px;
     border-radius: 20px;
@@ -721,6 +738,69 @@ body {
     font-size: 0.9rem;
     color: #c0c0c0;
     font-weight: 500;
+}
+
+/* モーダルアクションボタン */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(187, 134, 252, 0.2);
+}
+
+.purchase-btn,
+.inquiry-btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.purchase-btn {
+    background: linear-gradient(45deg, #8a2be2, #bb86fc);
+    color: white;
+    border: 2px solid transparent;
+}
+
+.purchase-btn:hover {
+    background: linear-gradient(45deg, #7221c4, #9c6dfc);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.4);
+}
+
+.purchase-btn:disabled {
+    background: #555;
+    color: #888;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.inquiry-btn {
+    background: transparent;
+    color: #bb86fc;
+    border: 2px solid #bb86fc;
+}
+
+.inquiry-btn:hover {
+    background: rgba(187, 134, 252, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(187, 134, 252, 0.2);
+}
+
+.purchase-btn i,
+.inquiry-btn i {
+    font-size: 1.1rem;
 }
 
 /* お問い合わせセクション */
@@ -927,6 +1007,17 @@ body {
     .modal-body {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .purchase-btn,
+    .inquiry-btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
     }
 }
 
