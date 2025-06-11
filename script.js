@@ -157,10 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 作品データ
     const worksData = {
         'phone-stand': {
-            title: 'スマートフォンスタンド',
+            title: 'Miband Stand',
             status: 'completed',
             icon: 'fas fa-cube',
-            description: '人間工学に基づいて設計された多機能スマートフォンスタンド。角度調整機能と充電ケーブル用の溝を備え、デスクワークの効率を向上させます。',
+            description: 'フリマサイトにて販売。充電を美しく見せる設計。',
             specs: [
                 '材質: PLA樹脂',
                 'サイズ: 120mm x 80mm x 95mm',
