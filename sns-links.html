@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNSリンク集</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: #f7f7f7;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, "sans-serif";
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .profile {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .profile img {
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        margin-bottom: 12px;
+        border: 2px solid #ddd;
+      }
+      .profile h1 {
+        font-size: 1.3rem;
+        margin: 0 0 8px 0;
+      }
+      .profile p {
+        color: #888;
+        font-size: 0.95rem;
+        margin: 0 0 24px 0;
+      }
+      .sns-links {
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin: 0 auto;
+      }
+      .sns-link {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        padding: 16px 20px;
+        text-decoration: none;
+        color: #222;
+        font-size: 1.1rem;
+        font-weight: 500;
+        transition: box-shadow 0.2s, transform 0.2s;
+      }
+      .sns-link:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px) scale(1.02);
+      }
+      .sns-link .icon {
+        width: 28px;
+        height: 28px;
+        margin-right: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+      }
+      @media (max-width: 600px) {
+        .sns-links {
+          max-width: 95vw;
+        }
+        .profile img {
+          width: 72px;
+          height: 72px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profile">
+      <img src="https://placehold.co/96x96" alt="Profile" />
+      <h1>あなたの名前</h1>
+      <p>自己紹介や一言メッセージ</p>
+    </div>
+    <div class="sns-links">
+      <a
+        class="sns-link"
+        href="https://instagram.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="icon">📸</span>Instagram
+      </a>
+      <a
+        class="sns-link"
+        href="https://twitter.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="icon">🐦</span>X (Twitter)
+      </a>
+      <a
+        class="sns-link"
+        href="https://www.youtube.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="icon">▶️</span>YouTube
+      </a>
+      <a
+        class="sns-link"
+        href="https://note.com/"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="icon">📝</span>note
+      </a>
+      <a class="sns-link" href="mailto:your@email.com">
+        <span class="icon">✉️</span>メール
+      </a>
+    </div>
+  </body>
+</html>
