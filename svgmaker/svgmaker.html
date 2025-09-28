@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>SVG生成アプリ（しきい値2値化→SVG化）Lite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 24px; color: #0f172a; }
+    .panel { border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);}
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .col { flex: 1 1 360px; min-width: 320px; }
+    .dropzone { height: 180px; border: 2px dashed #cbd5e1; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #64748b; cursor: pointer; }
+    .dropzone.drag { background: #f8fafc; border-color: #0f172a; color: #0f172a; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 8px; }
+    .tabs button { padding: 6px 10px; border: 1px solid #e2e8f0; background: #fff; border-radius: 8px; cursor: pointer; }
+    .tabs button.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+    .preview { max-height: 60vh; overflow: auto; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; }
+    .controls label { display: flex; justify-content: space-between; font-size: 12px; color: #475569; margin-top: 12px;}
+    .controls input[type="range"] { width: 100%; }
+    .btn { padding: 10px 12px; border-radius: 10px; border: 1px solid #e2e8f0; background:#111827; color:#fff; cursor:pointer; width:100%; }
+    .btn.secondary { background:#fff; color:#111827; }
+    .muted { color:#64748b; font-size:12px; }
+  </style>
+</head>
+<body>
+  <h1>SVG生成アプリ｜2値化→ベクタ化（依存なしLite）</h1>
+
+  <div class="panel">
+    <h3>1. 画像を選択 / ドロップ / ペースト</h3>
+    <div id="drop" class="dropzone">ここに画像をドラッグ＆ドロップ ／ クリックして選択 ／ 画像をペースト</div>
+    <input id="file" type="file" accept="image/*" style="display:none" />
+    <p class="muted">※ 大きすぎる画像は幅1400pxまで縮小して処理します。</p>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <div class="col">
+        <div class="tabs">
+          <button data-tab="original" class="active">元画像</button>
+          <button data-tab="binary">2値化プレビュー</button>
+          <button data-tab="svg">SVGプレビュー</button>
+        </div>
+        <div id="view" class="preview">
+          <div id="view-original"></div>
+          <div id="view-binary" style="display:none"></div>
+          <div id="view-svg" style="display:none"></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="controls">
+          <label>しきい値 <span id="thr-label">180</span></label>
+          <input id="thr" type="range" min="0" max="255" step="1" value="180" />
+          <label>平滑化（ぼかし半径） <span id="blur-label">1px</span></label>
+          <input id="blur" type="range" min="0" max="6" step="1" value="1" />
+          <label>色を反転
+            <input id="invert" type="checkbox" />
+          </label>
+          <div style="margin-top:12px">
+            <button id="run" class="btn">ベクタ化を実行</button>
+          </div>
+          <div style="margin-top:12px">
+            <button id="save" class="btn secondary" disabled>SVGを保存</button>
+            <p class="muted">保存名は元画像タイトル（拡張子除く）+.svg</p>
+          </div>
+          <p id="err" class="muted" style="color:#b91c1c"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="cvs" style="display:none"></canvas>
+
+<script>
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+function toGrayscale(imgData){
+  const { data, width, height } = imgData;
+  const gray = new Uint8ClampedArray(width*height);
+  for (let i=0,j=0;i<data.length;i+=4,j++){
+    gray[j] = 0.2126*data[i] + 0.7152*data[i+1] + 0.0722*data[i+2];
+  }
+  return { gray, width, height };
+}
+function boxBlur1D(src, width, height, radius){
+  if (radius<=0) return src.slice();
+  const dst = new Uint8ClampedArray(src.length);
+  const w=width,h=height,win=radius*2+1;
+  const tmp = new Uint16Array(src.length);
+  for(let y=0;y<h;y++){
+    let acc=0, row=y*w;
+    for(let x=-radius;x<=radius;x++) acc += src[row + clamp(x,0,w-1)];
+    for(let x=0;x<w;x++){
+      tmp[row+x] = Math.round(acc/win);
+      const xa=x+radius+1, xs=x-radius;
+      acc += src[row+clamp(xa,0,w-1)] - src[row+clamp(xs,0,w-1)];
+    }
+  }
+  for(let x=0;x<w;x++){
+    let acc=0;
+    for(let y=-radius;y<=radius;y++) acc += tmp[clamp(y,0,h-1)*w+x];
+    for(let y=0;y<h;y++){
+      dst[y*w+x]=Math.round(acc/win);
+      const ya=y+radius+1, ys=y-radius;
+      acc += tmp[clamp(ya,0,h-1)*w+x] - tmp[clamp(ys,0,h-1)*w+x];
+    }
+  }
+  return dst;
+}
+function threshold(gray,width,height,t,invert){
+  const bin = new Uint8Array(width*height);
+  const thr = clamp(Math.round(t),0,255);
+  for(let i=0;i<gray.length;i++){
+    const v = gray[i] >= thr ? 1 : 0;
+    bin[i] = invert ? 1 - v : v;
+  }
+  return bin;
+}
+// Marching Squares (簡易)
+function marchingSquares(bin,width,height){
+  const paths=[];
+  const idx=(x,y)=>y*width+x;
+  function cellCase(x,y){
+    const a=bin[idx(x,y)];
+    const b=bin[idx(x+1,y)];
+    const c=bin[idx(x+1,y+1)];
+    const d=bin[idx(x,y+1)];
+    return (a<<3)|(b<<2)|(c<<1)|d;
+  }
+  const visited=new Set();
+  const mid=(p,q)=>[(p[0]+q[0])/2,(p[1]+q[1])/2];
+  function edgeKey(x,y,p,q){ return `${x},${y},${p[0]+q[0]},${p[1]+q[1]}`; }
+
+  for(let y=0;y<height-1;y++){
+    for(let x=0;x<width-1;x++){
+      const c=cellCase(x,y);
+      if(c===0||c===15) continue;
+      const tl=[x,y],tr=[x+1,y],br=[x+1,y+1],bl=[x,y+1];
+      const t=mid(tl,tr), r=mid(tr,br), b=mid(bl,br), l=mid(tl,bl);
+      const edges=[];
+      const push=(p,q)=>edges.push([p,q]);
+      switch(c){
+        case 1: case 14: push(b,l); break;
+        case 2: case 13: push(r,b); break;
+        case 3: case 12: push(r,l); break;
+        case 4: case 11: push(t,r); break;
+        case 5: push(t,r); push(b,l); break;
+        case 6: case 9: push(t,b); break;
+        case 7: case 8: push(t,l); break;
+        case 10: push(t,r); push(b,l); break;
+      }
+      for(const [p,q] of edges){
+        const key=edgeKey(x,y,p,q);
+        if(visited.has(key)) continue;
+        visited.add(key);
+        const points=[p,q];
+        // （簡略）隣接追跡は省略、各セルの短いパスでも視覚的には問題ないことが多い
+        if(points.length>1){
+          const d = `M ${points[0][0]} ${points[0][1]} L ${points[1][0]} ${points[1][1]}`;
+          paths.push(d);
+        }
+      }
+    }
+  }
+  return paths;
+}
+function makeSVG(paths,width,height,fill="#000",bgTransparent=true){
+  const viewBox=`0 0 ${width} ${height}`;
+  const bg = bgTransparent ? "" : `<rect width="100%" height="100%" fill="white"/>`;
+  const body = paths.map(d=>`<path d="${d}" stroke="${fill}" fill="none" stroke-width="1"/>`).join("\n");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${height}">\n${bg}\n${body}\n</svg>`;
+}
+
+// State
+let file=null, imgURL=null, paths=null, binURL=null, svgMarkup=null;
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+const cvs = document.getElementById('cvs');
+const ctx = cvs.getContext('2d');
+const viewOriginal = document.getElementById('view-original');
+const viewBinary = document.getElementById('view-binary');
+const viewSVG = document.getElementById('view-svg');
+const thr = document.getElementById('thr');
+const blur = document.getElementById('blur');
+const invert = document.getElementById('invert');
+const thrLabel = document.getElementById('thr-label');
+const blurLabel = document.getElementById('blur-label');
+const runBtn = document.getElementById('run');
+const saveBtn = document.getElementById('save');
+const err = document.getElementById('err');
+
+// Tabs
+document.querySelectorAll('.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab=btn.dataset.tab;
+    viewOriginal.style.display = tab==='original'?'block':'none';
+    viewBinary.style.display = tab==='binary'?'block':'none';
+    viewSVG.style.display = tab==='svg'?'block':'none';
+  });
+});
+
+thr.addEventListener('input', ()=> thrLabel.textContent = thr.value);
+blur.addEventListener('input', ()=> blurLabel.textContent = `${blur.value}px`);
+
+function useFile(f){
+  file = f;
+  imgURL = URL.createObjectURL(f);
+  viewOriginal.innerHTML = `<img src="${imgURL}" alt="original" style="max-width:100%; height:auto; border-radius:12px"/>`;
+  viewBinary.innerHTML = '';
+  viewSVG.innerHTML = '';
+  saveBtn.disabled = true;
+  svgMarkup = null;
+}
+
+drop.addEventListener('click', ()=> fileInput.click());
+drop.addEventListener('dragover', (e)=>{ e.preventDefault(); drop.classList.add('drag'); });
+drop.addEventListener('dragleave', ()=> drop.classList.remove('drag'));
+drop.addEventListener('drop', (e)=>{
+  e.preventDefault(); drop.classList.remove('drag');
+  const f = e.dataTransfer.files?.[0];
+  if (f && /^image\//.test(f.type)) useFile(f);
+});
+fileInput.addEventListener('change', (e)=>{
+  const f = e.target.files?.[0];
+  if (f && /^image\//.test(f.type)) useFile(f);
+});
+// paste
+window.addEventListener('paste', (e)=>{
+  const items = e.clipboardData?.items || [];
+  for (const it of items){
+    if (it.kind==='file'){
+      const f = it.getAsFile();
+      if (f && /^image\//.test(f.type)){ useFile(f); e.preventDefault(); break; }
+    }
+  }
+});
+
+async function loadToCanvas(){
+  return new Promise((resolve,reject)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const maxW = 1400;
+      const scale = img.width>maxW ? maxW/img.width : 1;
+      const w = Math.round(img.width*scale);
+      const h = Math.round(img.height*scale);
+      cvs.width=w; cvs.height=h;
+      ctx.drawImage(img, 0, 0, w, h);
+      resolve({width:w, height:h});
+    };
+    img.onerror = reject;
+    img.src = imgURL;
+  });
+}
+
+runBtn.addEventListener('click', async ()=>{
+  err.textContent='';
+  if(!file){ err.textContent='先に画像を入れてください。'; return; }
+  try{
+    const {width,height} = await loadToCanvas();
+    const imgData = ctx.getImageData(0,0,width,height);
+    const {gray} = toGrayscale(imgData);
+    const blurred = boxBlur1D(gray,width,height, parseInt(blur.value,10));
+    const bin = threshold(blurred,width,height, parseInt(thr.value,10), invert.checked);
+
+    // binary preview
+    const prev = ctx.createImageData(width,height);
+    for(let i=0,j=0;i<prev.data.length;i+=4,j++){
+      const v = bin[j] ? 0 : 255;
+      prev.data[i]=v; prev.data[i+1]=v; prev.data[i+2]=v; prev.data[i+3]=255;
+    }
+    ctx.putImageData(prev,0,0);
+    binURL = cvs.toDataURL("image/png");
+    viewBinary.innerHTML = `<img src="${binURL}" alt="binary" style="max-width:100%; height:auto; border-radius:12px"/>`;
+
+    // vectorize
+    const p = marchingSquares(bin,width,height);
+    const svg = makeSVG(p,width,height,"#000",true);
+    svgMarkup = svg;
+    viewSVG.innerHTML = svg;
+    saveBtn.disabled = false;
+
+    // 切替をbinary→svgにすると変化が見やすい
+    document.querySelector('[data-tab="binary"]').click();
+  }catch(e2){
+    err.textContent = String(e2?.message || e2);
+  }
+});
+
+saveBtn.addEventListener('click', ()=>{
+  if(!svgMarkup) return;
+  const base = file?.name ? file.name.replace(/\.[^.]+$/, "") : "vectorized";
+  const blob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${base}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+});
+</script>
+</body>
+</html>
