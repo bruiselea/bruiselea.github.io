@@ -52,6 +52,8 @@
           <input id="thr" type="range" min="0" max="255" step="1" value="180" />
           <label>平滑化（ぼかし半径） <span id="blur-label">1px</span></label>
           <input id="blur" type="range" min="0" max="6" step="1" value="1" />
+          <label>滑らかさ（パス平滑化） <span id="smooth-label">1</span></label>
+          <input id="smooth" type="range" min="0" max="3" step="1" value="1" />
           <label>色を反転
             <input id="invert" type="checkbox" />
           </label>
@@ -115,9 +117,9 @@ function threshold(gray,width,height,t,invert){
   }
   return bin;
 }
-// Marching Squares (簡易)
-function marchingSquares(bin,width,height){
-  const paths=[];
+// Marching Squares → セグメント収集 → 連結ポリライン化
+function marchingSquaresPolylines(bin,width,height){
+  const segments=[];
   const idx=(x,y)=>y*width+x;
   function cellCase(x,y){
     const a=bin[idx(x,y)];
@@ -152,21 +154,124 @@ function marchingSquares(bin,width,height){
         const key=edgeKey(x,y,p,q);
         if(visited.has(key)) continue;
         visited.add(key);
-        const points=[p,q];
-        // （簡略）隣接追跡は省略、各セルの短いパスでも視覚的には問題ないことが多い
-        if(points.length>1){
-          const d = `M ${points[0][0]} ${points[0][1]} L ${points[1][0]} ${points[1][1]}`;
-          paths.push(d);
-        }
+        segments.push([p,q]);
       }
     }
   }
-  return paths;
+
+  // 連結：端点が一致するセグメントを鎖状に繋いでポリライン化
+  const keyOf = (pt)=> `${pt[0]},${pt[1]}`;
+  const map = new Map(); // key -> indices of segments touching
+  for(let i=0;i<segments.length;i++){
+    const [p,q]=segments[i];
+    const kp=keyOf(p), kq=keyOf(q);
+    if(!map.has(kp)) map.set(kp,[]);
+    if(!map.has(kq)) map.set(kq,[]);
+    map.get(kp).push([i,0]); // 0 means at p
+    map.get(kq).push([i,1]); // 1 means at q
+  }
+  const used = new Array(segments.length).fill(false);
+  const polylines=[];
+
+  for(let i=0;i<segments.length;i++){
+    if(used[i]) continue;
+    used[i]=true;
+    let [p,q] = segments[i].map(a=>[a[0],a[1]]);
+    const line = [p,q];
+
+    // 前方拡張（q側）
+    while(true){
+      const tail = line[line.length-1];
+      const k = keyOf(tail);
+      const nexts = map.get(k);
+      let extended=false;
+      for(const [si,endFlag] of nexts){
+        if(used[si]) continue;
+        used[si]=true;
+        const seg = segments[si];
+        const a = endFlag===0? seg[1] : seg[0];
+        const b = endFlag===0? seg[0] : seg[1];
+        // tail matches b, append a
+        if(keyOf(b)===k){
+          line.push([a[0],a[1]]);
+          extended=true;
+          break;
+        }
+      }
+      if(!extended) break;
+    }
+
+    // 後方拡張（p側）
+    while(true){
+      const head = line[0];
+      const k = keyOf(head);
+      const nexts = map.get(k);
+      let extended=false;
+      for(const [si,endFlag] of nexts){
+        if(used[si]) continue;
+        used[si]=true;
+        const seg = segments[si];
+        const a = endFlag===0? seg[1] : seg[0];
+        const b = endFlag===0? seg[0] : seg[1];
+        if(keyOf(b)===k){
+          line.unshift([a[0],a[1]]);
+          extended=true;
+          break;
+        }
+      }
+      if(!extended) break;
+    }
+
+    polylines.push(line);
+  }
+  return polylines;
 }
+
+// Chaikin のコーナーカッティングでポリラインを滑らかに
+function chaikinSmooth(points, iterations){
+  if(!points || points.length<3 || iterations<=0) return points;
+  let pts = points.map(p=>[p[0],p[1]]);
+  const isClosed = (pts.length>2 && pts[0][0]===pts[pts.length-1][0] && pts[0][1]===pts[pts.length-1][1]);
+  for(let it=0; it<iterations; it++){
+    const out=[];
+    const n = pts.length;
+    const maxI = isClosed ? n : n-1;
+    for(let i=0;i<maxI;i++){
+      const p = pts[i];
+      const q = pts[(i+1)%n];
+      const Q = [0.75*p[0]+0.25*q[0], 0.75*p[1]+0.25*q[1]];
+      const R = [0.25*p[0]+0.75*q[0], 0.25*p[1]+0.75*q[1]];
+      out.push(Q,R);
+    }
+    if(!isClosed){
+      // 端点を保持
+      out.unshift(pts[0]);
+      out.push(pts[pts.length-1]);
+    }else{
+      out.push(out[0]);
+    }
+    pts = out;
+  }
+  return pts;
+}
+
+function polylinesToPathDs(polylines){
+  const ds=[];
+  for(const line of polylines){
+    if(!line || line.length<2) continue;
+    let d = `M ${line[0][0]} ${line[0][1]}`;
+    for(let i=1;i<line.length;i++){
+      d += ` L ${line[i][0]} ${line[i][1]}`;
+    }
+    ds.push(d);
+  }
+  return ds;
+}
+
 function makeSVG(paths,width,height,fill="#000",bgTransparent=true){
   const viewBox=`0 0 ${width} ${height}`;
   const bg = bgTransparent ? "" : `<rect width="100%" height="100%" fill="white"/>`;
-  const body = paths.map(d=>`<path d="${d}" stroke="${fill}" fill="none" stroke-width="1"/>`).join("\n");
+  const body = paths.map(d=>`<path d=\"${d}\" stroke=\"${fill}\" fill=\"none\" stroke-width=\"1.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>`).join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" width="${width}" height="${height}">\n${bg}\n${body}\n</svg>`;
 }
 
@@ -184,6 +289,8 @@ const blur = document.getElementById('blur');
 const invert = document.getElementById('invert');
 const thrLabel = document.getElementById('thr-label');
 const blurLabel = document.getElementById('blur-label');
+const smooth = document.getElementById('smooth');
+const smoothLabel = document.getElementById('smooth-label');
 const runBtn = document.getElementById('run');
 const saveBtn = document.getElementById('save');
 const err = document.getElementById('err');
@@ -202,6 +309,7 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
 
 thr.addEventListener('input', ()=> thrLabel.textContent = thr.value);
 blur.addEventListener('input', ()=> blurLabel.textContent = `${blur.value}px`);
+smooth.addEventListener('input', ()=> smoothLabel.textContent = `${smooth.value}`);
 
 function useFile(f){
   file = f;
@@ -274,8 +382,11 @@ runBtn.addEventListener('click', async ()=>{
     viewBinary.innerHTML = `<img src="${binURL}" alt="binary" style="max-width:100%; height:auto; border-radius:12px"/>`;
 
     // vectorize
-    const p = marchingSquares(bin,width,height);
-    const svg = makeSVG(p,width,height,"#000",true);
+    const polylines = marchingSquaresPolylines(bin,width,height);
+    const iter = parseInt(smooth.value,10) || 0;
+    const smoothed = polylines.map(pl => chaikinSmooth(pl, iter));
+    const dList = polylinesToPathDs(smoothed);
+    const svg = makeSVG(dList,width,height,"#000",true);
     svgMarkup = svg;
     viewSVG.innerHTML = svg;
     saveBtn.disabled = false;
