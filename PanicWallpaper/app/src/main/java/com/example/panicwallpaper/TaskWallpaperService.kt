@@ -35,8 +35,11 @@ class TaskWallpaperService : WallpaperService() {
             textAlign = Paint.Align.LEFT
         }
 
+        private var hitBoxes: MutableList<Pair<android.graphics.RectF, Task>> = mutableListOf()
+
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             super.onCreate(surfaceHolder)
+            setTouchEventsEnabled(true)
             // Start observing data
             observeTasks()
         }
@@ -49,6 +52,23 @@ class TaskWallpaperService : WallpaperService() {
                     panicLevel = UrgencyManager.calculatePanicLevel(newTasks)
                     if (isVisible) {
                         draw()
+                    }
+                }
+            }
+        }
+
+        override fun onTouchEvent(event: android.view.MotionEvent?) {
+            super.onTouchEvent(event)
+            if (event?.action == android.view.MotionEvent.ACTION_UP) {
+                val x = event.x
+                val y = event.y
+                
+                // Check hits
+                hitBoxes.firstOrNull { it.first.contains(x, y) }?.let { (_, task) ->
+                    // Hit! Complete the task
+                    scope.launch(Dispatchers.IO) {
+                        val dao = TaskDatabase.getDatabase(applicationContext).taskDao()
+                        dao.update(task.copy(isCompleted = true))
                     }
                 }
             }
@@ -94,6 +114,8 @@ class TaskWallpaperService : WallpaperService() {
         }
 
         private fun drawContent(canvas: Canvas) {
+            hitBoxes.clear()
+            
             // 1. Draw Background (Urgency Color)
             val bgColor = UrgencyManager.getPanicColor(panicLevel)
             canvas.drawColor(bgColor)
@@ -121,6 +143,9 @@ class TaskWallpaperService : WallpaperService() {
             textPaint.isFakeBoldText = false
             
             tasks.take(10).forEach { task ->
+                // Apply Dynamic Font
+                textPaint.typeface = UrgencyManager.getTypefaceForTask(task)
+
                 // Truncate if too long
                 val text = if (task.title.length > 20) task.title.take(20) + "..." else task.title
                 
@@ -137,7 +162,14 @@ class TaskWallpaperService : WallpaperService() {
                     else -> "(${daysLeft}d)"
                 }
                 
-                canvas.drawText("• $text $dateText", xPos, yPos, textPaint)
+                val fullText = "• $text $dateText"
+                canvas.drawText(fullText, xPos, yPos, textPaint)
+                
+                // Calculate HitBox
+                val textWidth = textPaint.measureText(fullText)
+                val rect = android.graphics.RectF(xPos, yPos - 60f, xPos + textWidth, yPos + 20f) // approx height
+                hitBoxes.add(Pair(rect, task))
+                
                 yPos += lineHeight
             }
 

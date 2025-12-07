@@ -76,4 +76,19 @@ object UrgencyManager {
 
         return Color.argb(a, r, g, b)
     }
+
+    fun getTypefaceForTask(task: Task): android.graphics.Typeface {
+        val deadline = task.deadline ?: return android.graphics.Typeface.create("sans-serif-light", android.graphics.Typeface.NORMAL)
+        
+        val now = System.currentTimeMillis()
+        val diff = deadline - now
+        val oneDayMillis = TimeUnit.DAYS.toMillis(1)
+        val threeDaysMillis = TimeUnit.DAYS.toMillis(3)
+
+        return when {
+            diff < oneDayMillis -> android.graphics.Typeface.create(android.graphics.Typeface.SERIF, android.graphics.Typeface.BOLD) // Panic / Strict
+            diff < threeDaysMillis -> android.graphics.Typeface.DEFAULT // Normal
+            else -> android.graphics.Typeface.create("sans-serif-light", android.graphics.Typeface.NORMAL) // Relaxed
+        }
+    }
 }
