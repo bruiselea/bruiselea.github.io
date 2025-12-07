@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Gesture GUI</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- MediaPipe Hands -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Video Feed (Hidden or Picture-in-Picture style) -->
+        <video class="input_video" autoplay playsinline muted></video>
+        <!-- Canvas for landmarks (Overlay) -->
+        <canvas class="output_canvas"></canvas>
+        
+        <!-- Interactive GUI Layer -->
+        <div class="gui-layer">
+            <h1>Hand Gesture GUI</h1>
+            <p>Use your index finger to move the cursor. Pinch to click.</p>
+            <div class="cursor" id="custom-cursor"></div>
+            
+            <div class="interactive-area">
+                <button class="gesture-btn" id="btn1">Button 1</button>
+                <button class="gesture-btn" id="btn2">Button 2</button>
+                <div class="card">
+                    <h2>Hover Me</h2>
+                    <p>Interact with this card.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
