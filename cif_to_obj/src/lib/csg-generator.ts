@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { Brush, Evaluator, SUBTRACTION } from 'three-bvh-csg';
+import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type { Atom, Bond } from './structure-manager';
 
 export interface PrintableAtom {
@@ -97,11 +98,25 @@ export class CSGGenerator {
         atomBrush = result;
       }
 
+      // Clean up geometry to ensure it's watertight and has valid normals
+      let finalGeometry = atomBrush.geometry;
+      
+      // Remove drawRange if present as it can cause issues with exporters
+      if (finalGeometry.drawRange) {
+        finalGeometry.setDrawRange(0, Infinity);
+      }
+
+      // Merge vertices to close small gaps and ensure manifoldness
+      finalGeometry = BufferGeometryUtils.mergeVertices(finalGeometry);
+      
+      // Recompute normals to ensure they are correct after CSG and merging
+      finalGeometry.computeVertexNormals();
+
       printableAtoms.push({
         id: atom.id,
         symbol: atom.symbol,
         position: atom.position,
-        geometry: atomBrush.geometry,
+        geometry: finalGeometry,
         color: atom.color
       });
     });

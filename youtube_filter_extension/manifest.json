@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Feed Filter",
+  "version": "1.0",
+  "description": "Filters YouTube feed to only show videos matching specific keywords.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

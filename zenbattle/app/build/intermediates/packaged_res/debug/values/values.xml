@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zazen Battle</string>
+    <string name="best_score_label">Best: %d</string>
+    <string name="score_label">Score: %d</string>
+    <string name="stability_label">Stability</string>
+    <string name="start_zazen">Start Zazen</string>
+    <string name="stop_zazen">Stop</string>
+    <style name="Theme.ZenBattle" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:windowBackground">#FFFFFF</item>
+    </style>
+</resources>

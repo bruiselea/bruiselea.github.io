@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+python-multipart
+# svgwrite or similar might be useful, but start simple
