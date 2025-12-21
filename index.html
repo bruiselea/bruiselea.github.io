@@ -5,11 +5,929 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NATSUKI SATO PORTFOLIO</title>
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <!-- Three.js (背景エフェクト用) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* 基本設定 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* フォント設定 */
+        @font-face {
+            font-family: 'Google Sans Flex';
+            src: url('./GoogleSansFlex.ttf') format('truetype');
+            font-weight: 100 900;
+            font-display: swap;
+        }
+
+        :root {
+            /* カラーパレットの再定義：紫系を廃止し、テックブルー×シアン系へ */
+            --primary-color: #2563eb;
+            /* 鮮やかなロイヤルブルー */
+            --accent-color: #06b6d4;
+            /* 明るいシアン（水色） */
+            --text-dark: #1e293b;
+            /* 非常に濃いブルーグレー */
+            --text-light: #475569;
+            /* 中間のスレートグレー */
+
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            /* 背景色を少し白くして視認性アップ */
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px 0 rgba(37, 99, 235, 0.1);
+            /* 影も青系に */
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Google Sans Flex", "Outfit", "Noto Sans JP", sans-serif;
+            line-height: 1.8;
+            color: var(--text-dark);
+            background-color: #f1f5f9;
+            position: relative;
+        }
+
+        /* 背景用キャンバスのスタイル */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ガラスモーフィズム共通クラス */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 20px;
+        }
+
+        /* ナビゲーション */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            /* ナビゲーションもガラス化 */
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .nav-logo h2 {
+            color: var(--text-dark);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            font-size: 1.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-dark);
+            margin: 3px 0;
+            border-radius: 3px;
+            transition: 0.3s;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: transparent;
+            overflow: hidden;
+            padding-top: 70px;
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            /* 文字色を背景から浮き立たせる */
+            color: var(--text-dark);
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8);
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+            animation: fadeInUp 1s ease forwards 0.7s;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            color: var(--text-light);
+            max-width: 480px;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.1s;
+        }
+
+        /* ボタンデザイン */
+        .btn {
+            padding: 14px 36px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--primary-color);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.6);
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .profile-image {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            /* プロフィール画像部分もガラス化 */
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15);
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.3s;
+        }
+
+        .profile-image i {
+            color: white;
+            text-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        /* セクション共通スタイル */
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            color: var(--text-dark);
+            position: relative;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 2px;
+        }
+
+        /* 自己紹介セクション */
+        .about {
+            background: transparent;
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-text-card {
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            line-height: 1.9;
+        }
+
+        .about-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-top: 3rem;
+        }
+
+        .highlight {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .highlight:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.1);
+        }
+
+        .highlight i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .highlight p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* スキルセクション */
+        .skills {
+            background: transparent;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .skill-category {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 35px;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .skill-category h3 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .skill-items {
+            display: grid;
+            gap: 15px;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .skill-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+            border-color: var(--accent-color);
+        }
+
+        .skill-item i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .skill-item span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* プロジェクトセクション */
+        .projects {
+            background: transparent;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+        }
+
+        .project-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .project-image {
+            height: 220px;
+            /* カード画像部分：寒色系グラデーションに変更 */
+            background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        /* 各カードの色味を青・緑・シアン系でバリエーション */
+        .project-card:nth-child(2) .project-image {
+            background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
+        }
+
+        .project-card:nth-child(3) .project-image {
+            background: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%);
+        }
+
+        .project-card:nth-child(4) .project-image {
+            background: linear-gradient(135deg, #059669 0%, #34d399 100%);
+        }
+
+        .project-image i {
+            font-size: 4rem;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            color: white;
+        }
+
+        .project-content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .project-content p {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tag {
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        /* お問い合わせセクション */
+        .contact {
+            background: transparent;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info {
+            padding: 30px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .contact-info p {
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .contact-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 18px 25px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-method:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
+
+        .contact-method i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 30px;
+            text-align: center;
+        }
+
+        .contact-method h4 {
+            margin-bottom: 3px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .contact-method a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            word-break: break-all;
+        }
+
+        .contact-form {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .contact-form .btn-primary {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+        }
+
+        /* フッター */
+        .footer {
+            background: #1e293b;
+            /* 濃いスレートブルー */
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 60px 0 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .footer-left h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-left p {
+            color: #94a3b8;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .social-links a {
+            color: #cbd5e1;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-links a:hover {
+            color: white;
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* アニメーション */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 固定SNSボタン */
+        .fixed-sns-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        .fixed-sns-btn a {
+            pointer-events: auto;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(5px);
+            color: #fff;
+            font-size: 1rem;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fixed-sns-btn a:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* レスポンシブデザイン */
+        @media screen and (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 40px 0;
+                height: calc(100vh - 70px);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .hamburger.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .hamburger.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 40px;
+                padding-top: 20px;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+
+            .profile-image {
+                width: 250px;
+                height: 250px;
+                margin: 0 auto;
+            }
+
+            .about-highlights {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .contact-info {
+                padding: 20px;
+            }
+
+            .contact-form {
+                padding: 25px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 3rem;
+            }
+
+            section {
+                padding: 80px 0;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 0 15px;
+            }
+
+            .profile-image {
+                width: 200px;
+                height: 200px;
+            }
+
+            .profile-image i {
+                font-size: 3rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- 背景用キャンバス -->
+    <div id="canvas-container"></div>
+
     <!-- ナビゲーション -->
     <nav class="navbar">
         <div class="nav-container">
@@ -62,46 +980,205 @@
             </div>
         </div>
     </section>
-    <div
-        style="position: fixed; bottom: 24px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 100;">
-        <a href="sns-links.html"
-            style="background: #222; color: #fff; font-size: 1.1rem; padding: 14px 32px; border-radius: 32px; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.10); font-weight: 600; letter-spacing: 0.02em; transition: background 0.2s;">
+
+    <div class="fixed-sns-btn">
+        <a href="sns-links.html">
             SNSリンク集はこちら
         </a>
     </div>
+
+    <!-- スキル詳細モーダル -->
+    <div id="skill-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">Skill Name</h2>
+            <p id="modal-description">Description of the skill.</p>
+            <div class="works-grid" id="modal-works">
+                <!-- Works will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* モーダルスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.9);
+            margin: 5% auto;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .close-modal {
+            color: var(--text-light);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        #modal-title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        #modal-description {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .work-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .work-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .work-placeholder {
+            height: 160px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+        }
+
+        .work-placeholder i {
+            font-size: 3rem;
+            opacity: 0.5;
+        }
+
+        .work-info {
+            padding: 15px;
+        }
+
+        .work-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .work-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* リンク付きワークアイテムのバッジ */
+        .work-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-color);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+        }
+
+        .work-placeholder {
+            position: relative;
+        }
+
+        /* スキルアイテムをクリッカブルに */
+        .skill-item {
+            cursor: pointer;
+        }
+    </style>
 
     <!-- 自己紹介セクション -->
     <section id="about" class="about">
         <div class="container">
             <h2 class="section-title">自己紹介</h2>
             <div class="about-content">
-                <div class="about-text">
-                    <h3>エンジニアリングと創造性の融合</h3>
-                    <p>
-                        東北大学工学部材料科学総合学科で学んでいます。
-                        材料工学の知識を基盤として、3Dプリンティング技術とプログラミングを組み合わせた
-                        革新的なソリューションの開発に取り組んでいます。
-                    </p>
-                    <p>
-                        デンマーク工科大学（DTU）での交換留学を通じて、
-                        国際的な視野と多様な技術アプローチを身につけました。
-                    </p>
-                    <div class="about-highlights">
-                        <div class="highlight">
-                            <i class="fas fa-graduation-cap"></i>
-                            <h4>教育</h4>
-                            <p>東北大学 材料科学総合学科<br>デンマーク工科大学 交換留学</p>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-cube"></i>
-                            <h4>専門分野</h4>
-                            <p>3Dプリンティング<br>材料工学<br>プロダクトデザイン</p>
-                        </div>
-                        <div class="highlight">
-                            <i class="fas fa-code"></i>
-                            <h4>技術スキル</h4>
-                            <p>Python, Flutter<br>CAD設計<br>AI活用</p>
-                        </div>
+                <div class="glass-panel about-text-card">
+                    <div class="about-text">
+                        <h3>エンジニアリングと創造性の融合</h3>
+                        <p>
+                            東北大学工学部材料科学総合学科で学んでいます。
+                            材料工学の知識を基盤として、3Dプリンティング技術とプログラミングを組み合わせた
+                            革新的なソリューションの開発に取り組んでいます。
+                        </p>
+                        <p>
+                            デンマーク工科大学（DTU）での交換留学を通じて、
+                            国際的な視野と多様な技術アプローチを身につけました。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="about-highlights">
+                    <div class="highlight">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>教育</h4>
+                        <p>東北大学 材料科学総合学科<br>デンマーク工科大学 交換留学</p>
+                    </div>
+                    <div class="highlight">
+                        <i class="fas fa-cube"></i>
+                        <h4>専門分野</h4>
+                        <p>3Dプリンティング<br>材料工学<br>プロダクトデザイン</p>
+                    </div>
+                    <div class="highlight">
+                        <i class="fas fa-code"></i>
+                        <h4>技術スキル</h4>
+                        <p>Python, Flutter<br>CAD設計<br>AI活用</p>
                     </div>
                 </div>
             </div>
@@ -308,8 +1385,8 @@
                         <div class="contact-method">
                             <i class="fab fa-instagram"></i>
                             <div>
-                                <h4>X (Twitter)</h4>
-                                <a href="https://instagram.com/natssssam" target="_blank">@_I__l__l__l__I_</a>
+                                <h4>Instagram</h4>
+                                <a href="https://instagram.com/natssssam" target="_blank">@natssssam</a>
                             </div>
                         </div>
                         <div class="contact-method">
@@ -321,34 +1398,35 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="contact-form">
-                        <form>
-                            <div class="form-group">
-                                <label for="name">お名前</label>
-                                <input type="text" id="name" name="name" required>
-                            </div>
+                <div class="contact-form glass-panel">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">お名前</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="email">メールアドレス</label>
-                                <input type="email" id="email" name="email" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="email">メールアドレス</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="subject">件名</label>
-                                <input type="text" id="subject" name="subject" required>
-                            </div>
+                        <div class="form-group">
+                            <label for="subject">件名</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="message">メッセージ</label>
-                                <textarea id="message" name="message" rows="5" required></textarea>
-                            </div>
+                        <div class="form-group">
+                            <label for="message">メッセージ</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
 
-                            <button type="submit" class="btn btn-primary">送信</button>
-                        </form>
-                    </div>
+                        <button type="submit" class="btn btn-primary">送信</button>
+                    </form>
                 </div>
             </div>
+        </div>
     </section>
 
     <!-- フッター -->
@@ -361,21 +1439,19 @@
                 </div>
                 <div class="footer-right">
                     <div class="social-links">
-                        <a href="https://github.com/bruiselea" target="_blank">
+                        <a href="https://github.com/bruiselea" target="_blank" aria-label="GitHub">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="https://x.com/_I__l__l__l__I_" target="_blank">
+                        <a href="https://x.com/_I__l__l__l__I_" target="_blank" aria-label="Twitter">
                             <i class="fab fa-twitter"></i>
-
                         </a>
-                        <a href="https://linkedin.com/in/natsukisatojp">
-                            <i class="fas fa-envelope"></i>
+                        <a href="https://linkedin.com/in/natsukisatojp" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
                         </a>
-                        <a href="https://instagram.com/natssssam">
-                            <i class="fas fa-envelope"></i>
+                        <a href="https://instagram.com/natssssam" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
                         </a>
-                        </a>
-                        <a href="mailto:wlknts28786@gmail.com">
+                        <a href="mailto:wlknts28786@gmail.com" aria-label="Email">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>
@@ -387,7 +1463,342 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // ハンバーガーメニューとスクロール監視
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            navLinks.forEach(n => n.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            }));
+
+            // 背景エフェクトの初期化
+            initColorBends();
+
+            // スキルモーダルの初期化
+            initSkillModal();
+        });
+
+        // スキルモーダルとダミーデータ
+        function initSkillModal() {
+            const modal = document.getElementById('skill-modal');
+            const modalContent = modal.querySelector('.modal-content');
+            const closeBtn = document.querySelector('.close-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-description');
+            const modalWorks = document.getElementById('modal-works');
+            const skillItems = document.querySelectorAll('.skill-item');
+
+            // ダミーデータ定義
+            const dummyWorks = {
+                'Python': [
+                    { title: 'データ分析ツール', desc: 'Pandasを用いた自動集計スクリプト', icon: 'fa-chart-bar' },
+                    { title: 'スクレイピングBot', desc: 'Web情報を定期収集するBot', icon: 'fa-robot' },
+                    { title: 'Flask API', desc: '軽量なバックエンドAPIサーバー', icon: 'fa-server' }
+                ],
+                'Flutter': [
+                    { title: 'Task Manager', desc: '生産性を向上させるToDoアプリ', icon: 'fa-check-double' },
+                    { title: 'Music Player', desc: 'モダンなUIの音楽再生アプリ', icon: 'fa-music' },
+                    { title: 'Recipe App', desc: '料理レシピ共有プラットフォーム', icon: 'fa-utensils' }
+                ],
+                'JavaScript': [
+                    { title: 'PCCam', desc: 'WebベースのカメラアプリをPCで', icon: 'fa-camera', link: 'pccam/index.html' },
+                    { title: 'SVGメーカー', desc: 'カスタムSVGアイコン生成ツール', icon: 'fa-vector-square', link: 'svgmaker/svgmaker.html' }
+                ],
+                '3Dプリンティング': [
+                    { title: 'スマホスタンド', desc: '人間工学に基づいたデザイン', icon: 'fa-mobile-alt' },
+                    { title: 'ケーブルホルダー', desc: 'デスク周りを整理する便利グッズ', icon: 'fa-plug' },
+                    { title: 'カスタムパーツ', desc: 'ドローン用交換パーツ', icon: 'fa-cogs' },
+                    { title: 'アートオブジェ', desc: 'ボロノイ図を用いた造形物', icon: 'fa-cube' }
+                ],
+                'CAD設計': [
+                    { title: 'メカニカルギア', desc: '複雑なギア機構の設計', icon: 'fa-cog' },
+                    { title: 'エンクロージャー', desc: '電子工作用ケース設計', icon: 'fa-box' }
+                ],
+                'AI活用': [
+                    { title: '画像認識モデル', desc: '欠陥検知システムのプロトタイプ', icon: 'fa-eye' },
+                    { title: 'チャットボット', desc: 'カスタマーサポート自動化', icon: 'fa-comments' }
+                ]
+            };
+
+            // デフォルトのダミーデータ（マッチしない場合用）
+            const defaultWorks = [
+                { title: 'Project Alpha', desc: '革新的なプロトタイプ開発', icon: 'fa-lightbulb' },
+                { title: 'Design Beta', desc: 'ユーザー体験を重視したデザイン', icon: 'fa-pen-nib' },
+                { title: 'Study Gamma', desc: '技術検証とレポート作成', icon: 'fa-file-alt' }
+            ];
+
+            // モーダル表示関数
+            function openModal(skillName) {
+                modal.classList.add('show'); // display: block を適用してから
+                // 少し遅らせてopacityを変化させアニメーションさせる（CSS transition用）
+                setTimeout(() => {
+                    modal.style.opacity = '1';
+                    modalContent.style.opacity = '1';
+                    modalContent.style.transform = 'translateY(0)';
+                }, 10);
+
+                modalTitle.textContent = skillName;
+                modalDesc.textContent = `${skillName} に関するこれまでの取り組みや制作物の一部です。`;
+
+                // 作品リストの生成
+                modalWorks.innerHTML = '';
+                const works = dummyWorks[skillName] || defaultWorks;
+
+                works.forEach(work => {
+                    const workEl = document.createElement('div');
+                    workEl.className = 'work-item';
+
+                    // リンクがある場合はクリック可能に
+                    if (work.link) {
+                        workEl.style.cursor = 'pointer';
+                        workEl.addEventListener('click', () => {
+                            window.open(work.link, '_blank');
+                        });
+                    }
+
+                    const linkBadge = work.link ? '<span class="work-badge"><i class="fas fa-external-link-alt"></i></span>' : '';
+
+                    workEl.innerHTML = `
+                        <div class="work-placeholder">
+                            <i class="fas ${work.icon}"></i>
+                            ${linkBadge}
+                        </div>
+                        <div class="work-info">
+                            <div class="work-title">${work.title}</div>
+                            <div class="work-desc">${work.desc}</div>
+                        </div>
+                    `;
+                    modalWorks.appendChild(workEl);
+                });
+            }
+
+            // モーダル非表示関数
+            function closeModal() {
+                modal.style.opacity = '0';
+                modalContent.style.opacity = '0';
+                modalContent.style.transform = 'translateY(20px)';
+
+                setTimeout(() => {
+                    modal.classList.remove('show');
+                }, 300); // transition時間と合わせる
+            }
+
+            // イベントリスナー設定
+            skillItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const skillName = item.querySelector('span').textContent.trim();
+                    openModal(skillName);
+                });
+            });
+
+            closeBtn.addEventListener('click', closeModal);
+
+            // モーダル外クリックで閉じる
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        // ColorBends (Three.js Background Effect)の実装
+        function initColorBends() {
+            const MAX_COLORS = 8;
+
+            // シェーダーコード
+            const frag = `
+            #define MAX_COLORS ${MAX_COLORS}
+            uniform vec2 uCanvas;
+            uniform float uTime;
+            uniform float uSpeed;
+            uniform vec2 uRot;
+            uniform int uColorCount;
+            uniform vec3 uColors[MAX_COLORS];
+            uniform int uTransparent;
+            uniform float uScale;
+            uniform float uFrequency;
+            uniform float uWarpStrength;
+            uniform vec2 uPointer;
+            uniform float uMouseInfluence;
+            uniform float uParallax;
+            uniform float uNoise;
+            varying vec2 vUv;
+
+            void main() {
+                float t = uTime * uSpeed;
+                vec2 p = vUv * 2.0 - 1.0;
+                p += uPointer * uParallax * 0.1;
+                vec2 rp = vec2(p.x * uRot.x - p.y * uRot.y, p.x * uRot.y + p.y * uRot.x);
+                vec2 q = vec2(rp.x * (uCanvas.x / uCanvas.y), rp.y);
+                q /= max(uScale, 0.0001);
+                q /= 0.5 + 0.2 * dot(q, q);
+                q += 0.2 * cos(t) - 7.56;
+                vec2 toward = (uPointer - rp);
+                q += toward * uMouseInfluence * 0.2;
+
+                vec3 col = vec3(0.0);
+                float a = 1.0;
+
+                if (uColorCount > 0) {
+                    vec2 s = q;
+                    vec3 sumCol = vec3(0.0);
+                    float cover = 0.0;
+                    for (int i = 0; i < MAX_COLORS; ++i) {
+                        if (i >= uColorCount) break;
+                        s -= 0.01;
+                        vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
+                        float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(i)) / 4.0);
+                        float kBelow = clamp(uWarpStrength, 0.0, 1.0);
+                        float kMix = pow(kBelow, 0.3);
+                        float gain = 1.0 + max(uWarpStrength - 1.0, 0.0);
+                        vec2 disp = (r - s) * kBelow;
+                        vec2 warped = s + disp * gain;
+                        float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(i)) / 4.0);
+                        float m = mix(m0, m1, kMix);
+                        float w = 1.0 - exp(-6.0 / exp(6.0 * m));
+                        sumCol += uColors[i] * w;
+                        cover = max(cover, w);
+                    }
+                    col = clamp(sumCol, 0.0, 1.0);
+                    a = uTransparent > 0 ? cover : 1.0;
+                }
+                
+                if (uNoise > 0.0001) {
+                    float n = fract(sin(dot(gl_FragCoord.xy + vec2(uTime), vec2(12.9898, 78.233))) * 43758.5453123);
+                    col += (n - 0.5) * uNoise;
+                    col = clamp(col, 0.0, 1.0);
+                }
+
+                vec3 rgb = (uTransparent > 0) ? col * a : col;
+                gl_FragColor = vec4(rgb, a);
+            }
+            `;
+
+            const vert = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+            }
+            `;
+
+            // 設定値（サイトのデザインに合わせて調整：紫系を完全に排除）
+            const config = {
+                rotation: 45,
+                speed: 0.2, // 少しゆっくりに
+                colors: ['#2563eb', '#60a5fa', '#06b6d4', '#ffffff'], // ロイヤルブルー、スカイブルー、シアン、白
+                transparent: true,
+                autoRotate: 0,
+                scale: 0.8,
+                frequency: 1,
+                warpStrength: 1.2,
+                mouseInfluence: 0.8, // マウス追従
+                parallax: 0.5,
+                noise: 0.1
+            };
+
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            const uColorsArray = Array.from({ length: MAX_COLORS }, () => new THREE.Vector3(0, 0, 0));
+
+            // カラー変換関数
+            const toVec3 = hex => {
+                const h = hex.replace('#', '').trim();
+                const v = h.length === 3
+                    ? [parseInt(h[0] + h[0], 16), parseInt(h[1] + h[1], 16), parseInt(h[2] + h[2], 16)]
+                    : [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+                return new THREE.Vector3(v[0] / 255, v[1] / 255, v[2] / 255);
+            };
+
+            // 色配列の設定
+            const arr = config.colors.map(toVec3);
+            for (let i = 0; i < MAX_COLORS; i++) {
+                if (i < arr.length) uColorsArray[i].copy(arr[i]);
+            }
+
+            const material = new THREE.ShaderMaterial({
+                vertexShader: vert,
+                fragmentShader: frag,
+                uniforms: {
+                    uCanvas: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                    uTime: { value: 0 },
+                    uSpeed: { value: config.speed },
+                    uRot: { value: new THREE.Vector2(Math.cos(config.rotation * Math.PI / 180), Math.sin(config.rotation * Math.PI / 180)) },
+                    uColorCount: { value: arr.length },
+                    uColors: { value: uColorsArray },
+                    uTransparent: { value: config.transparent ? 1 : 0 },
+                    uScale: { value: config.scale },
+                    uFrequency: { value: config.frequency },
+                    uWarpStrength: { value: config.warpStrength },
+                    uPointer: { value: new THREE.Vector2(0, 0) },
+                    uMouseInfluence: { value: config.mouseInfluence },
+                    uParallax: { value: config.parallax },
+                    uNoise: { value: config.noise }
+                },
+                premultipliedAlpha: true,
+                transparent: true
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            const renderer = new THREE.WebGLRenderer({
+                antialias: false,
+                powerPreference: 'high-performance',
+                alpha: true
+            });
+
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            const clock = new THREE.Clock();
+
+            // マウス追跡
+            const pointer = { current: new THREE.Vector2(0, 0), target: new THREE.Vector2(0, 0) };
+            window.addEventListener('pointermove', (e) => {
+                pointer.target.x = (e.clientX / window.innerWidth) * 2 - 1;
+                pointer.target.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // リサイズ処理
+            window.addEventListener('resize', () => {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                renderer.setSize(w, h);
+                material.uniforms.uCanvas.value.set(w, h);
+            });
+
+            // アニメーションループ
+            function animate() {
+                const dt = clock.getDelta();
+                const elapsed = clock.elapsedTime;
+
+                material.uniforms.uTime.value = elapsed;
+
+                // マウス位置の補間
+                pointer.current.lerp(pointer.target, dt * 8); // 8 is smoothing factor
+                material.uniforms.uPointer.value.copy(pointer.current);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+    </script>
 </body>
 
 </html>

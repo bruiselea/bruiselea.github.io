@@ -1,0 +1,285 @@
+:root {
+    --bg-dark: #0f1115;
+    --bg-panel: #181b21;
+    --bg-panel-hover: #1f232b;
+    --accent: #6c5ce7;
+    --accent-hover: #5b4cc4;
+    --text-main: #ffffff;
+    --text-muted: #a0a0a0;
+    --border: #2d3436;
+    --danger: #ff7675;
+
+    --font-main: 'Outfit', sans-serif;
+    --radius-lg: 16px;
+    --radius-md: 8px;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: var(--font-main);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 2px;
+    background-color: var(--bg-dark);
+}
+
+/* Panes */
+.pane {
+    flex: 1;
+    background-color: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.camera-pane {
+    border-right: 1px solid var(--border);
+}
+
+.pane-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+h2 {
+    font-weight: 400;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+/* Camera Feed */
+.video-container {
+    flex: 1;
+    background: #000;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* transform: scaleX(-1); Removed mirror effect per user request */
+}
+
+/* Controls */
+.overlay-controls {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    /* Text above button */
+    align-items: center;
+    gap: 15px;
+    /* Slightly increased gap */
+    pointer-events: none;
+    /* Let clicks pass through if needed, but button needs pointer-events auto */
+}
+
+.shortcut-hint {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+}
+
+.capture-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.capture-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.capture-btn:active {
+    transform: scale(0.95);
+}
+
+.shutter-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #fff;
+    border-radius: 50%;
+    display: block;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.controls-bar {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.device-select {
+    background: var(--bg-panel-hover);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: var(--radius-md);
+    outline: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* Editor Pane */
+.editor-workspace {
+    flex: 1;
+    background: #131519;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-bottom: 20px;
+    position: relative;
+    border: 1px dashed var(--border);
+}
+
+.placeholder-state {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    box-shadow: var(--shadow);
+}
+
+/* Ensure cropper doesn't overflow */
+.cropper-container {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+/* Editor Controls */
+.editor-controls {
+    display: flex;
+    justify-content: center;
+    /* Center controls */
+    min-height: 40px;
+}
+
+.control-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.control-group.hidden {
+    display: none;
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--border);
+    margin: 0 5px;
+}
+
+.filter-chip {
+    background: var(--bg-panel-hover);
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.filter-chip:hover {
+    color: var(--text-main);
+    background: #252a33;
+}
+
+.filter-chip.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.icon-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.icon-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.icon-btn:not(:disabled):hover {
+    background: var(--bg-panel-hover);
+    border-color: var(--text-muted);
+}
+
+.accent-btn {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.accent-btn:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
