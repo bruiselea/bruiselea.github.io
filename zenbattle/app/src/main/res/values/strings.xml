@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">Zazen Battle</string>
-    <string name="start_zazen">Start Zazen</string>
-    <string name="stop_zazen">Stop</string>
-    <string name="score_label">Score: %d</string>
-    <string name="best_score_label">Best: %d</string>
-    <string name="stability_label">Stability</string>
-</resources>

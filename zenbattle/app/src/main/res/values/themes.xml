@@ -1,6 +1,0 @@
-<resources>
-    <style name="Theme.ZenBattle" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">#000000</item>
-        <item name="android:windowBackground">#FFFFFF</item>
-    </style>
-</resources>
