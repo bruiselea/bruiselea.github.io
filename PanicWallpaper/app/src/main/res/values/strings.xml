@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">PanicWallpaper</string>
-    <string name="wallpaper_description">Visualizes your task urgency.</string>
-    <string name="add_task">Add Task</string>
-    <string name="enter_task_hint">What needs to be done?</string>
-</resources>
