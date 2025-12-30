@@ -275,25 +275,33 @@
             position: relative;
         }
 
-        .profile-image {
+        .hero-slideshow {
             width: 350px;
             height: 350px;
-            border-radius: 50%;
-            /* プロフィール画像部分もガラス化 */
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.15);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.25);
             opacity: 0;
             animation: fadeInUp 1s ease forwards 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            /* Glassmorphism for container if needed, but images cover it */
         }
 
-        .profile-image i {
-            color: white;
-            text-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
         }
 
         /* セクション共通スタイル */
@@ -974,8 +982,10 @@
                 </div>
             </div>
             <div class="hero-image">
-                <div class="profile-image">
-                    <i class="fas fa-user fa-8x"></i>
+                <div class="hero-slideshow">
+                    <div class="slide active" style="background-image: url('slide1.png')"></div>
+                    <div class="slide" style="background-image: url('slide2.png')"></div>
+                    <div class="slide" style="background-image: url('slide3.png')"></div>
                 </div>
             </div>
         </div>
@@ -1286,6 +1296,26 @@
         <div class="container">
             <h2 class="section-title">プロジェクト</h2>
             <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image" style="background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);">
+                        <i class="fab fa-chrome fa-4x"></i>
+                    </div>
+                    <div class="project-content">
+                        <h3>YouTube Feed Filter</h3>
+                        <p>YouTubeのフィードを表示させたい動画のみにフィルタリングするChrome拡張機能。キーワード設定で自分だけのフィードを作成できます。</p>
+                        <div class="project-tags">
+                            <span class="tag">Chrome Extension</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Productivity</span>
+                        </div>
+                        <a href="https://chromewebstore.google.com/detail/youtube-feed-filter/iiiloooblnpcagiemmpahoiipladigll?authuser=0&hl=en&pli=1"
+                            target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            View in Store <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
                 <div class="project-card">
                     <div class="project-image">
                         <i class="fas fa-cube fa-4x"></i>
@@ -1799,6 +1829,7 @@
             animate();
         }
     </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
