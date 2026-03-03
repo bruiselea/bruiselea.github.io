@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCCam - Premium USB Camera</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Left Pane: Camera Feed -->
+        <section class="pane camera-pane">
+            <header class="pane-header">
+                <h2>Live Preview</h2>
+                <div class="status-indicator" id="cameraStatus">Initializing...</div>
+            </header>
+
+            <div class="video-container">
+                <video id="cameraFeed" autoplay playsinline muted></video>
+                <div class="overlay-controls">
+                    <button id="captureBtn" class="action-btn capture-btn" title="Take Photo">
+                        <span class="shutter-icon"></span>
+                    </button>
+                    <span class="shortcut-hint">Press Space</span>
+                </div>
+            </div>
+
+            <div class="controls-bar">
+                <select id="cameraSelect" class="device-select">
+                    <option value="" disabled selected>Select Camera...</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Right Pane: Editor/Gallery -->
+        <section class="pane editor-pane">
+            <header class="pane-header">
+                <h2>Editor</h2>
+                <div class="actions">
+                    <button id="downloadBtn" class="icon-btn" disabled title="Save Image">
+                        Saved
+                    </button>
+                </div>
+            </header>
+
+            <div class="editor-workspace">
+                <div id="placeholderState" class="placeholder-state">
+                    <p>Capture a photo to start editing</p>
+                </div>
+                <canvas id="photoCanvas" class="hidden"></canvas>
+            </div>
+
+            <div class="editor-controls">
+                <div id="cropControls" class="control-group hidden">
+                    <button id="confirmCropBtn" class="icon-btn accent-btn">Apply</button>
+                    <button id="cancelCropBtn" class="icon-btn">Cancel</button>
+                </div>
+                <div id="mainControls" class="control-group">
+                    <button id="startCropBtn" class="icon-btn" disabled>Crop</button>
+                    <div class="divider"></div>
+                    <button id="filterNone" class="filter-chip active">Normal</button>
+                    <button id="filterGrayscale" class="filter-chip">B&W</button>
+                    <button id="filterSepia" class="filter-chip">Sepia</button>
+                    <button id="filterContrast" class="filter-chip">Contrast</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

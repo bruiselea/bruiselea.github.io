@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/camera_avfoundation/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/flutter_ble_peripheral/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/opencv_dart/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/opencv_dart/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/opencv_dart/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_as_mouse/ios/.symlinks/plugins/permission_handler_apple/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/linux/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/package_info_plus/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/build" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/phone_tsukaisuginai_app/windows/flutter/ephemeral/.plugin_symlinks/wakelock_plus/example/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

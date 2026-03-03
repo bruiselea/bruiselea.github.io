@@ -295,4 +295,19 @@ function createScrollTopButton() {
 }
 
 // スクロールトップボタンを作成
-document.addEventListener('DOMContentLoaded', createScrollTopButton); 
+document.addEventListener('DOMContentLoaded', createScrollTopButton);
+
+// ヒーロースライドショー
+document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.slide');
+    if (slides.length === 0) return;
+
+    let currentSlide = 0;
+    
+    // 3秒ごとにスライド切り替え
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }, 4000);
+}); 
