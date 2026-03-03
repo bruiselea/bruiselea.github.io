@@ -52,8 +52,8 @@
           <input id="thr" type="range" min="0" max="255" step="1" value="180" />
           <label>平滑化（ぼかし半径） <span id="blur-label">1px</span></label>
           <input id="blur" type="range" min="0" max="6" step="1" value="1" />
-          <label>滑らかさ（パス平滑化） <span id="smooth-label">1</span></label>
-          <input id="smooth" type="range" min="0" max="3" step="1" value="1" />
+          <label>滑らかさ（パス平滑化） <span id="smooth-label">2</span></label>
+          <input id="smooth" type="range" min="0" max="5" step="1" value="2" />
           <label>色を反転
             <input id="invert" type="checkbox" />
           </label>
@@ -268,6 +268,121 @@ function polylinesToPathDs(polylines){
   return ds;
 }
 
+// グレースケール配列に対して、しきい値 level の等値線をサブピクセル補間で抽出
+function marchingSquaresFromGrayPolylines(gray, width, height, level){
+  const segments=[];
+  const idx=(x,y)=>y*width+x;
+  const clamp01=(t)=> t===t ? (t<0?0:(t>1?1:t)) : 0.5;
+  // 交点を補間して返す
+  function edgeTop(x,y,v00,v10){
+    const t = clamp01((level - v00) / (v10 - v00 || 1e-6));
+    return [x + t, y];
+  }
+  function edgeRight(x,y,v10,v11){
+    const t = clamp01((level - v10) / (v11 - v10 || 1e-6));
+    return [x+1, y + t];
+  }
+  function edgeBottom(x,y,v01,v11){
+    const t = clamp01((level - v01) / (v11 - v01 || 1e-6));
+    return [x + t, y+1];
+  }
+  function edgeLeft(x,y,v00,v01){
+    const t = clamp01((level - v00) / (v01 - v00 || 1e-6));
+    return [x, y + t];
+  }
+
+  for(let y=0;y<height-1;y++){
+    for(let x=0;x<width-1;x++){
+      const v00 = gray[idx(x,y)];
+      const v10 = gray[idx(x+1,y)];
+      const v11 = gray[idx(x+1,y+1)];
+      const v01 = gray[idx(x,y+1)];
+      const a = v00 >= level ? 1:0;
+      const b = v10 >= level ? 1:0;
+      const c = v11 >= level ? 1:0;
+      const d = v01 >= level ? 1:0;
+      const ccase = (a<<3)|(b<<2)|(c<<1)|d;
+      if(ccase===0 || ccase===15) continue;
+
+      // 必要な交点を先に計算
+      const T = edgeTop(x,y,v00,v10);
+      const R = edgeRight(x,y,v10,v11);
+      const B = edgeBottom(x,y,v01,v11);
+      const L = edgeLeft(x,y,v00,v01);
+
+      const push=(p,q)=>segments.push([p,q]);
+      switch(ccase){
+        case 1: case 14: push(B,L); break;
+        case 2: case 13: push(R,B); break;
+        case 3: case 12: push(R,L); break;
+        case 4: case 11: push(T,R); break;
+        case 5: push(T,R); push(B,L); break;
+        case 6: case 9: push(T,B); break;
+        case 7: case 8: push(T,L); break;
+        case 10: push(T,R); push(B,L); break;
+      }
+    }
+  }
+
+  // 連結（浮動小数なのでキーは丸めて扱う）
+  const keyOf = (pt)=> `${pt[0].toFixed(4)},${pt[1].toFixed(4)}`;
+  const map = new Map();
+  for(let i=0;i<segments.length;i++){
+    const [p,q]=segments[i];
+    const kp=keyOf(p), kq=keyOf(q);
+    if(!map.has(kp)) map.set(kp,[]);
+    if(!map.has(kq)) map.set(kq,[]);
+    map.get(kp).push([i,0]);
+    map.get(kq).push([i,1]);
+  }
+  const used = new Array(segments.length).fill(false);
+  const polylines=[];
+  for(let i=0;i<segments.length;i++){
+    if(used[i]) continue;
+    used[i]=true;
+    let [p,q] = segments[i].map(a=>[a[0],a[1]]);
+    const line = [p,q];
+    // 前方
+    while(true){
+      const tail=line[line.length-1];
+      const nexts = map.get(keyOf(tail))||[];
+      let extended=false;
+      for(const [si,endFlag] of nexts){
+        if(used[si]) continue;
+        const seg=segments[si];
+        const a=endFlag===0? seg[1]:seg[0];
+        const b=endFlag===0? seg[0]:seg[1];
+        if(keyOf(b)===keyOf(tail)){
+          used[si]=true;
+          line.push([a[0],a[1]]);
+          extended=true; break;
+        }
+      }
+      if(!extended) break;
+    }
+    // 後方
+    while(true){
+      const head=line[0];
+      const nexts = map.get(keyOf(head))||[];
+      let extended=false;
+      for(const [si,endFlag] of nexts){
+        if(used[si]) continue;
+        const seg=segments[si];
+        const a=endFlag===0? seg[1]:seg[0];
+        const b=endFlag===0? seg[0]:seg[1];
+        if(keyOf(b)===keyOf(head)){
+          used[si]=true;
+          line.unshift([a[0],a[1]]);
+          extended=true; break;
+        }
+      }
+      if(!extended) break;
+    }
+    polylines.push(line);
+  }
+  return polylines;
+}
+
 function makeSVG(paths,width,height,fill="#000",bgTransparent=true){
   const viewBox=`0 0 ${width} ${height}`;
   const bg = bgTransparent ? "" : `<rect width="100%" height="100%" fill="white"/>`;
@@ -369,20 +484,21 @@ runBtn.addEventListener('click', async ()=>{
     const imgData = ctx.getImageData(0,0,width,height);
     const {gray} = toGrayscale(imgData);
     const blurred = boxBlur1D(gray,width,height, parseInt(blur.value,10));
-    const bin = threshold(blurred,width,height, parseInt(thr.value,10), invert.checked);
+    const level = parseInt(thr.value,10);
+    const src = invert.checked ? blurred.map(v=>255-v) : blurred;
 
-    // binary preview
+    // binary preview（しきい値レベルでの2値表示）
     const prev = ctx.createImageData(width,height);
     for(let i=0,j=0;i<prev.data.length;i+=4,j++){
-      const v = bin[j] ? 0 : 255;
+      const v = src[j] >= level ? 0 : 255;
       prev.data[i]=v; prev.data[i+1]=v; prev.data[i+2]=v; prev.data[i+3]=255;
     }
     ctx.putImageData(prev,0,0);
     binURL = cvs.toDataURL("image/png");
     viewBinary.innerHTML = `<img src="${binURL}" alt="binary" style="max-width:100%; height:auto; border-radius:12px"/>`;
 
-    // vectorize
-    const polylines = marchingSquaresPolylines(bin,width,height);
+    // vectorize（グレー値の等値線ベース）
+    const polylines = marchingSquaresFromGrayPolylines(src,width,height, level);
     const iter = parseInt(smooth.value,10) || 0;
     const smoothed = polylines.map(pl => chaikinSmooth(pl, iter));
     const dList = polylinesToPathDs(smoothed);
