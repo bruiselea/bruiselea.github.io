@@ -532,6 +532,14 @@
             color: white;
         }
 
+        .project-image img.project-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+        }
+
         .project-content {
             padding: 30px;
             flex-grow: 1;
@@ -956,6 +964,9 @@
                     <a href="#projects" class="nav-link">プロジェクト</a>
                 </li>
                 <li class="nav-item">
+                    <a href="#apps" class="nav-link">アプリ</a>
+                </li>
+                <li class="nav-item">
                     <a href="#contact" class="nav-link">お問い合わせ</a>
                 </li>
             </ul>
@@ -1373,6 +1384,129 @@
                             <span class="tag">セラミックス</span>
                             <span class="tag">研究</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- アプリセクション -->
+    <section id="apps" class="apps">
+        <div class="container">
+            <h2 class="section-title">公開中のアプリ</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/namecard.png" alt="名刺ジェネレーターのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>名刺ジェネレーター</h3>
+                        <p>テンプレート・フォント・サイズ・厚み・各要素を自由に編集して、ブラウザ上で名刺をデザインできるWebアプリ。</p>
+                        <div class="project-tags">
+                            <span class="tag">Web App</span>
+                            <span class="tag">Vercel</span>
+                            <span class="tag">Design</span>
+                        </div>
+                        <a href="https://namecard-generator.vercel.app" target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            アプリを開く <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/ideation.png" alt="アイデアルーレットのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>アイデアルーレット</h3>
+                        <p>「ガチャ！」ボタンで2つの言葉を組み合わせ、新しいアイデアの種を生み出す発想支援アプリ。</p>
+                        <div class="project-tags">
+                            <span class="tag">Web App</span>
+                            <span class="tag">Vercel</span>
+                            <span class="tag">Ideation</span>
+                        </div>
+                        <a href="https://ideation-roulette.vercel.app" target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            アプリを開く <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/circular.png" alt="Circular Schedulerのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>Circular Scheduler</h3>
+                        <p>Google Tasksと連携し、円形の時計UIで一日のタスクを可視化するスケジューラー。時間の流れを直感的に掴めます。</p>
+                        <div class="project-tags">
+                            <span class="tag">Web App</span>
+                            <span class="tag">Vercel</span>
+                            <span class="tag">Google Tasks</span>
+                        </div>
+                        <a href="https://circular-schedule.vercel.app" target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            アプリを開く <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/pccam.png" alt="PCCamのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>PCCam</h3>
+                        <p>PCのカメラで撮影してその場でクロップやB&W・セピアなどのフィルタをかけられる、Live Preview付きカメラ・エディタ。</p>
+                        <div class="project-tags">
+                            <span class="tag">Web App</span>
+                            <span class="tag">Camera</span>
+                            <span class="tag">Editor</span>
+                        </div>
+                        <a href="pccam/index.html" target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            アプリを開く <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/svgmaker.png" alt="SVGメーカーのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>SVGメーカー</h3>
+                        <p>画像を2値化してベクタ化（SVG生成）するLite版ツール。しきい値・ぼかし・パス平滑化を調整して滑らかな出力を得られます。</p>
+                        <div class="project-tags">
+                            <span class="tag">Web App</span>
+                            <span class="tag">SVG</span>
+                            <span class="tag">Vectorize</span>
+                        </div>
+                        <a href="svgmaker/svgmaker.html" target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            アプリを開く <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img class="project-preview" src="app-previews/youtube-filter.png" alt="YouTube Feed Filterのスクリーンショット" loading="lazy">
+                    </div>
+                    <div class="project-content">
+                        <h3>YouTube Feed Filter</h3>
+                        <p>YouTubeのフィードを指定キーワードを含む動画だけに絞り込むChrome拡張。自分の見たい動画だけが並ぶフィードを作れます。</p>
+                        <div class="project-tags">
+                            <span class="tag">Chrome Extension</span>
+                            <span class="tag">JavaScript</span>
+                            <span class="tag">Productivity</span>
+                        </div>
+                        <a href="https://chromewebstore.google.com/detail/youtube-feed-filter/iiiloooblnpcagiemmpahoiipladigll"
+                            target="_blank"
+                            style="margin-top: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                            ストアで開く <i class="fas fa-external-link-alt"></i>
+                        </a>
                     </div>
                 </div>
             </div>
