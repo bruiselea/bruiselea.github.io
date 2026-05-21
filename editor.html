@@ -851,7 +851,7 @@
             <input type="text"  placeholder="タイトル (例: LinkedIn)" value="${esc(lnk.title)}"    oninput="updateLink(${i},'title',this.value)" />
             <input type="text"  placeholder="サブテキスト"               value="${esc(lnk.subtitle)}" oninput="updateLink(${i},'subtitle',this.value)" />
             <input type="url"   placeholder="URL"                          value="${esc(lnk.url)}"      oninput="updateLink(${i},'url',this.value)" />
-            <input type="text"  placeholder="アイコン画像URL or 絵文字"   value="${esc(lnk.icon)}"     oninput="updateLink(${i},'icon',this.value)" />
+            <input type="text"  placeholder="絵文字 or 画像URL（例: 🔗 / https://...）" value="${esc(lnk.icon)}" oninput="updateLink(${i},'icon',this.value)" />
           `;
           attachDrag(div, i, state.links, renderLinksList);
           container.appendChild(div);
