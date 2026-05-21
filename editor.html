@@ -595,7 +595,7 @@
 
     <script>
       // ─── State ───────────────────────────────────────────
-      const STORAGE_KEY = 'link-page-editor-v1';
+      const STORAGE_KEY = 'link-page-editor-v2';
 
       let state = {
         profile: { name: '', tagline: '', bio: '', avatar: '' },
@@ -613,7 +613,7 @@
       ];
 
       const DEFAULT_PROJECTS = [
-        { title: 'プロジェクト名', desc: 'プロジェクトの説明をここに書きます。', badges: ['In Progress'], link: '', linkLabel: '詳細はこちら' },
+        { title: 'サンプルプロジェクト', desc: '取り組んでいるプロジェクトや制作物の説明をここに書きます。リンクボタンも追加できます。', badges: ['進行中'], link: '', linkLabel: '詳細はこちら' },
       ];
 
       // ─── Load / Save ──────────────────────────────────────
@@ -626,7 +626,7 @@
       }
 
       function initDefaults() {
-        state.profile = { name: 'Natsuki SATO', tagline: '3D printing / maker / content creator', bio: 'business and collaboration inquiries welcome.', avatar: 'snsicons/ぬーん.jpeg' };
+        state.profile = { name: '山田 太郎', tagline: 'デザイナー / エンジニア / クリエイター', bio: 'お仕事のご相談・コラボレーションはお気軽にどうぞ。', avatar: 'https://placehold.co/84x84/e2e8f0/64748b?text=YOU' };
         state.links = JSON.parse(JSON.stringify(DEFAULT_LINKS));
         state.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
       }
