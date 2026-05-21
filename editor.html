@@ -236,6 +236,44 @@
         color: var(--muted);
       }
 
+      /* ── Palette grid ── */
+      .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .palette-btn {
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        padding: 8px 4px 6px;
+        background: #fff;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        transition: border-color 0.15s, transform 0.1s;
+      }
+      .palette-btn:hover { border-color: #94a3b8; transform: scale(1.04); }
+      .palette-btn.active { border-color: var(--accent); }
+      .palette-swatches {
+        display: flex;
+        gap: 3px;
+      }
+      .palette-swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid rgba(0,0,0,0.08);
+      }
+      .palette-label {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.2;
+      }
+
       /* ── Layout buttons ── */
       .layout-btn {
         padding: 10px 8px;
@@ -528,21 +566,24 @@
           <!-- Theme -->
           <div class="section-block">
             <h3>テーマカラー</h3>
-            <div class="color-row">
-              <label>背景</label>
-              <input type="color" id="c-bg" value="#f5f7fa" oninput="update()" />
-            </div>
-            <div class="color-row">
-              <label>カード背景</label>
-              <input type="color" id="c-card" value="#ffffff" oninput="update()" />
-            </div>
-            <div class="color-row">
-              <label>アクセントカラー</label>
-              <input type="color" id="c-accent" value="#0f172a" oninput="update()" />
-            </div>
-            <div class="color-row">
-              <label>サブテキスト</label>
-              <input type="color" id="c-muted" value="#6b7280" oninput="update()" />
+            <div class="palette-grid" id="palette-grid"></div>
+            <div id="custom-colors" style="display:none;margin-top:12px">
+              <div class="color-row">
+                <label>背景</label>
+                <input type="color" id="c-bg" value="#f5f7fa" oninput="onCustomColor()" />
+              </div>
+              <div class="color-row">
+                <label>カード背景</label>
+                <input type="color" id="c-card" value="#ffffff" oninput="onCustomColor()" />
+              </div>
+              <div class="color-row">
+                <label>アクセント</label>
+                <input type="color" id="c-accent" value="#0f172a" oninput="onCustomColor()" />
+              </div>
+              <div class="color-row">
+                <label>サブテキスト</label>
+                <input type="color" id="c-muted" value="#6b7280" oninput="onCustomColor()" />
+              </div>
             </div>
           </div>
 
@@ -597,10 +638,18 @@
       // ─── State ───────────────────────────────────────────
       const STORAGE_KEY = 'link-page-editor-v2';
 
+      const PALETTES = [
+        { key: 'mono',   label: 'モノクロ',   bg: '#f5f7fa', card: '#ffffff', accent: '#0f172a', muted: '#6b7280' },
+        { key: 'dark',   label: 'ダーク',     bg: '#0f172a', card: '#1e293b', accent: '#e2e8f0', muted: '#94a3b8' },
+        { key: 'indigo', label: 'インディゴ', bg: '#eef2ff', card: '#ffffff', accent: '#4338ca', muted: '#6366f1' },
+        { key: 'custom', label: 'カスタム',   bg: null, card: null, accent: null, muted: null },
+      ];
+
       let state = {
         profile: { name: '', tagline: '', bio: '', avatar: '' },
         colors: { bg: '#f5f7fa', card: '#ffffff', accent: '#0f172a', muted: '#6b7280' },
-        layout: 'grid', // 'single' | 'grid'
+        paletteKey: 'mono',
+        layout: 'grid',
         links: [],
         projects: [],
       };
@@ -645,10 +694,12 @@
         state.profile.tagline = v('p-tagline');
         state.profile.bio     = v('p-bio');
         state.profile.avatar  = v('p-avatar');
-        state.colors.bg     = v('c-bg');
-        state.colors.card   = v('c-card');
-        state.colors.accent = v('c-accent');
-        state.colors.muted  = v('c-muted');
+        if (state.paletteKey === 'custom') {
+          state.colors.bg     = v('c-bg');
+          state.colors.card   = v('c-card');
+          state.colors.accent = v('c-accent');
+          state.colors.muted  = v('c-muted');
+        }
       }
       function v(id) { return document.getElementById(id)?.value ?? ''; }
 
@@ -668,11 +719,61 @@
         set('c-card',   state.colors.card);
         set('c-accent', state.colors.accent);
         set('c-muted',  state.colors.muted);
+        renderPaletteGrid();
         applyLayoutButtons();
         renderLinksList();
         renderProjectsList();
       }
       function set(id, val) { const el = document.getElementById(id); if (el) el.value = val ?? ''; }
+
+      // ─── Palette ──────────────────────────────────────────
+      function renderPaletteGrid() {
+        const grid = document.getElementById('palette-grid');
+        grid.innerHTML = '';
+        PALETTES.forEach(p => {
+          const btn = document.createElement('button');
+          btn.className = 'palette-btn' + (state.paletteKey === p.key ? ' active' : '');
+          btn.title = p.label;
+          const swatchColors = p.key === 'custom'
+            ? [state.colors.bg, state.colors.card, state.colors.accent, state.colors.muted]
+            : [p.bg, p.card, p.accent, p.muted];
+          btn.innerHTML = `
+            <div class="palette-swatches">
+              ${swatchColors.map(c => `<span class="palette-swatch" style="background:${c ?? '#ccc'}"></span>`).join('')}
+            </div>
+            <span class="palette-label">${p.label}</span>
+          `;
+          btn.addEventListener('click', () => selectPalette(p.key));
+          grid.appendChild(btn);
+        });
+        // カスタムパネルの表示切替
+        document.getElementById('custom-colors').style.display =
+          state.paletteKey === 'custom' ? 'block' : 'none';
+      }
+
+      function selectPalette(key) {
+        state.paletteKey = key;
+        const p = PALETTES.find(p => p.key === key);
+        if (key !== 'custom') {
+          state.colors = { bg: p.bg, card: p.card, accent: p.accent, muted: p.muted };
+          set('c-bg', p.bg); set('c-card', p.card);
+          set('c-accent', p.accent); set('c-muted', p.muted);
+        }
+        renderPaletteGrid();
+        saveState();
+        refreshPreview();
+      }
+
+      function onCustomColor() {
+        state.paletteKey = 'custom';
+        state.colors.bg     = v('c-bg');
+        state.colors.card   = v('c-card');
+        state.colors.accent = v('c-accent');
+        state.colors.muted  = v('c-muted');
+        renderPaletteGrid();
+        saveState();
+        refreshPreview();
+      }
 
       // ─── Layout toggle ────────────────────────────────────
       function setLayout(mode) {
