@@ -1123,15 +1123,50 @@
         document.getElementById('btn-mobile').classList.toggle('active', mode === 'mobile');
       }
 
-      // ─── Download ─────────────────────────────────────────
-      function downloadHTML() {
-        const html = generateHTML();
-        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'links.html';
-        a.click();
-        URL.revokeObjectURL(a.href);
+      // ─── Download (画像をbase64でHTML内に埋め込み) ───────────
+      async function downloadHTML() {
+        const btn = document.querySelector('[onclick="downloadHTML()"]');
+        const orig = btn.textContent;
+        btn.textContent = '生成中...';
+        btn.disabled = true;
+
+        try {
+          // 埋め込み対象の画像URLを収集（外部https・絵文字は除外）
+          const urls = new Set();
+          const isLocal = u => u && !u.startsWith('http') && !u.startsWith('data:');
+          if (isLocal(state.profile.avatar)) urls.add(state.profile.avatar);
+          state.links.forEach(lnk => { if (isLocal(lnk.icon)) urls.add(lnk.icon); });
+
+          // URLをbase64に変換
+          const imageMap = {};
+          await Promise.all([...urls].map(async url => {
+            try {
+              const res = await fetch(url);
+              const blob = await res.blob();
+              imageMap[url] = await new Promise(resolve => {
+                const r = new FileReader();
+                r.onload = () => resolve(r.result);
+                r.readAsDataURL(blob);
+              });
+            } catch { /* 取得失敗時はそのままのURLを使用 */ }
+          }));
+
+          // 生成HTMLのsrc属性を置換
+          let html = generateHTML();
+          for (const [url, dataUri] of Object.entries(imageMap)) {
+            html = html.replaceAll(esc(url), dataUri);
+          }
+
+          const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'links.html';
+          a.click();
+          URL.revokeObjectURL(a.href);
+        } finally {
+          btn.textContent = orig;
+          btn.disabled = false;
+        }
       }
 
       // ─── Reset ────────────────────────────────────────────
