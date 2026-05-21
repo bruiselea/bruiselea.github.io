@@ -1538,7 +1538,7 @@
                             <i class="fas fa-envelope"></i>
                             <div>
                                 <h4>Email</h4>
-                                <a href="mailto:wlknts28786@gmail.com">wlknts28786@gmail.com</a>
+                                <a id="contact-mail-link"></a>
                             </div>
                         </div>
 
@@ -1618,7 +1618,7 @@
                         <a href="https://instagram.com/natssssam" aria-label="Instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="mailto:wlknts28786@gmail.com" aria-label="Email">
+                        <a id="footer-mail-link" aria-label="Email">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>
@@ -1631,6 +1631,16 @@
     </footer>
 
     <script>
+        // メールアドレスをJSで組み立て（ボット収集対策）
+        (function() {
+            const u = 'wlknts28786', d = 'gmail.com';
+            const addr = u + '@' + d;
+            const contact = document.getElementById('contact-mail-link');
+            if (contact) { contact.href = 'mailto:' + addr; contact.textContent = addr; }
+            const footer = document.getElementById('footer-mail-link');
+            if (footer) { footer.href = 'mailto:' + addr; }
+        })();
+
         // ハンバーガーメニューとスクロール監視
         document.addEventListener('DOMContentLoaded', () => {
             const hamburger = document.querySelector('.hamburger');
