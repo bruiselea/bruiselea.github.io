@@ -559,8 +559,11 @@
             <input type="text" id="p-tagline" placeholder="3D printing / maker" oninput="update()" />
             <label>自己紹介文</label>
             <textarea id="p-bio" placeholder="business and collaboration inquiries welcome." oninput="update()"></textarea>
-            <label>アバター画像URL</label>
-            <input type="url" id="p-avatar" placeholder="https://... または snsicons/xxx.jpeg" oninput="update()" />
+            <label>アバター画像</label>
+            <div style="display:flex;gap:6px;align-items:center;margin-bottom:10px">
+              <input type="text" id="p-avatar" placeholder="URL or ファイルを選択→" oninput="update()" style="margin-bottom:0;flex:1" />
+              <button class="btn-secondary btn-sm" onclick="pickImage('p-avatar', null, null)">画像</button>
+            </div>
           </div>
 
           <!-- Theme -->
@@ -851,7 +854,10 @@
             <input type="text"  placeholder="タイトル (例: LinkedIn)" value="${esc(lnk.title)}"    oninput="updateLink(${i},'title',this.value)" />
             <input type="text"  placeholder="サブテキスト"               value="${esc(lnk.subtitle)}" oninput="updateLink(${i},'subtitle',this.value)" />
             <input type="url"   placeholder="URL"                          value="${esc(lnk.url)}"      oninput="updateLink(${i},'url',this.value)" />
-            <input type="text"  placeholder="絵文字 or 画像URL（例: 🔗 / https://...）" value="${esc(lnk.icon)}" oninput="updateLink(${i},'icon',this.value)" />
+            <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
+              <input type="text" placeholder="絵文字 or 画像（例: 🔗）" value="${esc(lnk.icon)}" oninput="updateLink(${i},'icon',this.value)" style="margin-bottom:0;flex:1" />
+              <button class="btn-secondary btn-sm" onclick="pickImage(null,${i},null)">画像</button>
+            </div>
           `;
           attachDrag(div, i, state.links, renderLinksList);
           container.appendChild(div);
@@ -1282,6 +1288,32 @@
       // ─── Escape helper ────────────────────────────────────
       function esc(str) {
         return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+
+      // ─── Image file picker ────────────────────────────────
+      function pickImage(inputId, linkIdx, projIdx) {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = () => {
+          const file = input.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = e => {
+            const dataUri = e.target.result;
+            if (inputId) {
+              // アバター
+              document.getElementById(inputId).value = dataUri;
+              update();
+            } else if (linkIdx !== null) {
+              // リンクアイコン
+              updateLink(linkIdx, 'icon', dataUri);
+              renderLinksList();
+            }
+          };
+          reader.readAsDataURL(file);
+        };
+        input.click();
       }
 
       // ─── Guide drawer ─────────────────────────────────────
