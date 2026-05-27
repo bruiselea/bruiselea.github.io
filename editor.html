@@ -605,6 +605,19 @@
             </div>
           </div>
 
+          <!-- 人となり -->
+          <div class="section-block">
+            <h3>人となり</h3>
+            <label>自分をひと言で表すと</label>
+            <input type="text" id="p-oneword" placeholder="例: 好奇心のかたまり" oninput="update()" />
+            <label>将来のなりたい自分像</label>
+            <textarea id="p-future" placeholder="例: 技術と社会をつなぐエンジニアになりたい" oninput="update()"></textarea>
+            <label>部活・サークル</label>
+            <input type="text" id="p-clubs" placeholder="例: ロボット研究会、写真部" oninput="update()" />
+            <label>その他の活動・力を入れたこと</label>
+            <textarea id="p-activities" placeholder="例: 学生団体での広報活動、海外ボランティア" oninput="update()"></textarea>
+          </div>
+
           <!-- Links -->
           <div class="section-block">
             <h3>SNSリンク</h3>
@@ -649,7 +662,7 @@
       ];
 
       let state = {
-        profile: { name: '', tagline: '', bio: '', avatar: '' },
+        profile: { name: '', tagline: '', bio: '', avatar: '', oneword: '', future: '', clubs: '', activities: '' },
         colors: { bg: '#f5f7fa', card: '#ffffff', accent: '#0f172a', muted: '#6b7280' },
         paletteKey: 'mono',
         layout: 'grid',
@@ -678,7 +691,7 @@
       }
 
       function initDefaults() {
-        state.profile = { name: '山田 太郎', tagline: 'デザイナー / エンジニア / クリエイター', bio: 'お仕事のご相談・コラボレーションはお気軽にどうぞ。', avatar: 'https://placehold.co/84x84/e2e8f0/64748b?text=YOU' };
+        state.profile = { name: '山田 太郎', tagline: 'デザイナー / エンジニア / クリエイター', bio: 'お仕事のご相談・コラボレーションはお気軽にどうぞ。', avatar: 'https://placehold.co/84x84/e2e8f0/64748b?text=YOU', oneword: '', future: '', clubs: '', activities: '' };
         state.links = JSON.parse(JSON.stringify(DEFAULT_LINKS));
         state.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
       }
@@ -693,10 +706,14 @@
 
       // ─── DOM → State ──────────────────────────────────────
       function readForm() {
-        state.profile.name    = v('p-name');
-        state.profile.tagline = v('p-tagline');
-        state.profile.bio     = v('p-bio');
-        state.profile.avatar  = v('p-avatar');
+        state.profile.name       = v('p-name');
+        state.profile.tagline    = v('p-tagline');
+        state.profile.bio        = v('p-bio');
+        state.profile.avatar     = v('p-avatar');
+        state.profile.oneword    = v('p-oneword');
+        state.profile.future     = v('p-future');
+        state.profile.clubs      = v('p-clubs');
+        state.profile.activities = v('p-activities');
         if (state.paletteKey === 'custom') {
           state.colors.bg     = v('c-bg');
           state.colors.card   = v('c-card');
@@ -714,10 +731,14 @@
 
       // ─── State → Form ─────────────────────────────────────
       function populateForm() {
-        set('p-name',    state.profile.name);
-        set('p-tagline', state.profile.tagline);
-        set('p-bio',     state.profile.bio);
-        set('p-avatar',  state.profile.avatar);
+        set('p-name',       state.profile.name);
+        set('p-tagline',    state.profile.tagline);
+        set('p-bio',        state.profile.bio);
+        set('p-avatar',     state.profile.avatar);
+        set('p-oneword',    state.profile.oneword);
+        set('p-future',     state.profile.future);
+        set('p-clubs',      state.profile.clubs);
+        set('p-activities', state.profile.activities);
         set('c-bg',     state.colors.bg);
         set('c-card',   state.colors.card);
         set('c-accent', state.colors.accent);
@@ -1074,6 +1095,12 @@
       .project-card p { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.6; }
       .project-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: auto; }
       .badge { background: #eef2ff; color: #0f172a; padding: 6px 8px; border-radius: 8px; font-size: 0.8rem; border: 1px solid var(--border); }
+      .oneword-badge { text-align: center; margin: -4px 0 20px; }
+      .oneword-badge span { display: inline-block; background: var(--bg); border: 1px solid var(--border); border-radius: 99px; padding: 7px 22px; font-size: 0.9rem; color: var(--muted); }
+      .personal-section { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+      .personal-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+      .personal-card h3 { margin: 0 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+      .personal-card p { margin: 0; font-size: 0.95rem; line-height: 1.65; color: var(--accent); white-space: pre-wrap; }
       @media (max-width: 700px) {
         ${isSingle ? '' : '.links { grid-template-columns: 1fr; }'}
         .avatar { width: 64px; height: 64px; border-radius: 10px; }
@@ -1086,6 +1113,10 @@
         <div style="font-size:1.8rem;font-weight:700;letter-spacing:-0.02em;color:var(--accent)">${esc(p.name)}</div>
         <div style="color:var(--muted);font-size:0.95rem;margin-top:6px">${esc(p.tagline)}</div>
       </div>
+      ${(p.oneword ?? '') ? `
+      <div class="oneword-badge">
+        <span>💬 ${esc(p.oneword)}</span>
+      </div>` : ''}
 
       <header class="header">
         ${p.avatar ? `<img class="avatar" src="${esc(p.avatar)}" alt="Profile" />` : ''}
@@ -1098,6 +1129,13 @@
       <section class="links" aria-label="Social and professional links">
         ${linksHTML}
       </section>
+
+      ${((p.clubs ?? '') || (p.activities ?? '') || (p.future ?? '')) ? `
+      <section class="personal-section" aria-label="人となり">
+        ${(p.clubs ?? '') ? `<div class="personal-card"><h3>🎯 部活・サークル</h3><p>${esc(p.clubs)}</p></div>` : ''}
+        ${(p.activities ?? '') ? `<div class="personal-card"><h3>⚡ 力を入れたこと・その他の活動</h3><p>${esc(p.activities)}</p></div>` : ''}
+        ${(p.future ?? '') ? `<div class="personal-card"><h3>🌟 将来のなりたい自分像</h3><p>${esc(p.future)}</p></div>` : ''}
+      </section>` : ''}
 
       ${state.projects.length > 0 ? `
       <section class="projects" aria-label="Projects">
