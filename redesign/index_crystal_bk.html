@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natsuki Sato — Crystallization</title>
+<style>
+  :root{
+    --bg:#06070a; --ink:#eef1f6; --sub:#7c8398;
+    --hw:#ff6a3d; --sw:#46d4c8; --robo:#c792ea; --res:#7fa0ff; --prod:#ffce5c;
+    --mono:'Courier New',ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,"Hiragino Kaku Gothic ProN",sans-serif;overflow:hidden;cursor:crosshair}
+  canvas{position:fixed;inset:0;display:block}
+
+  .ui{position:fixed;inset:0;pointer-events:none;z-index:5}
+  .top{position:absolute;top:30px;left:34px}
+  .kick{font-family:var(--mono);font-size:.72rem;letter-spacing:.42em;color:var(--hw);text-transform:uppercase}
+  .name{font-size:clamp(1.6rem,4.5vw,2.8rem);font-weight:800;letter-spacing:-.01em;margin-top:.4rem;line-height:1}
+  .name small{display:block;font-size:.34em;font-weight:500;color:var(--sub);letter-spacing:.08em;margin-top:.5em}
+  .tagline{position:absolute;left:34px;bottom:30px;max-width:30ch;font-family:var(--mono);font-size:.72rem;color:var(--sub);line-height:1.9}
+  .tagline b{color:var(--ink);font-weight:600}
+  .status{position:absolute;top:30px;right:34px;text-align:right;font-family:var(--mono);font-size:.66rem;color:var(--sub);line-height:1.7}
+  .status .bar{display:inline-block;width:120px;height:3px;background:rgba(255,255,255,.1);margin-top:6px;border-radius:2px;overflow:hidden}
+  .status .bar i{display:block;height:100%;width:0;background:var(--hw);transition:width .1s linear}
+
+  .legend{position:absolute;right:34px;bottom:30px;text-align:right;font-family:var(--mono);font-size:.64rem;color:var(--sub);line-height:1.9}
+  .legend b{display:inline-block;width:8px;height:8px;border-radius:1px;margin-left:.5rem;vertical-align:middle}
+
+  #info{position:fixed;z-index:8;pointer-events:none;max-width:260px;background:rgba(8,10,14,.86);
+        border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:12px 14px;backdrop-filter:blur(6px);
+        opacity:0;transform:translateY(6px);transition:opacity .16s,transform .16s}
+  #info.on{opacity:1;transform:translateY(0)}
+  #info .sym{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;color:var(--hw)}
+  #info h4{font-size:.98rem;font-weight:700;margin:.25rem 0 .4rem}
+  #info p{font-size:.72rem;color:var(--sub);line-height:1.6}
+  #info .tags{font-family:var(--mono);font-size:.6rem;color:var(--hw);margin-top:.5rem;letter-spacing:.04em}
+  #info .ori{font-family:var(--mono);font-size:.56rem;color:var(--sub);margin-top:.4rem;opacity:.8}
+
+  .hint{position:fixed;left:50%;bottom:74px;transform:translateX(-50%);z-index:6;font-family:var(--mono);
+        font-size:.66rem;color:var(--sub);opacity:.0;transition:opacity 1s;pointer-events:none;text-align:center}
+  .hint.on{opacity:.7}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="ui">
+  <div class="top">
+    <div class="kick">Human × Machine</div>
+    <div class="name">Natsuki&nbsp;Sato<small>佐藤 夏樹 — 結晶として固まるポートフォリオ</small></div>
+  </div>
+  <div class="status">
+    <div id="phase">NUCLEATING…</div>
+    <div class="bar"><i id="growbar"></i></div>
+  </div>
+  <div class="tagline">このページは<b>結晶</b>です。<br>読み込むたび、違う<b>粒界</b>で固まります。<br>カーソルで、欠陥を入れてみてください。</div>
+  <div class="legend">
+    Hardware<b style="background:var(--hw)"></b><br>
+    Software<b style="background:var(--sw)"></b><br>
+    Robotics<b style="background:var(--robo)"></b><br>
+    Research<b style="background:var(--res)"></b><br>
+    Product/3DP<b style="background:var(--prod)"></b>
+  </div>
+</div>
+
+<div id="info"></div>
+<div class="hint" id="hint">move — perturb the lattice · hover a grain — read the work</div>
+
+<script>
+const WORKS=[
+  {sym:"Kb", name:"周期表キーボード", cat:"hw",  desc:"元素周期表レイアウトの自作キーボード。PCB設計からTHT手はんだまで。", tags:"KiCad / PCB / 電子工作"},
+  {sym:"Bm", name:"BMO-Chan",        cat:"robo",desc:"BMOを宿す自作スタックチャン。表情と首振りを制御する卓上の相棒。",       tags:"M5Stack / 組込 / Robot"},
+  {sym:"Sc", name:"スクリーンセーバ", cat:"sw",  desc:"放置でスタックちゃんの顔が現れるMac用アプリ。",                       tags:"Electron / Canvas"},
+  {sym:"U",  name:"単位キーホルダー", cat:"prod",desc:"単位記号の文字の形をかたどった3Dプリント製キーホルダー。",            tags:"3DP / Product"},
+  {sym:"Tb", name:"3Tabs",           cat:"sw",  desc:"タブ数を3つに制限するミニマリスト向けChrome拡張。7言語対応。",         tags:"Chrome Ext / JS"},
+  {sym:"Yt", name:"YouTube Feed Filter",cat:"sw",desc:"フィードを見たい動画だけに絞るChrome拡張。",                          tags:"Chrome Ext / JS"},
+  {sym:"Nc", name:"名刺ジェネレーター",cat:"sw", desc:"ブラウザ上で名刺をフルカスタムできるWebアプリ。",                     tags:"Web App / Design"},
+  {sym:"Id", name:"アイデアルーレット",cat:"sw", desc:"2語を掛け合わせ発想の種を出す支援アプリ。",                          tags:"Web App / Ideation"},
+  {sym:"Cs", name:"Circular Scheduler",cat:"sw",desc:"円形時計UIで一日のタスクを可視化。Google Tasks連携。",               tags:"Web App / Tasks"},
+  {sym:"Pc", name:"PCCam",           cat:"sw",  desc:"PCカメラで撮ってその場で加工できるエディタ。",                       tags:"Web App / Camera"},
+  {sym:"Sv", name:"SVGメーカー",      cat:"sw",  desc:"画像を2値化してベクタ化するツール。",                              tags:"Web App / SVG"},
+  {sym:"3D", name:"3Dプリント製品開発",cat:"prod",desc:"CAD設計から量産まで一貫した自作プロダクト。",                       tags:"CAD / 3DP"},
+  {sym:"Ms", name:"材料科学研究",     cat:"res", desc:"電子顕微鏡観察と解析による材料特性研究。卒研=粒成長制御。",          tags:"Microscopy / Research"},
+];
+const COL={hw:[255,106,61],sw:[70,212,200],robo:[199,146,234],res:[127,160,255],prod:[255,206,92]};
+const css=k=>getComputedStyle(document.documentElement).getPropertyValue('--'+k).trim();
+
+const cv=document.getElementById('c'), ctx=cv.getContext('2d');
+const base=document.createElement('canvas'), bctx=base.getContext('2d');
+let dpr=Math.min(devicePixelRatio||1,2);
+let W,H, CELL=5, gw,gh, idA,distA, seeds=[], maxD=1, front=0, grown=false;
+let mx=-1e4,my=-1e4, hoverId=-1;
+const info=document.getElementById('info');
+const phaseEl=document.getElementById('phase'), growbar=document.getElementById('growbar');
+
+// 毎回ちがう結晶にするための擬似乱数（シードは時刻）
+let rs=(Date.now()%2147483647);
+const rnd=()=>{rs=(rs*48271)%2147483647;return rs/2147483647;};
+
+function setup(){
+  W=innerWidth; H=innerHeight;
+  cv.width=W*dpr; cv.height=H*dpr; cv.style.width=W+'px'; cv.style.height=H+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  gw=Math.ceil(W/CELL); gh=Math.ceil(H/CELL);
+  base.width=gw; base.height=gh;
+
+  // 核配置：歪ませた格子（秩序×ゆらぎ）。作品ごとに1核。
+  seeds=[]; const n=WORKS.length;
+  const cols=Math.ceil(Math.sqrt(n*W/H)), rows=Math.ceil(n/cols);
+  let k=0;
+  for(let r=0;r<rows&&k<n;r++)for(let c=0;c<cols&&k<n;c++){
+    const jx=(rnd()-.5)*0.7, jy=(rnd()-.5)*0.7;
+    const x=(c+0.5+jx)/cols*W, y=(r+0.5+jy)/rows*H;
+    const th=Math.round(rnd()*89), hkl=`⟨${1+(rnd()*3|0)}${(rnd()*3|0)}${(rnd()*2|0)}⟩`;
+    seeds.push({x,y,w:WORKS[k],ori:`θ=${th}° ${hkl}`}); k++;
+  }
+  // 各セルの最近接核と距離を前計算（Johnson–Mehl成長＝距離で前進）
+  idA=new Int16Array(gw*gh); distA=new Float32Array(gw*gh); maxD=1;
+  for(let gy=0;gy<gh;gy++)for(let gx=0;gx<gw;gx++){
+    const px=gx*CELL, py=gy*CELL; let bi=0,bd=1e12;
+    for(let s=0;s<seeds.length;s++){const dx=px-seeds[s].x,dy=py-seeds[s].y,d=dx*dx+dy*dy;if(d<bd){bd=d;bi=s;}}
+    const dd=Math.sqrt(bd); idA[gy*gw+gx]=bi; distA[gy*gw+gx]=dd; if(dd>maxD)maxD=dd;
+  }
+  front=0; grown=false;
+}
+
+// 成長中：低解像度バッファに粒と粒界を描く
+const img=()=>bctx.createImageData(gw,gh);
+let buf=null;
+function paintBase(){
+  if(!buf) buf=img();
+  const d=buf.data;
+  for(let i=0;i<gw*gh;i++){
+    const reached=distA[i]<=front;
+    let r=6,g=7,b=10;
+    if(reached){
+      const c=COL[seeds[idA[i]].w.cat];
+      const e=Math.min(1,distA[i]/(maxD)); // 中心ほど明るい
+      const k=0.22*(1-e)+0.10;
+      r=c[0]*k|0; g=c[1]*k|0; b=c[2]*k|0;
+      // 粒界判定（4近傍で核IDが違う & 双方到達）
+      const x=i%gw, y=(i/gw)|0;
+      const nb=[x>0?i-1:-1,x<gw-1?i+1:-1,y>0?i-gw:-1,y<gh-1?i+gw:-1];
+      let edge=false;
+      for(const j of nb){ if(j>=0 && idA[j]!==idA[i] && distA[j]<=front){edge=true;break;} }
+      if(edge){ r=Math.min(255,c[0]); g=Math.min(255,c[1]); b=Math.min(255,c[2]); }
+    }
+    const o=i*4; d[o]=r;d[o+1]=g;d[o+2]=b;d[o+3]=255;
+  }
+  bctx.putImageData(buf,0,0);
+}
+
+function drawSymbols(){
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  for(const s of seeds){
+    if(front < distA_at(s.x,s.y)+0) {} // always after nucleation
+    const c=COL[s.w.cat], grew=front>40;
+    ctx.font='800 '+Math.max(16, Math.min(34, W/46))+'px system-ui';
+    ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},${grew?0.95:0.0})`;
+    ctx.fillText(s.w.sym, s.x, s.y);
+    ctx.font='600 9px '+css('mono')+',monospace';
+    ctx.fillStyle='rgba(255,255,255,.28)';
+    if(grew) ctx.fillText(s.ori, s.x, s.y+Math.max(16,Math.min(34,W/46))*0.85);
+  }
+}
+function distA_at(x,y){const gx=Math.min(gw-1,Math.max(0,x/CELL|0)),gy=Math.min(gh-1,Math.max(0,y/CELL|0));return distA[gy*gw+gx];}
+function idAt(x,y){const gx=Math.min(gw-1,Math.max(0,x/CELL|0)),gy=Math.min(gh-1,Math.max(0,y/CELL|0));return idA[gy*gw+gx];}
+
+function frame(){
+  if(!grown){
+    front+=Math.max(4,maxD/90);
+    paintBase();
+    if(front>=maxD){front=maxD;grown=true;phaseEl.textContent='CRYSTALLIZED';document.getElementById('hint').classList.add('on');}
+    else phaseEl.textContent='GROWING…';
+    growbar.style.width=Math.min(100,front/maxD*100)+'%';
+  }
+  ctx.imageSmoothingEnabled=true;
+  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(base,0,0,gw,gh,0,0,W,H);
+
+  // カーソル＝欠陥：周囲の粒界を光らせる
+  if(mx>-9999){
+    const R=150;
+    const g=ctx.createRadialGradient(mx,my,0,mx,my,R);
+    const hi=hoverId>=0?COL[seeds[hoverId].w.cat]:[255,106,61];
+    g.addColorStop(0,`rgba(${hi[0]},${hi[1]},${hi[2]},.16)`);
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(mx,my,R,0,7); ctx.fill();
+    // 選択中の粒の核を強調
+    if(hoverId>=0 && grown){
+      const s=seeds[hoverId];
+      ctx.beginPath(); ctx.arc(s.x,s.y,5,0,7);
+      ctx.fillStyle=`rgb(${hi[0]},${hi[1]},${hi[2]})`; ctx.fill();
+      ctx.beginPath(); ctx.arc(s.x,s.y,14,0,7);
+      ctx.strokeStyle=`rgba(${hi[0]},${hi[1]},${hi[2]},.5)`; ctx.lineWidth=1; ctx.stroke();
+    }
+  }
+  drawSymbols();
+  requestAnimationFrame(frame);
+}
+
+addEventListener('pointermove',e=>{
+  mx=e.clientX; my=e.clientY;
+  if(!grown) return;
+  const id=idAt(mx,my);
+  if(id!==hoverId){
+    hoverId=id; const s=seeds[id], c=COL[s.w.cat];
+    info.innerHTML=`<div class="sym" style="color:rgb(${c[0]},${c[1]},${c[2]})">${s.w.sym} · ${s.w.cat.toUpperCase()}</div>
+      <h4>${s.w.name}</h4><p>${s.w.desc}</p><div class="tags" style="color:rgb(${c[0]},${c[1]},${c[2]})">${s.w.tags}</div>
+      <div class="ori">orientation ${s.ori}</div>`;
+    info.classList.add('on');
+  }
+  let ix=mx+18, iy=my+18; if(ix>W-280)ix=mx-278; if(iy>H-160)iy=my-150;
+  info.style.left=ix+'px'; info.style.top=iy+'px';
+});
+addEventListener('pointerleave',()=>{info.classList.remove('on');hoverId=-1;});
+addEventListener('resize',()=>{buf=null;setup();});
+
+setup(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
