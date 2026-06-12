@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Natsuki Sato — Lattice (concept)</title>
+<style>
+  :root{
+    --bg:#0a0b0e;
+    --panel:#101218;
+    --line:rgba(255,255,255,.08);
+    --ink:#e9ecf1;
+    --sub:#8a90a0;
+    --accent:#ff6a3d;       /* 単色アクセント（暖色） */
+    --accent2:#46d4c8;      /* 反応時のみ滲む寒色 */
+    --hw:#ff6a3d; --sw:#46d4c8; --robo:#c792ea; --res:#9fb4ff; --prod:#ffd166;
+    --mono:'Courier New',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:system-ui,"Hiragino Kaku Gothic ProN",sans-serif;overflow-x:hidden}
+  canvas#field{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+  .wrap{position:relative;z-index:1}
+
+  /* ===== HERO ===== */
+  header.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 8vw;position:relative}
+  .kicker{font-family:var(--mono);font-size:.8rem;letter-spacing:.4em;color:var(--accent);text-transform:uppercase;margin-bottom:1.4rem}
+  h1.title{font-size:clamp(2.6rem,9vw,7rem);font-weight:800;line-height:.96;letter-spacing:-.02em}
+  h1.title .en{display:block;color:var(--ink)}
+  h1.title .jp{display:block;font-size:.34em;color:var(--sub);font-weight:500;letter-spacing:.05em;margin-top:.6em}
+  .lead{margin-top:2rem;max-width:42ch;color:var(--sub);font-size:1.02rem;line-height:1.9}
+  .lead b{color:var(--ink);font-weight:600}
+  .probe-hint{margin-top:2.4rem;font-family:var(--mono);font-size:.78rem;color:var(--sub);display:flex;align-items:center;gap:.7rem}
+  .probe-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 var(--accent);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,106,61,.5)}70%{box-shadow:0 0 0 14px rgba(255,106,61,0)}100%{box-shadow:0 0 0 0 rgba(255,106,61,0)}}
+
+  /* ===== SECTION ===== */
+  section{padding:9vh 8vw}
+  .sec-head{display:flex;align-items:baseline;gap:1.2rem;margin-bottom:3rem;border-bottom:1px solid var(--line);padding-bottom:1rem}
+  .sec-no{font-family:var(--mono);color:var(--accent);font-size:.85rem;letter-spacing:.2em}
+  .sec-title{font-size:1.5rem;font-weight:700;letter-spacing:.04em}
+  .sec-sub{margin-left:auto;color:var(--sub);font-size:.8rem;font-family:var(--mono)}
+
+  /* ===== ABOUT ===== */
+  .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:3rem}
+  .about-grid p{color:var(--sub);line-height:2;font-size:1rem}
+  .about-grid p b{color:var(--ink)}
+  .facts{border-left:1px solid var(--line);padding-left:1.6rem;display:flex;flex-direction:column;gap:1.1rem}
+  .facts div{font-family:var(--mono);font-size:.82rem;color:var(--sub)}
+  .facts span{display:block;color:var(--accent);font-size:.68rem;letter-spacing:.2em;margin-bottom:.25rem}
+  @media(max-width:760px){.about-grid{grid-template-columns:1fr}}
+
+  /* ===== PERIODIC LATTICE ===== */
+  .legend{display:flex;flex-wrap:wrap;gap:1.2rem;margin-bottom:2rem;font-family:var(--mono);font-size:.72rem;color:var(--sub)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.4rem;vertical-align:middle}
+  .lattice{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:14px}
+  .tile{position:relative;aspect-ratio:1/1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer;
+        transform:translate3d(0,0,0) scale(1);transition:border-color .25s,box-shadow .25s;will-change:transform;overflow:hidden}
+  .tile .no{position:absolute;top:10px;left:12px;font-family:var(--mono);font-size:.66rem;color:var(--sub)}
+  .tile .cat{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+  .tile .sym{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;font-weight:800;font-size:2.2rem;letter-spacing:-.02em}
+  .tile .name{position:absolute;left:12px;right:12px;bottom:10px;font-size:.66rem;color:var(--sub);line-height:1.3}
+  .tile .reveal{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,11,14,.7),rgba(10,11,14,.96));
+        opacity:0;transition:opacity .25s;padding:14px;display:flex;flex-direction:column;justify-content:flex-end;gap:.5rem}
+  .tile .reveal h4{font-size:.92rem;font-weight:700}
+  .tile .reveal p{font-size:.7rem;color:var(--sub);line-height:1.5}
+  .tile .reveal .tags{font-family:var(--mono);font-size:.6rem;color:var(--accent);letter-spacing:.05em}
+  .tile:hover .reveal{opacity:1}
+  .tile:hover{border-color:rgba(255,255,255,.25)}
+
+  footer{padding:8vh 8vw 12vh;border-top:1px solid var(--line);margin-top:6vh}
+  footer .big{font-size:clamp(1.8rem,6vw,4rem);font-weight:800;letter-spacing:-.02em}
+  footer a{color:var(--accent);text-decoration:none}
+  footer .sns{margin-top:2rem;display:flex;gap:1.6rem;font-family:var(--mono);font-size:.85rem}
+  .note{position:fixed;bottom:14px;left:14px;z-index:5;font-family:var(--mono);font-size:.62rem;color:var(--sub);background:rgba(16,18,24,.8);border:1px solid var(--line);padding:.4rem .7rem;border-radius:6px}
+</style>
+</head>
+<body>
+<canvas id="field"></canvas>
+<div class="note">concept draft · 案1+案2 / カーソルを動かすと格子が応答します</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">Portfolio / Human × Machine</div>
+    <h1 class="title">
+      <span class="en">Natsuki&nbsp;Sato</span>
+      <span class="jp">佐藤 夏樹 — 人と機械の境界をつくる</span>
+    </h1>
+    <p class="lead">材料を背景に、<b>人と機械のインタラクション</b>を軸にものをつくっています。思いついたことが形になる瞬間が好きで、ハード・ソフト・研究を横断します。</p>
+    <div class="probe-hint"><span class="probe-dot"></span> あなたはいま、このページのプローブです。動かすと、格子が応えます。</div>
+  </header>
+
+  <section id="about">
+    <div class="sec-head"><span class="sec-no">01</span><span class="sec-title">About</span><span class="sec-sub">// who</span></div>
+    <div class="about-grid">
+      <p>対称性・秩序・記号への美意識が、つくるものすべての底に流れています。<b>周期表</b>のような整然とした構造に惹かれ、同時に<b>触れると応える</b>機械の手触りに惹かれる。静（秩序）と動（応答）の両方を、ひとつの作品に同居させたいと思っています。</p>
+      <div class="facts">
+        <div><span>FOCUS</span>Human-Machine Interaction</div>
+        <div><span>BASE</span>Materials Science / Microscopy</div>
+        <div><span>MAKES</span>Hardware · Web · Robotics · 3DP</div>
+        <div><span>DRIVE</span>思いつきが形になる瞬間</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="works">
+    <div class="sec-head"><span class="sec-no">02</span><span class="sec-title">Works — Lattice</span><span class="sec-sub">// hover to energize</span></div>
+    <div class="legend">
+      <span><i style="background:var(--hw)"></i>Hardware</span>
+      <span><i style="background:var(--sw)"></i>Software</span>
+      <span><i style="background:var(--robo)"></i>Robotics</span>
+      <span><i style="background:var(--res)"></i>Research</span>
+      <span><i style="background:var(--prod)"></i>Product / 3DP</span>
+    </div>
+    <div class="lattice" id="lattice"></div>
+  </section>
+
+  <footer>
+    <div class="big">つくりたいものの話、しましょう。</div>
+    <div class="sns">
+      <a href="https://github.com/bruiselea" target="_blank">GitHub ↗</a>
+      <a href="https://bruiselea.github.io" target="_blank">Current site ↗</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ====== 作品データ（周期表タイル） ====== */
+const WORKS=[
+  {no:1, sym:"Kb", name:"周期表キーボード", cat:"hw", desc:"元素周期表レイアウトの自作キーボード。PCB設計からTHT手はんだまで。", tags:"KiCad / PCB / 電子工作"},
+  {no:2, sym:"Bm", name:"BMO-Chan", cat:"robo", desc:"BMOを宿す自作スタックチャン。表情と首振りを制御する卓上の相棒。", tags:"M5Stack / 組込 / Robot"},
+  {no:3, sym:"Sc", name:"スクリーンセーバ", cat:"sw", desc:"放置でスタックちゃんの顔が現れるMac用アプリ。", tags:"Electron / Canvas"},
+  {no:4, sym:"U",  name:"単位キーホルダー", cat:"prod", desc:"単位記号の文字の形をかたどった3Dプリント製キーホルダー。", tags:"3DP / Product"},
+  {no:5, sym:"Tb", name:"3Tabs", cat:"sw", desc:"タブ数を3つに制限するミニマリスト向けChrome拡張。7言語対応。", tags:"Chrome Ext / JS"},
+  {no:6, sym:"Yt", name:"YouTube Feed Filter", cat:"sw", desc:"フィードを見たい動画だけに絞るChrome拡張。", tags:"Chrome Ext / JS"},
+  {no:7, sym:"Nc", name:"名刺ジェネレーター", cat:"sw", desc:"ブラウザ上で名刺をフルカスタムできるWebアプリ。", tags:"Web App / Design"},
+  {no:8, sym:"Id", name:"アイデアルーレット", cat:"sw", desc:"2語を掛け合わせ発想の種を出す支援アプリ。", tags:"Web App / Ideation"},
+  {no:9, sym:"Cs", name:"Circular Scheduler", cat:"sw", desc:"円形時計UIで一日のタスクを可視化。Google Tasks連携。", tags:"Web App / Tasks"},
+  {no:10,sym:"Pc", name:"PCCam", cat:"sw", desc:"PCカメラで撮ってその場で加工できるエディタ。", tags:"Web App / Camera"},
+  {no:11,sym:"Sv", name:"SVGメーカー", cat:"sw", desc:"画像を2値化してベクタ化するツール。", tags:"Web App / SVG"},
+  {no:12,sym:"3D", name:"3Dプリント製品開発", cat:"prod", desc:"CAD設計から量産まで一貫した自作プロダクト。", tags:"CAD / 3DP"},
+  {no:13,sym:"Ms", name:"材料科学研究", cat:"res", desc:"電子顕微鏡観察と解析による材料特性研究。", tags:"Microscopy / Research"},
+];
+const CATVAR={hw:"--hw",sw:"--sw",robo:"--robo",res:"--res",prod:"--prod"};
+const lat=document.getElementById('lattice');
+WORKS.forEach(w=>{
+  const c=getComputedStyle(document.documentElement).getPropertyValue(CATVAR[w.cat]);
+  const t=document.createElement('div');
+  t.className='tile';
+  t.innerHTML=`<div class="no">${String(w.no).padStart(2,'0')}</div>
+    <div class="cat" style="background:${c}"></div>
+    <div class="sym" style="color:${c}">${w.sym}</div>
+    <div class="name">${w.name}</div>
+    <div class="reveal"><h4>${w.name}</h4><p>${w.desc}</p><div class="tags">${w.tags}</div></div>`;
+  lat.appendChild(t);
+});
+
+/* ====== 案2: タイルがカーソルに反応（磁場） ====== */
+const tiles=[...document.querySelectorAll('.tile')];
+let mx=-9999,my=-9999;
+window.addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;});
+function magnet(){
+  for(const t of tiles){
+    const r=t.getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    const dx=mx-cx, dy=my-cy, d=Math.hypot(dx,dy);
+    const R=220;
+    if(d<R){
+      const f=(1-d/R);
+      const tx=-dx/d*f*10, ty=-dy/d*f*10;   // カーソルから僅かに退く
+      const s=1+f*0.06;
+      t.style.transform=`translate3d(${tx}px,${ty}px,0) scale(${s})`;
+      t.style.boxShadow=`0 0 ${20*f}px rgba(255,106,61,${0.35*f})`;
+    }else{
+      t.style.transform='translate3d(0,0,0) scale(1)';
+      t.style.boxShadow='none';
+    }
+  }
+  requestAnimationFrame(magnet);
+}
+requestAnimationFrame(magnet);
+
+/* ====== 背景: 対称格子 + カーソル波紋（案1×案2） ====== */
+const cv=document.getElementById('field'), ctx=cv.getContext('2d');
+let W,H,pts=[];const GAP=46;
+function build(){
+  W=cv.width=innerWidth*devicePixelRatio; H=cv.height=innerHeight*devicePixelRatio;
+  cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px';
+  ctx.scale(devicePixelRatio,devicePixelRatio);
+  pts=[];
+  for(let y=0;y<innerHeight+GAP;y+=GAP)
+    for(let x=0;x<innerWidth+GAP;x+=GAP) pts.push({x,y});
+}
+build(); addEventListener('resize',()=>{ctx.setTransform(1,0,0,1,0,0);build();});
+function draw(){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  for(const p of pts){
+    const dx=mx-p.x, dy=my-p.y, d=Math.hypot(dx,dy);
+    const R=160, near=d<R?(1-d/R):0;
+    const off=near*8;
+    const px=p.x - (dx/(d||1))*off, py=p.y - (dy/(d||1))*off;
+    const sz=0.8+near*2.2;
+    ctx.beginPath();
+    ctx.arc(px,py,sz,0,Math.PI*2);
+    ctx.fillStyle=near>0?`rgba(255,106,61,${0.25+near*0.6})`:'rgba(255,255,255,0.06)';
+    ctx.fill();
+  }
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>
