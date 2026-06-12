@@ -51,7 +51,16 @@
 </style>
 </head>
 <body>
-<div class="loading" id="loading">LOADING STUDIO…</div>
+<div class="loading" id="loading">LOADING STUDIO… <span style="opacity:.5">build D-2</span></div>
+<script>
+  // 失敗を黙らせない：エラーは画面に出す（真っ暗で詰まらないように）
+  function showFail(msg){
+    var l=document.getElementById('loading');
+    if(l){l.innerHTML='⚠ STUDIO 起動失敗<br><span style="font-size:.7em;opacity:.7">'+String(msg).slice(0,180)+'</span><br><span style="font-size:.7em;opacity:.5">WebGL か module 読み込みの可能性。これを撮って送ってください</span>';l.classList.remove('off');}
+  }
+  window.addEventListener('error',e=>showFail(e.message||'script error'));
+  window.addEventListener('unhandledrejection',e=>showFail((e.reason&&e.reason.message)||'load rejected'));
+</script>
 
 <div class="ui">
   <div class="top">
