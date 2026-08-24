@@ -5,7 +5,9 @@ import WorkVisual from "../../components/WorkVisual.astro";
 import { works, type Work } from "../../data/works";
 
 export function getStaticPaths() {
-  return works.map((work) => ({ params: { slug: work.slug }, props: { work } }));
+  return works
+    .filter((work) => work.slug !== "10000-hours")
+    .map((work) => ({ params: { slug: work.slug }, props: { work } }));
 }
 
 interface Props { work: Work }

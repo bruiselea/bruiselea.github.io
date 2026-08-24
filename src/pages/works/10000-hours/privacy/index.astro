@@ -1,0 +1,77 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import Footer from "../../../../components/Footer.astro";
+---
+
+<BaseLayout
+  title="10,000 Hours プライバシーポリシー | Natsuki Sato"
+  description="iPhoneアプリ「10,000 Hours」のプライバシーポリシー。"
+>
+  <main class="page-shell policy-page">
+    <a class="back-link" href="/works/10000-hours/">← 10,000 HOURS</a>
+    <header class="policy-header">
+      <p class="eyebrow">PRIVACY POLICY / 10,000 HOURS</p>
+      <h1>プライバシー<br />ポリシー</h1>
+      <p>発効日：2026年8月24日</p>
+    </header>
+
+    <article class="policy-body">
+      <section>
+        <p>10,000 Hours（以下「本アプリ」）は、利用者のプライバシーを尊重します。本ポリシーでは、本アプリが扱う情報と、その保存方法について説明します。</p>
+      </section>
+
+      <section>
+        <p class="meta-label">01 / INFORMATION</p>
+        <h2>端末内に保存する情報</h2>
+        <p>本アプリは、利用者が入力した目標名、計測した日時と時間、履歴、タイマー設定、チュートリアルの表示状態、通知設定を、利用者の端末内に保存します。</p>
+        <p>これらの情報を開発者のサーバーへ送信することはありません。</p>
+      </section>
+
+      <section>
+        <p class="meta-label">02 / COLLECTION</p>
+        <h2>収集・追跡について</h2>
+        <p>本アプリにはアカウント登録、広告、行動分析、第三者による追跡、クラウド同期はありません。外部分析SDKおよび広告SDKも使用していません。</p>
+      </section>
+
+      <section>
+        <p class="meta-label">03 / NOTIFICATIONS</p>
+        <h2>通知</h2>
+        <p>利用者がカウントダウン終了通知を有効にした場合、本アプリは端末上でローカル通知を作成します。通知の許可は、iPhoneの設定からいつでも変更できます。</p>
+      </section>
+
+      <section>
+        <p class="meta-label">04 / DELETION</p>
+        <h2>情報の編集と削除</h2>
+        <p>履歴は本アプリ内から追加、編集、削除できます。本アプリを端末から削除すると、端末内に保存された本アプリの記録も削除されます。</p>
+      </section>
+
+      <section>
+        <p class="meta-label">05 / CONTACT</p>
+        <h2>お問い合わせ</h2>
+        <p>本ポリシーまたは本アプリに関するお問い合わせは、以下のメールアドレスまでご連絡ください。お問い合わせで受け取った情報は、回答と問題解決のためにのみ使用します。</p>
+        <a class="primary-link" href="mailto:wlknts28786@gmail.com">wlknts28786@gmail.com →</a>
+      </section>
+
+      <section>
+        <p class="meta-label">06 / CHANGES</p>
+        <h2>ポリシーの変更</h2>
+        <p>本ポリシーを変更する場合は、このページに変更後の内容と発効日を掲載します。</p>
+      </section>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .back-link { display: inline-flex; margin-bottom: clamp(3rem, 7vw, 6rem); color: var(--muted); font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+  .policy-header { padding-bottom: clamp(4rem, 9vw, 8rem); border-bottom: 1px solid var(--line); }
+  .policy-header h1 { max-width: 10ch; margin: 0; font-size: clamp(3.6rem, 10vw, 8rem); font-weight: 500; letter-spacing: -.065em; line-height: .88; }
+  .policy-header > p:last-child { margin: 2.5rem 0 0; color: var(--muted); font-family: var(--mono); font-size: .72rem; }
+  .policy-body { width: min(100%, 860px); margin-left: auto; }
+  .policy-body section { padding: clamp(3rem, 7vw, 5.5rem) 0; border-bottom: 1px solid var(--line); }
+  .policy-body section:first-child p { color: #d0d0d4; font-size: clamp(1.1rem, 2vw, 1.45rem); }
+  .policy-body h2 { margin: 1rem 0 2rem; font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 520; letter-spacing: -.035em; }
+  .policy-body p { margin: 0 0 1.3rem; color: #aaaab2; line-height: 2; }
+  .policy-body .primary-link { margin-top: 1rem; }
+</style>

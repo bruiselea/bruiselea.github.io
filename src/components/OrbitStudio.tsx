@@ -19,6 +19,7 @@ const positions: Record<string, [number, number, number]> = {
   print: [0.1, -2.45, -0.35],
   filter: [-3.25, -1.45, -0.15],
   "keyboard-full": [-3.45, 1.05, -0.45],
+  hours: [3.2, 0.4, -0.35],
 };
 
 function ImageVisual({ work }: { work: Work }) {

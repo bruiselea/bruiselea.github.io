@@ -3,6 +3,8 @@ export type WorkAsset = {
   src: string;
   modelSrc?: string;
   scale: number;
+  alt?: string;
+  caption?: string;
 };
 
 export type Work = {
@@ -145,6 +147,29 @@ export const works: Work[] = [
     tools: ["KiCad", "QMK", "3D Print"],
     accent: "#55bcd3",
     asset: { type: "image", src: "/generated/periodic-keyboard.png", scale: 2.55 },
+  },
+  {
+    id: "hours",
+    index: "08",
+    symbol: "10K",
+    slug: "10000-hours",
+    title: "10,000 Hours",
+    titleEn: "Ten Thousand Hours",
+    category: "software",
+    categoryLabel: "iOS APP",
+    summary: "ひとつの目標へ使った時間を、10,000時間まで静かに積み上げるiPhoneアプリ。",
+    description:
+      "ストップウォッチとカウントダウンで練習時間を記録し、履歴を編集しながら10,000時間までの進捗を確認できるiPhoneアプリです。計測データは端末内だけに保存します。",
+    role: ["Product", "UI", "SwiftUI", "QA", "Release"],
+    tools: ["SwiftUI", "Xcode", "TestFlight"],
+    accent: "#f1f1ee",
+    asset: {
+      type: "image",
+      src: "/works/10000-hours/app-icon.png",
+      scale: 1.05,
+      alt: "10,000 Hoursの白黒のアプリアイコン",
+      caption: "APP ICON — 10,000 HOURS / iOS",
+    },
   },
 ];
 

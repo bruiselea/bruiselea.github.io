@@ -12,11 +12,11 @@ const { work, eager = false } = Astro.props;
 <figure class="work-visual" style={`--work-accent:${work.accent}`}>
   <img
     src={work.asset.src}
-    alt={`${work.title}の仮3Dレンダー`}
+    alt={work.asset.alt ?? `${work.title}の仮3Dレンダー`}
     loading={eager ? "eager" : "lazy"}
     decoding="async"
   />
   <figcaption>
-    仮レンダー — 最終版では自作モデル／実物レンダーへ差し替え予定
+    {work.asset.caption ?? "仮レンダー — 最終版では自作モデル／実物レンダーへ差し替え予定"}
   </figcaption>
 </figure>

@@ -144,6 +144,12 @@
   left: 7%;
 }
 
+.orbit-label--hours {
+  --label-accent: #f1f1ee;
+  top: 49%;
+  right: 28%;
+}
+
 .studio-inspector {
   position: absolute;
   z-index: 8;
@@ -361,6 +367,10 @@
   }
 
   .orbit-label--scheduler {
+    right: 31%;
+  }
+
+  .orbit-label--hours {
     right: 31%;
   }
 }

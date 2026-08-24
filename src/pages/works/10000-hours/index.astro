@@ -1,0 +1,179 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/Footer.astro";
+
+const features = [
+  { index: "01", title: "Stopwatch", text: "始める、止める、保存する。練習の流れを邪魔しない最小限の操作。" },
+  { index: "02", title: "Countdown", text: "1〜480分を数字で指定。終了時は端末上のローカル通知で知らせます。" },
+  { index: "03", title: "History", text: "記録した時間を一覧で確認し、あとから追加・編集・削除できます。" },
+  { index: "04", title: "Progress", text: "累計時間と10,000時間までの進捗を、ひとつの円で表示します。" },
+  { index: "05", title: "Recovery", text: "バックグラウンドや再起動後も、保存した時刻を基準に計測を復元します。" },
+  { index: "06", title: "On device", text: "目標、履歴、設定はこのiPhoneの中だけに保存。アカウントは不要です。" },
+];
+
+const screenshots = [
+  { src: "/works/10000-hours/main-timer.jpg", alt: "10,000 Hoursのメインタイマー画面", caption: "MAIN TIMER" },
+  { src: "/works/10000-hours/history.jpg", alt: "300時間を記録した履歴画面の例", caption: "HISTORY / 300 H SAMPLE" },
+  { src: "/works/10000-hours/onboarding-zero.jpg", alt: "0時間から始めるオンボーディング画面", caption: "ONBOARDING / START AT ZERO" },
+  { src: "/works/10000-hours/onboarding-ten-years.jpg", alt: "10,000時間への期間を示すオンボーディング画面", caption: "ONBOARDING / TEN YEARS" },
+  { src: "/works/10000-hours/goal-setup.jpg", alt: "達成したい目標を設定する画面", caption: "GOAL SETUP" },
+];
+---
+
+<BaseLayout
+  title="10,000 Hours — iOS App | Natsuki Sato"
+  description="ひとつの目標へ使った時間を記録し、10,000時間まで積み上げるシンプルなiPhoneアプリ。"
+>
+  <main class="page-shell app-page">
+    <a class="back-link" href="/works/">← WORKS</a>
+
+    <header class="app-hero">
+      <div class="app-hero__copy">
+        <p class="eyebrow">08 / iOS APP</p>
+        <h1>10,000<br />Hours</h1>
+        <p class="app-hero__lead">
+          今日の10分も、次の1時間も。<br />ひとつの目標へ使った時間を残す。
+        </p>
+      </div>
+      <div class="app-hero__visual">
+        <img src="/works/10000-hours/app-icon.png" alt="10,000 Hoursのアプリアイコン" width="1024" height="1024" />
+        <dl>
+          <div><dt>PLATFORM</dt><dd>iPhone / iOS 17+</dd></div>
+          <div><dt>VERSION</dt><dd>1.0 / Free</dd></div>
+          <div><dt>STORAGE</dt><dd>On device only</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="section-block app-overview">
+      <div class="section-heading">
+        <p class="meta-label">01 / OVERVIEW</p>
+        <h2>最初の1分から、積み上げを残す。</h2>
+      </div>
+      <div class="app-overview__body">
+        <p>
+          10,000 Hoursは、達成したいことをひとつ決め、そこへ使った時間を記録するタイマーです。ストップウォッチまたはカウントダウンを開始し、終わったらチェックを押して保存します。
+        </p>
+        <p>
+          成功を保証する数字ではなくても、今日使った時間は残せる。長い道のりを意識しすぎず、いまの一回に集中できるよう、画面と操作をできるだけ静かに設計しました。
+        </p>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="section-heading">
+        <p class="meta-label">02 / FEATURES</p>
+        <h2>記録に必要なものだけ。</h2>
+      </div>
+      <div class="feature-grid">
+        {features.map((feature) => (
+          <article>
+            <span>{feature.index}</span>
+            <h3>{feature.title}</h3>
+            <p>{feature.text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-block screenshots-section">
+      <div class="section-heading">
+        <p class="meta-label">03 / SCREENS</p>
+        <h2>時間を主役にする、モノクロームのUI。</h2>
+      </div>
+      <div class="screenshot-strip" aria-label="アプリ画面">
+        {screenshots.map((screenshot) => (
+          <figure>
+            <img src={screenshot.src} alt={screenshot.alt} width="1242" height="2688" loading="lazy" decoding="async" />
+            <figcaption>{screenshot.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section class="section-block privacy-summary" id="privacy">
+      <div class="section-heading">
+        <p class="meta-label">04 / PRIVACY</p>
+        <h2>記録は、あなたのiPhoneの中に。</h2>
+      </div>
+      <div class="privacy-summary__grid">
+        <ul>
+          <li>アカウント登録なし</li>
+          <li>広告・行動分析・第三者追跡なし</li>
+          <li>外部分析SDK・広告SDKなし</li>
+          <li>目標・時間・履歴・設定は端末内に保存</li>
+        </ul>
+        <div>
+          <p>本アプリが目標名や計測履歴を開発者のサーバーへ送信することはありません。通知を有効にした場合も、端末上のローカル通知として処理します。</p>
+          <a class="primary-link" href="/works/10000-hours/privacy/">プライバシーポリシー全文 →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-support" id="support">
+      <p class="eyebrow">05 / SUPPORT</p>
+      <h2>使い方・不具合について。</h2>
+      <div class="support-grid">
+        <article>
+          <h3>記録を編集する</h3>
+          <p>メイン画面左上の履歴アイコンから、記録の追加・編集・削除ができます。</p>
+        </article>
+        <article>
+          <h3>通知が届かない</h3>
+          <p>アプリ内の通知設定と、iPhoneの「設定」にある通知許可を確認してください。</p>
+        </article>
+        <article>
+          <h3>計測中にアプリを閉じた</h3>
+          <p>次回起動時に、端末へ保存した時刻を基準として経過時間を復元します。</p>
+        </article>
+      </div>
+      <p class="support-note">不具合の連絡には、iPhoneの機種、iOSのバージョン、発生手順、期待した結果と実際の結果を添えてください。</p>
+      <a class="primary-link" href="mailto:wlknts28786@gmail.com">メールで問い合わせる →</a>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .app-page { --app-accent: #f1f1ee; }
+  .back-link { display: inline-flex; margin-bottom: clamp(3rem, 7vw, 6rem); color: var(--muted); font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; text-decoration: none; }
+  .back-link:hover { color: var(--ink); }
+  .app-hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(3rem, 9vw, 9rem); align-items: center; padding-bottom: clamp(4rem, 9vw, 8rem); border-bottom: 1px solid var(--line); }
+  .app-hero h1 { margin: 0; font-size: clamp(4.5rem, 12vw, 10rem); font-weight: 500; letter-spacing: -.07em; line-height: .78; }
+  .app-hero__lead { margin: clamp(2.2rem, 5vw, 4rem) 0 0; color: #c0c0c6; font-size: clamp(1.05rem, 2vw, 1.5rem); line-height: 1.9; }
+  .app-hero__visual { width: min(100%, 430px); justify-self: end; }
+  .app-hero__visual > img { display: block; width: 100%; border-radius: 22.5%; }
+  .app-hero dl { margin: 1.5rem 0 0; }
+  .app-hero dl div { display: grid; grid-template-columns: 100px 1fr; gap: 1rem; padding: .85rem 0; border-top: 1px solid var(--line); }
+  .app-hero dt { color: var(--muted); font-family: var(--mono); font-size: .62rem; letter-spacing: .12em; }
+  .app-hero dd { margin: 0; color: var(--ink); font-family: var(--mono); font-size: .72rem; }
+  .app-overview__body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 8vw, 8rem); }
+  .app-overview__body p { margin: 0; color: #b8b8bf; font-size: clamp(1rem, 1.5vw, 1.18rem); line-height: 2; }
+  .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); }
+  .feature-grid article { min-height: 265px; padding: clamp(1.5rem, 3vw, 2.3rem); background: var(--surface); }
+  .feature-grid span { color: var(--accent); font-family: var(--mono); font-size: .7rem; }
+  .feature-grid h3 { margin: 3.5rem 0 1rem; font-size: clamp(1.35rem, 2.2vw, 2rem); font-weight: 520; letter-spacing: -.03em; }
+  .feature-grid p { margin: 0; color: var(--muted); line-height: 1.8; }
+  .screenshot-strip { display: grid; grid-auto-columns: minmax(220px, 27%); grid-auto-flow: column; gap: 1px; overflow-x: auto; padding-bottom: 1rem; background: var(--line); scroll-snap-type: x proximity; }
+  .screenshot-strip figure { margin: 0; padding: clamp(1rem, 2vw, 1.5rem); background: var(--surface); scroll-snap-align: start; }
+  .screenshot-strip img { display: block; width: 100%; height: auto; }
+  .screenshot-strip figcaption { margin-top: 1rem; color: var(--muted); font-family: var(--mono); font-size: .58rem; letter-spacing: .08em; }
+  .privacy-summary__grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(3rem, 8vw, 8rem); }
+  .privacy-summary ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+  .privacy-summary li { padding: 1rem 0; border-bottom: 1px solid var(--line); color: #d0d0d4; }
+  .privacy-summary__grid > div > p { margin: 0 0 2.5rem; color: var(--muted); line-height: 2; }
+  .app-support { padding: clamp(4rem, 10vw, 9rem) 0 2rem; }
+  .app-support > h2 { max-width: 16ch; margin: 0 0 clamp(3rem, 6vw, 5rem); font-size: clamp(2.4rem, 6vw, 5.6rem); font-weight: 500; letter-spacing: -.045em; }
+  .support-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); }
+  .support-grid article { padding: clamp(1.5rem, 3vw, 2.3rem); background: var(--surface); }
+  .support-grid h3 { margin: 0 0 1.2rem; font-size: 1.1rem; font-weight: 560; }
+  .support-grid p, .support-note { color: var(--muted); line-height: 1.8; }
+  .support-note { max-width: 55rem; margin: 2.5rem 0; }
+  @media (max-width: 760px) {
+    .app-hero, .app-overview__body, .privacy-summary__grid { grid-template-columns: 1fr; }
+    .app-hero__visual { width: min(72vw, 340px); justify-self: start; }
+    .feature-grid, .support-grid { grid-template-columns: 1fr; }
+    .feature-grid article { min-height: 220px; }
+    .screenshot-strip { grid-auto-columns: minmax(220px, 76%); }
+  }
+</style>
