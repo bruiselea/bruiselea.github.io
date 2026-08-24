@@ -1,0 +1,58 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+---
+
+<BaseLayout title="Blog — Natsuki Sato" description="制作過程、材料、3Dプリント、電子工作、インタラクションに関するノート。">
+  <main class="page-shell">
+    <header class="page-hero">
+      <div>
+        <p class="eyebrow">BLOG / BUILD NOTES</p>
+        <h1 class="page-title">Process over polish.</h1>
+      </div>
+      <p class="page-lede">
+        完成品の説明だけでは消えてしまう、途中の判断、失敗、検証を残します。記事はこのリポジトリのMarkdownで管理しています。
+      </p>
+    </header>
+
+    <section class="blog-list" aria-label="記事一覧">
+      {posts.map((post, index) => (
+        <article>
+          <a href={`/blog/${post.id}/`}>
+            <div class="blog-list__meta">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <time datetime={post.data.publishedAt.toISOString()}>
+                {post.data.publishedAt.toLocaleDateString("ja-JP")}
+              </time>
+            </div>
+            <div>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+              <ul class="tag-list">{post.data.tags.map((tag) => <li>{tag}</li>)}</ul>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </article>
+      ))}
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .blog-list { border-top: 1px solid var(--line); }
+  .blog-list article { border-bottom: 1px solid var(--line); }
+  .blog-list article > a { display: grid; grid-template-columns: 160px 1fr auto; gap: clamp(1.5rem, 5vw, 5rem); align-items: start; padding: clamp(2rem, 5vw, 4rem) 0; text-decoration: none; }
+  .blog-list article > a:hover h2 { color: var(--accent); }
+  .blog-list__meta { display: flex; flex-direction: column; gap: .6rem; color: var(--muted); font-family: var(--mono); font-size: .68rem; }
+  .blog-list__meta span { color: var(--accent); }
+  .blog-list h2 { max-width: 22ch; margin: 0 0 1rem; font-size: clamp(1.7rem, 3.5vw, 3.4rem); font-weight: 500; letter-spacing: -.035em; line-height: 1.2; }
+  .blog-list p { max-width: 48rem; margin: 0 0 2rem; color: var(--muted); line-height: 1.8; }
+  .blog-list article > a > span { color: var(--accent); }
+  @media (max-width: 760px) { .blog-list article > a { grid-template-columns: 1fr auto; } .blog-list__meta { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; } }
+</style>

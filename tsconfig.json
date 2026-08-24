@@ -1,0 +1,17 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "exclude": [
+    "node_modules",
+    "dist",
+    "public",
+    "pccam",
+    "svgmaker",
+    "svgmaker.tsx",
+    "script.js",
+    "editor.html"
+  ]
+}

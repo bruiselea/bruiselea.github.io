@@ -13,6 +13,17 @@ __pycache__/
 
 # Node
 node_modules/
+dist/
+.astro/
+
+# Generated from existing legacy assets before dev/build
+public/fonts/GoogleSansFlex.ttf
+public/pccam/
+public/svgmaker/
+public/app-previews/
+public/snsicons/
+public/sns-links.html
+public/sns-links-business.html
 
 # Android / Gradle
 .gradle/
@@ -22,3 +33,4 @@ local.properties
 # Logs / temp
 *.log
 *.tmp
+tmp/

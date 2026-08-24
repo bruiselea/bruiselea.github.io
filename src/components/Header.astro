@@ -1,0 +1,43 @@
+---
+interface Props {
+  studio?: boolean;
+}
+
+const { studio = false } = Astro.props;
+const path = Astro.url.pathname;
+const links = [
+  { href: "/", label: "STUDIO" },
+  { href: "/career/", label: "CAREER" },
+  { href: "/works/", label: "WORKS" },
+  { href: "/blog/", label: "BLOG" },
+];
+
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path.startsWith(href);
+---
+
+<header class:list={["site-header", { "site-header--studio": studio }]}>
+  <a class="site-brand" href="/" aria-label="Material Orbit — Studioへ">
+    <span>MATERIAL ORBIT</span>
+    <span class="site-brand__mark" aria-hidden="true"></span>
+  </a>
+
+  <nav class="desktop-nav" aria-label="メインナビゲーション">
+    {links.map((link) => (
+      <a href={link.href} aria-current={isActive(link.href) ? "page" : undefined}>
+        {link.label}
+      </a>
+    ))}
+  </nav>
+
+  <details class="mobile-nav">
+    <summary aria-label="メニューを開く">MENU</summary>
+    <nav aria-label="モバイルナビゲーション">
+      {links.map((link) => (
+        <a href={link.href} aria-current={isActive(link.href) ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </details>
+</header>

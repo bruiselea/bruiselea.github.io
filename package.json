@@ -1,0 +1,30 @@
+{
+  "name": "natsuki-sato-material-orbit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:legacy": "node scripts/sync-legacy-assets.mjs",
+    "predev": "npm run sync:legacy",
+    "dev": "astro dev",
+    "prebuild": "npm run sync:legacy",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/react": "6.0.4",
+    "@react-three/fiber": "9.7.0",
+    "astro": "7.2.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.185.0",
+    "typescript": "^6.0.3"
+  }
+}

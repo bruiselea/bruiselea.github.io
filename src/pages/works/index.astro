@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Footer from "../../components/Footer.astro";
+import WorkVisual from "../../components/WorkVisual.astro";
+import { works } from "../../data/works";
+---
+
+<BaseLayout title="Works — Natsuki Sato" description="ハードウェア、3Dプリント、ロボット、Webアプリなどの制作物一覧。">
+  <main class="page-shell">
+    <header class="page-hero">
+      <div>
+        <p class="eyebrow">WORKS / ARCHIVE</p>
+        <h1 class="page-title">Objects worth touching.</h1>
+      </div>
+      <p class="page-lede">
+        完成品だけでなく、着想、設計、試作、失敗、次の改善までをケーススタディとして残します。仮レンダーは順次、自作モデルと実物写真へ置き換えます。
+      </p>
+    </header>
+
+    <div class="works-grid">
+      {works.map((work, index) => (
+        <article class="work-card" style={`--work-accent:${work.accent}`}>
+          <a href={`/works/${work.slug}/`} aria-label={`${work.title}の詳細を見る`}>
+            <WorkVisual work={work} eager={index < 2} />
+            <div class="work-card__body">
+              <div class="work-card__meta"><span>{work.index}</span><span>{work.categoryLabel}</span></div>
+              <h2>{work.title}</h2>
+              <p>{work.summary}</p>
+              <ul class="tag-list">
+                {work.tools.slice(0, 3).map((tool) => <li>{tool}</li>)}
+              </ul>
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .works-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-top: 1px; background: var(--line); }
+  .work-card { background: var(--bg); }
+  .work-card > a { display: block; height: 100%; text-decoration: none; }
+  .work-card :global(.work-visual) { transition: background 180ms ease; }
+  .work-card:hover :global(.work-visual) { background: #101014; }
+  .work-card__body { min-height: 300px; padding: clamp(1.4rem, 3vw, 2.5rem); border-top: 1px solid var(--line); }
+  .work-card__meta { display: flex; justify-content: space-between; color: var(--work-accent); font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; }
+  .work-card h2 { margin: 2rem 0 .8rem; font-size: clamp(1.6rem, 3vw, 2.7rem); font-weight: 520; letter-spacing: -.035em; }
+  .work-card p { max-width: 42ch; margin: 0 0 2rem; color: var(--muted); line-height: 1.8; }
+  @media (max-width: 760px) { .works-grid { grid-template-columns: 1fr; } }
+</style>
