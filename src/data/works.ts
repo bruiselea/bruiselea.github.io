@@ -193,7 +193,7 @@ export const works: Work[] = [
       alt: "Nib Housing Generatorの寸法編集画面と3Dプレビュー",
       caption: "LIVE PRODUCT UI — PARAMETRIC NIB HOUSING / 3D PREVIEW",
     },
-    externalUrl: "https://nib-housing-generator.wlknts28786.workers.dev",
+    externalUrl: "https://nib.nuunnu.com",
   },
 ];
 
