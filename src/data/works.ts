@@ -171,6 +171,30 @@ export const works: Work[] = [
       caption: "APP ICON — 10,000 HOURS / iOS",
     },
   },
+  {
+    id: "nib-housing",
+    index: "09",
+    symbol: "Nh",
+    slug: "nib-housing-generator",
+    title: "Nib Housing Generator",
+    titleEn: "Nib Housing Generator",
+    category: "software",
+    categoryLabel: "CAD TOOL",
+    summary: "万年筆のペン先ハウジングを、寸法編集から3D確認・書き出しまで一貫して設計するWebツール。",
+    description:
+      "Bock 250やJoWo #6を起点に、ペン先ハウジングの側面形状、ねじ、内径をパラメトリックに調整できるWebアプリです。肉厚を検証しながら3D形状と縦断面を確認し、編集可能なOpenSCADと3Dプリント用STLを書き出せます。",
+    role: ["Product", "UI", "Parametric CAD", "3D", "Deployment"],
+    tools: ["React", "Three.js", "OpenSCAD", "Cloudflare Workers"],
+    accent: "#4f85d8",
+    asset: {
+      type: "image",
+      src: "/works/nib-housing-generator/app.png",
+      scale: 1,
+      alt: "Nib Housing Generatorの寸法編集画面と3Dプレビュー",
+      caption: "LIVE PRODUCT UI — PARAMETRIC NIB HOUSING / 3D PREVIEW",
+    },
+    externalUrl: "https://nib-housing-generator.wlknts28786.workers.dev",
+  },
 ];
 
 export const featuredWorks = works.slice(0, 6);

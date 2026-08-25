@@ -37,7 +37,7 @@ const { work } = Astro.props;
         <dl>
           <div><dt>ROLE</dt><dd>{work.role.join(" / ")}</dd></div>
           <div><dt>TOOLS</dt><dd>{work.tools.join(" / ")}</dd></div>
-          <div><dt>ASSET</dt><dd>Temporary render → own 3D model</dd></div>
+          <div><dt>ASSET</dt><dd>{work.asset.caption ?? "Temporary render → own 3D model"}</dd></div>
         </dl>
         {work.externalUrl && <a class="primary-link" href={work.externalUrl} target="_blank" rel="noreferrer">公開版を開く ↗</a>}
       </div>
