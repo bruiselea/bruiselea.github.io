@@ -14,7 +14,10 @@ const { work, eager = false } = Astro.props;
     src={work.asset.src}
     alt={work.asset.alt ?? `${work.title}の仮3Dレンダー`}
     loading={eager ? "eager" : "lazy"}
-    decoding="async"
+    decoding={eager ? "sync" : "async"}
+    fetchpriority={eager ? "high" : "auto"}
+    width="800"
+    height="600"
   />
   <figcaption>
     {work.asset.caption ?? "仮レンダー — 最終版では自作モデル／実物レンダーへ差し替え予定"}

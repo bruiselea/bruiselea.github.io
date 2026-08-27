@@ -21,7 +21,7 @@ import { works } from "../../data/works";
       {works.map((work, index) => (
         <article class="work-card" style={`--work-accent:${work.accent}`}>
           <a href={`/works/${work.slug}/`} aria-label={`${work.title}の詳細を見る`}>
-            <WorkVisual work={work} eager={index < 2} />
+            <WorkVisual work={work} eager={index < 4} />
             <div class="work-card__body">
               <div class="work-card__meta"><span>{work.index}</span><span>{work.categoryLabel}</span></div>
               <h2>{work.title}</h2>
@@ -45,8 +45,8 @@ import { works } from "../../data/works";
   .work-card :global(.work-visual) { transition: background 180ms ease; }
   .work-card:hover :global(.work-visual) { background: #101014; }
   .work-card__body { min-height: 300px; padding: clamp(1.4rem, 3vw, 2.5rem); border-top: 1px solid var(--line); }
-  .work-card__meta { display: flex; justify-content: space-between; color: var(--work-accent); font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; }
-  .work-card h2 { margin: 2rem 0 .8rem; font-size: clamp(1.6rem, 3vw, 2.7rem); font-weight: 520; letter-spacing: -.035em; }
+  .work-card__meta { display: flex; justify-content: space-between; color: var(--work-accent); font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; }
+  .work-card h2 { margin: 2rem 0 .8rem; font-size: clamp(1.6rem, 3vw, 2.7rem); font-weight: 520; letter-spacing: -.035em; line-break: strict; word-break: keep-all; }
   .work-card p { max-width: 42ch; margin: 0 0 2rem; color: var(--muted); line-height: 1.8; }
   @media (max-width: 760px) { .works-grid { grid-template-columns: 1fr; } }
 </style>

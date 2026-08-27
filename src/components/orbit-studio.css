@@ -32,6 +32,8 @@
   font-weight: 480;
   letter-spacing: -0.055em;
   line-height: 0.9;
+  line-break: strict;
+  word-break: keep-all;
 }
 
 .studio-intro__kicker {
@@ -82,12 +84,15 @@
 
 .orbit-label {
   position: absolute;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.5rem;
   border: 0;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
   font-family: var(--mono);
-  font-size: 0.64rem;
+  font-size: 0.68rem;
   letter-spacing: 0.06em;
   line-height: 1.3;
   pointer-events: auto;
@@ -172,6 +177,9 @@
   font-weight: 620;
   letter-spacing: -0.035em;
   line-height: 1.15;
+  line-break: strict;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .studio-inspector__symbol {
@@ -203,7 +211,7 @@
   margin: 0 0 0.6rem;
   color: var(--accent);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
 }
@@ -224,11 +232,11 @@
 }
 
 .studio-inspector__meta li {
-  padding: 0.28rem 0.48rem;
-  border: 1px solid #564b28;
-  color: #d1b75f;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid #6a5e38;
+  color: #dcc468;
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
 }
 
 .studio-inspector__cta {
@@ -260,6 +268,8 @@
 
 .studio-thumbnails > button,
 .studio-thumbnails > div > button {
+  min-width: 44px;
+  min-height: 44px;
   border: 0;
   background: transparent;
   color: var(--muted);
@@ -299,7 +309,7 @@
   gap: 2.1rem;
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
 }
 
 .studio-help b {
@@ -313,6 +323,7 @@
   right: var(--studio-pad);
   bottom: 1.25rem;
   display: flex;
+  min-height: 44px;
   align-items: center;
   gap: 0.7rem;
   border: 0;
@@ -320,7 +331,7 @@
   color: var(--muted);
   cursor: pointer;
   font-family: var(--mono);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   letter-spacing: 0.1em;
 }
 
@@ -377,13 +388,19 @@
 
 @media (max-width: 760px) {
   .studio-main {
-    min-height: 760px;
-    height: 100svh;
+    min-height: 100svh;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 1.5rem;
   }
 
   .studio-intro {
-    top: 6.7rem;
-    right: var(--page-pad);
+    position: relative;
+    top: auto;
+    left: auto;
+    padding: 5.5rem var(--page-pad) 0;
+    pointer-events: auto;
   }
 
   .studio-intro h1 {
@@ -392,11 +409,19 @@
   }
 
   .studio-intro__description {
-    display: none;
+    display: block;
+    max-width: 32ch;
+    margin-top: 1rem;
+    font-size: 0.88rem;
   }
 
   .studio-stage {
-    inset: 13rem -36% 17rem -30%;
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    width: 100%;
+    height: min(50vh, 340px);
+    margin: 1.5rem 0;
   }
 
   .orbit-labels {
@@ -404,56 +429,77 @@
   }
 
   .studio-inspector {
+    position: relative;
     top: auto;
-    right: var(--page-pad);
-    bottom: 3.8rem;
-    left: var(--page-pad);
+    right: auto;
+    bottom: auto;
+    left: auto;
     width: auto;
-    padding-top: 1.1rem;
+    margin: 0 var(--page-pad);
+    padding: 1.2rem 0 0;
     border-top: 1px solid var(--line-strong);
     transform: none;
   }
 
-  .studio-inspector__index,
-  .studio-inspector__symbol,
-  .studio-inspector__summary,
+  .studio-inspector__index {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .studio-inspector__symbol {
+    display: block;
+    margin-top: 0.4rem;
+  }
+
+  .studio-inspector__summary {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
   .studio-inspector__meta,
   .studio-thumbnails {
     display: none;
   }
 
   .studio-inspector h2 {
-    max-width: 12ch;
+    max-width: none;
     font-size: 1.45rem;
   }
 
   .studio-inspector__rule {
-    display: none;
+    display: block;
+    margin: 1rem 0;
   }
 
   .studio-inspector__cta {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    width: 44px;
-    min-height: 44px;
-    overflow: hidden;
-    padding: 0;
-    white-space: nowrap;
-    color: transparent;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 1.2rem;
+    padding: 0 1rem;
+    color: var(--accent);
+    font-size: 0.82rem;
   }
 
   .studio-inspector__cta span {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    color: var(--accent);
+    position: static;
+    display: inline;
+    color: inherit;
   }
 
   .studio-help {
-    bottom: 1.35rem;
-    gap: 1rem;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding: 0 var(--page-pad);
+    gap: 1.5rem;
   }
 
   .studio-help span:nth-child(-n + 2) {
@@ -461,6 +507,10 @@
   }
 
   .studio-motion {
-    bottom: 1.15rem;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    justify-content: center;
+    margin-top: 1rem;
   }
 }

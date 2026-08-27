@@ -125,14 +125,14 @@ const selectedWorks = [works[0], works[1], works[3]];
   }
   .career-work-list a:hover h3 { color: var(--work-accent); }
   .career-work-list span { color: var(--work-accent); font-family: var(--mono); }
-  .career-work-list h3 { margin: 0; font-size: clamp(1.3rem, 2.5vw, 2.2rem); font-weight: 520; }
+  .career-work-list h3 { margin: 0; font-size: clamp(1.3rem, 2.5vw, 2.2rem); font-weight: 520; line-break: strict; word-break: keep-all; }
   .career-work-list p { margin: .45rem 0 0; color: var(--muted); }
   .career-capabilities__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); }
   .career-capabilities article { min-height: 260px; padding: 2rem; background: var(--surface); }
   .career-capabilities h3 { margin: 0 0 2rem; font-size: 1.55rem; font-weight: 520; }
   .career-capabilities article > p:last-child { color: var(--muted); line-height: 1.8; }
   .career-contact { padding: clamp(4rem, 10vw, 9rem) 0; text-align: center; }
-  .career-contact h2 { max-width: 18ch; margin: 0 auto 2.5rem; font-size: clamp(2.3rem, 5vw, 5rem); font-weight: 500; letter-spacing: -.04em; }
+  .career-contact h2 { max-width: 18ch; margin: 0 auto 2.5rem; font-size: clamp(2.3rem, 5vw, 5rem); font-weight: 500; letter-spacing: -.04em; line-break: strict; word-break: keep-all; overflow-wrap: anywhere; }
   @media (max-width: 760px) {
     .career-summary__grid, .career-capabilities__grid { grid-template-columns: 1fr; }
     .career-work-list a { grid-template-columns: 38px 1fr auto; gap: .7rem; }
