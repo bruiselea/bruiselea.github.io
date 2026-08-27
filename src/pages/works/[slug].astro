@@ -6,7 +6,7 @@ import { works, type Work } from "../../data/works";
 
 export function getStaticPaths() {
   return works
-    .filter((work) => work.slug !== "10000-hours")
+    .filter((work) => !["10000-hours", "hondana-scan"].includes(work.slug))
     .map((work) => ({ params: { slug: work.slug }, props: { work } }));
 }
 

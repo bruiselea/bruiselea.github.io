@@ -195,6 +195,28 @@ export const works: Work[] = [
     },
     externalUrl: "https://nib.nuunnu.com",
   },
+  {
+    id: "hondana-scan",
+    index: "10",
+    symbol: "Bk",
+    slug: "hondana-scan",
+    title: "本棚スキャン",
+    titleEn: "Hondana Scan",
+    category: "software",
+    categoryLabel: "iOS APP",
+    summary: "本のバーコードから、自分の本棚と読書記録をiPhoneの中につくる。",
+    description: "ISBNから書誌情報を検索し、読書進捗、読み始めた日・読み終えた日、メモを端末内に保存するiPhoneアプリです。本棚をMarkdownで共有できます。",
+    role: ["Product", "SwiftUI", "Development"],
+    tools: ["SwiftUI", "SwiftData", "ISBN"],
+    accent: "#e2b54d",
+    asset: {
+      type: "image",
+      src: "/works/hondana-scan/app-icon.png",
+      scale: 1.05,
+      alt: "バーコードと積み上げた本を描いた本棚スキャンのアイコン",
+      caption: "APP ICON — HONDANA SCAN / iOS",
+    },
+  },
 ];
 
 export const featuredWorks = works.slice(0, 6);

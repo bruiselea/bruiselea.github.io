@@ -7,6 +7,7 @@ interface Props {
   description?: string;
   studio?: boolean;
   hideHeader?: boolean;
+  image?: string;
 }
 
 const {
@@ -14,6 +15,7 @@ const {
   description = "材料工学、3Dプリンティング、電子工作、ソフトウェアを横断する佐藤夏樹のポートフォリオ。",
   studio = false,
   hideHeader = false,
+  image,
 } = Astro.props;
 ---
 
@@ -28,6 +30,10 @@ const {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ja_JP" />
+    {image && <meta property="og:image" content={new URL(image, "https://nuunnu.com").href} />}
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image && <meta name="twitter:image" content={new URL(image, "https://nuunnu.com").href} />}
     <meta name="twitter:card" content="summary_large_image" />
     <link
       rel="preload"

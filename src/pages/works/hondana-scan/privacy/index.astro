@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import Footer from "../../../../components/Footer.astro";
+import "../../../../styles/hondana-scan.css";
+---
+
+<BaseLayout title="本棚スキャン プライバシーポリシー | Natsuki Sato" description="本棚スキャンにおける端末内保存、ISBN検索・表紙取得、カメラ、削除、お問い合わせ情報の取り扱い。" image="/works/hondana-scan/app-icon.png">
+  <main class="page-shell hondana-page">
+    <a class="back-link" href="/works/hondana-scan/">← 本棚スキャン</a>
+    <header class="policy-header">
+      <p class="eyebrow">PRIVACY POLICY / HONDANA SCAN</p>
+      <h1>プライバシー<br />ポリシー</h1>
+      <p class="note">制定日：2026年8月26日 / 最終更新日：2026年8月27日</p>
+    </header>
+    <article class="policy-body">
+      <section class="hondana-section"><h2>1. 端末内に保存する情報</h2><p>本棚スキャン（以下「本アプリ」）は、登録した本のISBN、タイトル、著者、出版社、出版日、ページ数、表紙URL、書誌情報の提供元と取得データ、読書進捗、読書日、メモ、登録・更新日時を、iPhoneのアプリ専用領域に保存します。本棚や読書記録を開発者のサーバーへ送信しません。アカウント登録やアプリ独自のクラウド同期はありません。</p><p>端末のバックアップ機能による保存・復元は、利用者のiPhoneやAppleサービスの設定に従います。</p></section>
+      <section class="hondana-section"><h2>2. 外部サービスとの通信</h2><p>本を検索するとき、入力または読み取ったISBNをGoogle Books、国立国会図書館サーチ、Open Libraryへ送信します。検索結果や通信状況に応じて、別の提供元へ問い合わせる場合があります。</p><p>表紙を表示するときは、書誌情報に含まれる画像URLの配信元へアクセスします。これらの通信ではIPアドレスなどの通信情報が配信元へ伝わり、それぞれのポリシーに基づいて処理される場合があります。読書進捗、読書日、メモをこれらのサービスへ送信しません。</p><ul><li><a href="https://policies.google.com/privacy">Google プライバシーポリシー</a></li><li><a href="https://www.ndl.go.jp/jp/privacy/index.html">国立国会図書館 プライバシーポリシー</a></li><li><a href="https://archive.org/about/terms.php">Internet Archive（Open Library）の利用規約・プライバシー情報</a></li></ul><p>本サービスは国立国会図書館サーチのAPIを利用しています。</p></section>
+      <section class="hondana-section"><h2>3. カメラと追跡</h2><p>カメラ映像は端末上でISBNバーコードを認識するために使い、開発者のサーバーへ送信しません。カメラの許可はiPhoneの設定から変更できます。許可しなくてもISBNの手入力が利用できます。</p><p>本アプリは広告、アクセス解析、行動追跡、位置情報を利用せず、広告SDKや分析SDKも組み込みません。</p></section>
+      <section class="hondana-section"><h2>4. 共有と削除</h2><p>利用者が共有やコピーを操作した場合に限り、選択した本または本棚全体の書誌情報・読書記録・メモをMarkdownとして共有先やクリップボードへ渡します。共有先での情報の扱いは、そのサービスやアプリの方針に従います。</p><p>本棚の項目はアプリ内で削除できます。アプリを削除すると、その端末内の本棚データも削除されます。バックアップや利用者が書き出したファイル・共有先のコピーは自動的には削除されません。外部サービスへの検索通信を止めるには、本の検索を行わないでください。</p></section>
+      <section class="hondana-section"><h2>5. お問い合わせ</h2><p>運営者：佐藤夏樹</p><p>お問い合わせで受け取ったメールアドレスや相談内容は、回答と問題解決のために使用します。対応上必要な範囲で保持し、不要になった情報は削除します。お問い合わせ情報の削除についても、以下の窓口へご連絡ください。</p><a class="primary-link email" href="mailto:wlknts28786@gmail.com">wlknts28786@gmail.com →</a></section>
+      <section class="hondana-section"><h2>6. このWebサイトについて</h2><p>本ページはGitHub Pagesで配信しています。閲覧時のIPアドレスなどの通信情報はホスティング事業者が処理する場合があります。本ページに独自の広告・アクセス解析機能は設置していません。</p><a class="text-link" href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub プライバシーステートメント →</a></section>
+      <section class="hondana-section"><h2>7. ポリシーの変更</h2><p>本ポリシーを変更する場合は、このページに更新後の内容と更新日を掲載します。</p><a class="text-link" href="/works/hondana-scan/#support">サポートへ戻る →</a></section>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>

@@ -20,6 +20,7 @@ const positions: Record<string, [number, number, number]> = {
   filter: [-3.25, -1.45, -0.15],
   "keyboard-full": [-3.45, 1.05, -0.45],
   hours: [3.2, 0.4, -0.35],
+  "hondana-scan": [-1.9, -3.0, -0.7],
 };
 
 function ImageVisual({ work }: { work: Work }) {

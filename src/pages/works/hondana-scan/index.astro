@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Footer from "../../../components/Footer.astro";
+import "../../../styles/hondana-scan.css";
+
+const features = [
+  ["01 / SCAN", "バーコードから本棚へ。", "ISBNバーコードをカメラで読み取り、書誌情報を検索。ISBNの手入力にも対応しています。"],
+  ["02 / PROGRESS", "読んだ分だけ、残す。", "現在のページから進捗をパーセント表示。読み始めた日と読み終えた日も記録できます。"],
+  ["03 / NOTES", "気づきも、一緒に。", "本ごとのメモを保存。1冊分も、本棚全体も、Markdown形式で共有できます。"],
+];
+---
+
+<BaseLayout title="本棚スキャン — iPhone読書記録アプリ | Natsuki Sato" description="ISBNバーコードから本を登録。読書進捗・読書日・メモをiPhone内で管理する本棚スキャンの紹介とサポート。" image="/works/hondana-scan/app-icon.png">
+  <main class="page-shell hondana-page">
+    <a class="back-link" href="/works/">← WORKS</a>
+    <header class="hondana-hero">
+      <div>
+        <p class="eyebrow">10 / iOS APP / COMING SOON</p>
+        <h1>本棚<br />スキャン</h1>
+        <p class="lead">読んだ本も、これからの本も。<br />あなたのiPhoneに、自分だけの本棚を。</p>
+        <nav class="page-links" aria-label="本棚スキャンの情報">
+          <a class="primary-link" href="#support">サポート・お問い合わせ ↓</a>
+          <a class="text-link" href="/works/hondana-scan/privacy/">プライバシーポリシー →</a>
+        </nav>
+      </div>
+      <div class="hero-visual">
+        <img src="/works/hondana-scan/app-icon.png" alt="本棚スキャンのアプリアイコン" width="1024" height="1024" />
+        <dl>
+          <div><dt>PLATFORM</dt><dd>iPhone / iOS 17+</dd></div>
+          <div><dt>STATUS</dt><dd>App Store公開準備中</dd></div>
+          <div><dt>STORAGE</dt><dd>端末内保存 / アカウント不要</dd></div>
+        </dl>
+      </div>
+    </header>
+    <section class="hondana-section" aria-labelledby="features-title">
+      <p class="eyebrow">FEATURES</p>
+      <h2 id="features-title">本と向き合う時間を、シンプルに。</h2>
+      <div class="feature-grid">
+        {features.map(([label, title, text]) => <article><p class="meta-label">{label}</p><h3>{title}</h3><p>{text}</p></article>)}
+      </div>
+      <p class="note">書誌検索にはGoogle Books、国立国会図書館サーチ、Open Libraryを利用します。検索と表紙画像の取得にはインターネット接続が必要です。提供元に情報がない本は見つからない場合があります。</p>
+    </section>
+    <section class="hondana-section" aria-labelledby="privacy-title">
+      <p class="eyebrow">PRIVACY</p>
+      <h2 id="privacy-title">読書記録は、iPhoneの中に。</h2>
+      <p>本棚、読書進捗、読書日、メモは端末内に保存します。広告・アクセス解析・行動追跡はありません。検索時のISBN送信や表紙画像の取得については、ポリシー全文をご確認ください。</p>
+      <a class="primary-link" href="/works/hondana-scan/privacy/">プライバシーポリシー全文 →</a>
+    </section>
+    <section class="hondana-section" id="support" aria-labelledby="support-title">
+      <p class="eyebrow">SUPPORT</p>
+      <h2 id="support-title">使い方・不具合について。</h2>
+      <div class="feature-grid">
+        <article><h3>本が見つからない</h3><p>ISBNが正しいか確認して、通信できる状態で再検索してください。本によっては書誌情報が登録されていません。</p></article>
+        <article><h3>カメラが使えない</h3><p>iPhoneの設定で本棚スキャンのカメラ許可を確認してください。許可しなくてもISBNの手入力を利用できます。</p></article>
+        <article><h3>本棚を残しておきたい</h3><p>本棚の共有ボタンからMarkdownを書き出せます。これは閲覧用で、アプリへの復元用バックアップではありません。アプリ独自のクラウド同期機能はありません。</p></article>
+      </div>
+      <p class="note">お問い合わせの際は、iPhoneの機種、iOSとアプリのバージョン、発生手順をお知らせください。不要な個人情報や読書メモの送付はお控えください。</p>
+      <a class="primary-link email" href="mailto:wlknts28786@gmail.com?subject=%E6%9C%AC%E6%A3%9A%E3%82%B9%E3%82%AD%E3%83%A3%E3%83%B3%E3%81%AE%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B">wlknts28786@gmail.com →</a>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
