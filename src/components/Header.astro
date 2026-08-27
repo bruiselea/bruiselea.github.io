@@ -31,7 +31,11 @@ const isActive = (href: string) =>
   </nav>
 
   <details class="mobile-nav">
-    <summary aria-label="メニューを開く">MENU</summary>
+    <summary aria-label="メニューを開閉">
+      <span class="mobile-nav__label-open">MENU</span>
+      <span class="mobile-nav__label-close">CLOSE</span>
+    </summary>
+    <div class="mobile-nav__scrim" aria-hidden="true"></div>
     <nav aria-label="モバイルナビゲーション">
       {links.map((link) => (
         <a href={link.href} aria-current={isActive(link.href) ? "page" : undefined}>
@@ -41,3 +45,14 @@ const isActive = (href: string) =>
     </nav>
   </details>
 </header>
+
+<script>
+  const details = document.querySelector('.mobile-nav');
+  const scrim = document.querySelector('.mobile-nav__scrim');
+  
+  if (scrim && details) {
+    scrim.addEventListener('click', () => {
+      (details as HTMLDetailsElement).open = false;
+    });
+  }
+</script>
