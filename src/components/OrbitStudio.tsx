@@ -8,8 +8,11 @@ import {
   TextureLoader,
 } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { works, type Work } from "../data/works";
+import { works as portfolioWorks, type Work } from "../data/works";
 import "./orbit-studio.css";
+
+// Hand Spinner is listed in Works without changing the Studio's spatial layout.
+const works = portfolioWorks.filter((work) => work.id !== "hand-spinner");
 
 const positions: Record<string, [number, number, number]> = {
   keyboard: [0.25, 0.15, 0.5],

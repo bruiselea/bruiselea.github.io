@@ -8,6 +8,7 @@ interface Props {
   studio?: boolean;
   hideHeader?: boolean;
   image?: string;
+  lang?: "ja" | "en";
 }
 
 const {
@@ -16,11 +17,12 @@ const {
   studio = false,
   hideHeader = false,
   image,
+  lang = "ja",
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="ja" class:list={{ "is-studio": studio }}>
+<html lang={lang} class:list={{ "is-studio": studio }}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,7 +31,7 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="ja_JP" />
+    <meta property="og:locale" content={lang === "en" ? "en_US" : "ja_JP"} />
     {image && <meta property="og:image" content={new URL(image, "https://nuunnu.com").href} />}
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

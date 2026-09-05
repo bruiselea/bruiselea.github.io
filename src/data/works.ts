@@ -219,6 +219,29 @@ export const works: Work[] = [
   },
 ];
 
+works.push({
+  id: "hand-spinner",
+  index: "12",
+  symbol: "Hs",
+  slug: "hand-spinner",
+  title: "Hand Spinner",
+  titleEn: "Hand Spinner: Trackpad Toy",
+  category: "interaction",
+  categoryLabel: "macOS / TOY",
+  summary: "スペースキーと指一本で回す、Macのための小さなハンドスピナー。",
+  description: "トラックパッドの動きを回転の勢いに変える、デスクトップ上のピクセルアートのハンドスピナーです。慣性、加速、ブレーキと、4色の半透明スキンを楽しめます。Mac App Storeで公開準備中。",
+  role: ["Interaction", "App", "Pixel Art"],
+  tools: ["Swift", "AppKit", "StoreKit"],
+  accent: "#ff713f",
+  asset: {
+    type: "image",
+    src: "/works/hand-spinner/app-icon.png",
+    scale: 1.05,
+    alt: "Hand Spinnerの黒とシルバー、オレンジのアプリアイコン",
+    caption: "APP ICON — HAND SPINNER / macOS",
+  },
+});
+
 export const featuredWorks = works.slice(0, 6);
 
 export function getWorkBySlug(slug: string) {

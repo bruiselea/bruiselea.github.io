@@ -1,0 +1,63 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const base = "/works/hand-spinner/";
+const links = [
+  { href: base, label: "Overview" },
+  { href: `${base}support/`, label: "Support" },
+  { href: `${base}privacy/`, label: "Privacy" },
+];
+---
+
+<BaseLayout title={title} description={description} image={`${base}app-icon.png`} lang="en" hideHeader>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="spinner-header">
+    <a class="spinner-brand" href={base}>
+      <img src={`${base}app-icon.png`} alt="" width="44" height="44" />
+      <span>HAND SPINNER</span>
+    </a>
+    <nav aria-label="Hand Spinner">
+      {links.map((link) => <a href={link.href} aria-current={Astro.url.pathname === link.href ? "page" : undefined}>{link.label}</a>)}
+    </nav>
+  </header>
+  <main id="main" class="page-shell spinner-page"><slot /></main>
+  <footer class="spinner-footer">
+    <a href="/works/">← All works by Natsuki Sato</a>
+    <span>© 2026 Natsuki Sato</span>
+    <a href="mailto:wlknts28786@gmail.com?subject=Hand%20Spinner%20Support">Contact support ↗</a>
+  </footer>
+</BaseLayout>
+
+<style>
+  .skip-link { position: absolute; top: .5rem; left: 1rem; z-index: 100; padding: .8rem; background: var(--ink); color: var(--bg); transform: translateY(-200%); }
+  .skip-link:focus { transform: translateY(0); }
+  .spinner-header, .spinner-footer { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.1rem var(--page-pad); border-bottom: 1px solid var(--line); }
+  .spinner-brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; font: 700 .74rem var(--mono); letter-spacing: .08em; }
+  .spinner-brand img { flex-shrink: 0; }
+  nav { display: flex; flex-wrap: wrap; gap: clamp(1rem, 3vw, 2.5rem); }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; font: .75rem var(--mono); text-decoration: none; color: #b8b8bf; }
+  nav a:hover, nav a[aria-current="page"] { color: var(--accent); }
+  .spinner-page { padding-top: clamp(3rem, 7vw, 6rem); }
+  .spinner-footer { flex-wrap: wrap; padding-block: 2rem; border-bottom: 0; border-top: 1px solid var(--line); color: var(--muted); font: .72rem var(--mono); line-height: 1.8; }
+  .spinner-footer a { padding-block: .5rem; color: var(--ink); text-underline-offset: .3em; }
+  .spinner-page :global(h1) { margin: 0; font-size: clamp(3.4rem, 8vw, 7.5rem); font-weight: 600; letter-spacing: -.065em; line-height: .94; }
+  .spinner-page :global(h2) { margin: 0 0 1.5rem; font-size: clamp(2rem, 4vw, 3.8rem); font-weight: 550; letter-spacing: -.04em; line-height: 1.05; }
+  .spinner-page :global(p) { line-height: 1.8; }
+  .spinner-page :global(.muted) { color: #aaaab2; }
+  .spinner-page :global(kbd) { display: inline-block; padding: .08rem .4rem; border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface-raised); color: var(--ink); font: .88em var(--mono); }
+  .spinner-page :global(.legal-heading) { max-width: 850px; padding-bottom: clamp(2.5rem, 6vw, 5rem); border-bottom: 1px solid var(--line); }
+  .spinner-page :global(.legal-heading > p:last-child) { margin-top: 2rem; color: #aaaab2; }
+  .spinner-page :global(.legal-body) { max-width: 760px; margin-left: auto; }
+  .spinner-page :global(.legal-body section) { padding: 3rem 0; border-bottom: 1px solid var(--line); }
+  .spinner-page :global(.legal-body h2) { font-size: clamp(1.7rem, 3vw, 2.5rem); }
+  .spinner-page :global(.legal-body p), .spinner-page :global(.legal-body li) { color: #b8b8bf; line-height: 1.85; }
+  .spinner-page :global(.legal-body li) { margin-bottom: 1rem; padding-left: .4rem; }
+  .spinner-page :global(.legal-body a) { color: var(--ink); overflow-wrap: anywhere; text-underline-offset: .3em; }
+  @media (max-width: 560px) {
+    .spinner-header { align-items: flex-start; flex-direction: column; gap: .2rem; padding-bottom: .5rem; }
+    nav { width: 100%; justify-content: space-between; }
+    .spinner-footer { flex-direction: column; align-items: flex-start; gap: .5rem; }
+  }
+</style>
