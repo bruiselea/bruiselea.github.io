@@ -50,6 +50,16 @@
   line-height: 1.9;
 }
 
+.studio-intro__career {
+  margin-top: 1.2rem;
+  color: var(--ink);
+  pointer-events: auto;
+}
+
+.studio-intro__career:hover {
+  color: var(--accent);
+}
+
 .studio-stage {
   position: absolute;
   z-index: 1;
@@ -139,15 +149,22 @@
   left: 11.5%;
 }
 
-.orbit-label--keyboard-full {
-  top: 38%;
-  left: 7%;
+.orbit-label--nib-housing {
+  --label-accent: #4f85d8;
+  top: 51%;
+  left: 9%;
 }
 
 .orbit-label--hours {
   --label-accent: #f1f1ee;
   top: 49%;
   right: 28%;
+}
+
+.orbit-label--hondana-scan {
+  --label-accent: #e2b54d;
+  bottom: 8%;
+  left: 21%;
 }
 
 .studio-inspector {

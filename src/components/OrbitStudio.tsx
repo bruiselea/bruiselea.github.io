@@ -11,8 +11,8 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { works as portfolioWorks, type Work } from "../data/works";
 import "./orbit-studio.css";
 
-// Hand Spinner is listed in Works without changing the Studio's spatial layout.
-const works = portfolioWorks.filter((work) => work.id !== "hand-spinner");
+// Hand Spinner and 3Tabs are listed in Works without changing the Studio's spatial layout.
+const works = portfolioWorks.filter((work) => !["hand-spinner", "three-tabs"].includes(work.id));
 
 const positions: Record<string, [number, number, number]> = {
   keyboard: [0.25, 0.15, 0.5],
@@ -21,7 +21,7 @@ const positions: Record<string, [number, number, number]> = {
   scheduler: [3.15, -1.45, -0.25],
   print: [0.1, -2.45, -0.35],
   filter: [-3.25, -1.45, -0.15],
-  "keyboard-full": [-3.45, 1.05, -0.45],
+  "nib-housing": [-2.95, 0.95, -0.45],
   hours: [3.2, 0.4, -0.35],
   "hondana-scan": [-1.9, -3.0, -0.7],
 };
@@ -209,12 +209,15 @@ export default function OrbitStudio() {
     <main className="studio-main">
       <section className="studio-intro" aria-labelledby="studio-title">
         <h1 id="studio-title">Natsuki Sato</h1>
-        <p className="studio-intro__kicker">Interaction · Modeling · Design</p>
+        <p className="studio-intro__kicker">Software · Hardware · Product</p>
         <p className="studio-intro__description">
-          材料工学を軸に、3Dプリンティング、電子工作、
+          材料工学を土台に、アプリ・Webツールから
           <br />
-          ソフトウェア、インタラクションを横断するスタジオ。
+          基板・3Dプリントまで、公開できる形に作り切る。
         </p>
+        <a className="text-link studio-intro__career" href="/career/">
+          採用ご担当の方へ — CAREER <span aria-hidden="true">→</span>
+        </a>
       </section>
 
       <div className="studio-stage" aria-hidden="true">

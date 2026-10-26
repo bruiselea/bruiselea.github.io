@@ -319,6 +319,10 @@ textarea {
   padding: clamp(1.5rem, 5vw, 4rem);
 }
 
+.work-visual--low-res img {
+  object-fit: scale-down;
+}
+
 .work-visual figcaption {
   padding: 0.8rem 1rem;
   border-top: 1px solid var(--line);

@@ -1,23 +1,25 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/Footer.astro";
-import { works } from "../../data/works";
+import { getWorkBySlug } from "../../data/works";
 
-const selectedWorks = [works[0], works[1], works[3]];
+const selectedWorks = ["nib-housing-generator", "10000-hours", "periodic-table-keyboard"].map(
+  (slug) => getWorkBySlug(slug)!,
+);
 ---
 
 <BaseLayout
   title="Career — Natsuki Sato"
-  description="佐藤夏樹の就活・採用向けプロフィール。材料工学、HCI、3Dモデリング、電子工作、ソフトウェアの経験をまとめています。"
+  description="佐藤夏樹の就活・採用向けプロフィール。ソフトウェア開発（iOS/macOS・Web）、ハードウェア試作、材料工学の経験をまとめています。"
 >
   <main class="page-shell career-page">
     <header class="page-hero">
       <div>
         <p class="eyebrow">CAREER / PROFILE</p>
-        <h1 class="page-title">Engineer who makes interactions tangible.</h1>
+        <h1 class="page-title">Engineer who ships software and hardware.</h1>
       </div>
       <p class="page-lede">
-        材料工学を土台に、物理的なプロトタイプとソフトウェアを往復して制作しています。3Dモデリング、電子工作、UI実装をつなぎ、人が触れて理解できる形まで作ることが得意です。
+        iOS/macOSアプリやWebツールといったソフトウェアから、基板設計・3Dプリントのハードウェアまで、企画から実装・公開まで作り切ります。材料工学で身につけた観察と検証の視点を、プロダクト開発に活かしています。
       </p>
     </header>
 
@@ -31,8 +33,8 @@ const selectedWorks = [works[0], works[1], works[3]];
           東北大学工学部で材料科学を学び、デンマーク工科大学（DTU）への交換留学を経験しました。研究で身につけた観察・評価の視点を、3Dプリンティング、プロダクト、HCIの設計に応用しています。
         </p>
         <dl>
-          <div><dt>FOCUS</dt><dd>HCI / Product / Modeling</dd></div>
-          <div><dt>BUILD</dt><dd>PCB / 3D Print / Web</dd></div>
+          <div><dt>FOCUS</dt><dd>Software / Product / HCI</dd></div>
+          <div><dt>BUILD</dt><dd>iOS・macOS / Web / PCB / 3D Print</dd></div>
           <div><dt>LOCATION</dt><dd>Japan</dd></div>
           <div><dt>LANGUAGE</dt><dd>Japanese / English</dd></div>
         </dl>
@@ -65,27 +67,31 @@ const selectedWorks = [works[0], works[1], works[3]];
       </div>
       <div class="career-capabilities__grid">
         <article>
-          <p class="eyebrow">PHYSICAL</p>
-          <h3>Modeling & Fabrication</h3>
-          <p>CAD、3Dプリント、試作、材料と製造条件の検討。</p>
+          <p class="eyebrow">SOFTWARE</p>
+          <h3>App & Tool Development</h3>
+          <p>iOS/macOSアプリ（SwiftUI・AppKit）、Webアプリ・CADツール（React・Three.js）、Chrome拡張。設計から公開・運用まで。</p>
         </article>
         <article>
           <p class="eyebrow">ELECTRONICS</p>
           <h3>Hardware Prototyping</h3>
-          <p>PCB設計、組み立て、組み込み、センサーと動きの検証。</p>
+          <p>PCB設計（KiCad）、ファームウェア（QMK・ESP32）、組み立て、センサーと動きの検証。</p>
         </article>
         <article>
-          <p class="eyebrow">DIGITAL</p>
-          <h3>Interface Development</h3>
-          <p>Webアプリ、Chrome拡張、UI設計、インタラクション実装。</p>
+          <p class="eyebrow">PHYSICAL</p>
+          <h3>Modeling & Fabrication</h3>
+          <p>CAD、パラメトリック設計、3Dプリント、材料と製造条件の検討。</p>
         </article>
       </div>
     </section>
 
     <section class="career-contact">
       <p class="eyebrow">CONTACT</p>
-      <h2>制作、研究、プロトタイプの相談。</h2>
+      <h2>採用・インターンのご連絡はこちらから。</h2>
       <a class="primary-link" href="mailto:wlknts28786@gmail.com">メールで連絡する →</a>
+      <div class="career-contact__links">
+        <a class="text-link" href="https://github.com/bruiselea" target="_blank" rel="noreferrer">GitHub ↗</a>
+        <a class="text-link" href="https://linkedin.com/in/natsukisatojp" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+      </div>
     </section>
   </main>
   <Footer />
@@ -132,6 +138,7 @@ const selectedWorks = [works[0], works[1], works[3]];
   .career-capabilities h3 { margin: 0 0 2rem; font-size: 1.55rem; font-weight: 520; }
   .career-capabilities article > p:last-child { color: var(--muted); line-height: 1.8; }
   .career-contact { padding: clamp(4rem, 10vw, 9rem) 0; text-align: center; }
+  .career-contact__links { display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; }
   .career-contact h2 { max-width: 18ch; margin: 0 auto 2.5rem; font-size: clamp(2.3rem, 5vw, 5rem); font-weight: 500; letter-spacing: -.04em; }
   @media (max-width: 760px) {
     .career-summary__grid, .career-capabilities__grid { grid-template-columns: 1fr; }
