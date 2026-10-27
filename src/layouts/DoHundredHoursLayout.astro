@@ -1,0 +1,21 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/do-100-hours.css';
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+---
+<BaseLayout title={title} description={description} image="/works/do-100-hours/app-icon.png">
+  <main class="page-shell hundred-page">
+    <nav class="hundred-nav" aria-label="Do 100 Hours">
+      <a href="/works/">← WORKS</a>
+      <div>
+        <a href="/works/do-100-hours/">アプリ</a>
+        <a href="/works/do-100-hours/support/">サポート</a>
+        <a href="/works/do-100-hours/privacy/">プライバシー</a>
+      </div>
+    </nav>
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -304,6 +304,22 @@ export const works: Work[] = [
     accent: "#f4bd55",
     asset: { type: "image", src: "/generated/unit-keychain.png", scale: 1.75 },
   },
+  {
+    id: "hundred-hours",
+    index: "14",
+    symbol: "100",
+    slug: "do-100-hours",
+    title: "Do 100 Hours",
+    titleEn: "Do 100 Hours",
+    category: "software",
+    categoryLabel: "iOS APP / COMING SOON",
+    summary: "やってみたいことに、まず100時間。進み具合が100マスで見えるiPhoneアプリ。",
+    description: "ひとつずつでも並行しても、100時間の挑戦を計測・保存。終えた挑戦も記録に残せます。公開準備中。",
+    role: ["Product", "UI", "SwiftUI", "QA"],
+    tools: ["SwiftUI", "WidgetKit", "StoreKit"],
+    accent: "#f1f1ee",
+    asset: { type: "image", src: "/works/do-100-hours/app-icon.png", scale: 1, alt: "Do 100 Hoursの白黒のアイコン", caption: "DO 100 HOURS / iOS — COMING SOON" },
+  },
 ];
 
 export const featuredWorks = works.slice(0, 6);

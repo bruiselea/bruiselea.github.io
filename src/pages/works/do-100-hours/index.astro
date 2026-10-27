@@ -1,0 +1,40 @@
+---
+import Layout from '../../../layouts/DoHundredHoursLayout.astro';
+const screens = [
+  ['01-start.png', 'ストップウォッチで練習時間を計測', '計って、保存。'],
+  ['02-progress.png', '12.5時間の進捗を示す100マス', '1マス、1時間。'],
+  ['03-challenges.png', 'ギター・英会話・スケッチの3つの挑戦', '並行しても、ひとつずつでも。'],
+  ['04-collection.png', '完了した挑戦のコレクション', '終えた挑戦も残る。'],
+  ['05-widget.png', 'アプリ内のウィジェットプレビュー', 'ウィジェットで確認。'],
+];
+---
+<Layout title="Do 100 Hours — まず、100時間。 | nuunnu.com" description="やってみたいことに、まず100時間。タイマー・100マスの進捗・完了した挑戦の記録をまとめたiPhoneアプリ。">
+  <header class="hundred-hero">
+    <div>
+      <p class="eyebrow">iPHONE APP</p>
+      <h1>Do <span>100 Hours</span></h1>
+      <p class="hundred-lead">極めなくていい。まず、100時間。</p>
+      <p class="hundred-muted">やってみたいことを決めて、計って、保存。<br />進み具合は、100個のマスで。</p>
+      <p class="hundred-status">公開準備中</p>
+    </div>
+    <img src="/works/do-100-hours/app-icon.png" alt="Do 100 Hoursのアプリアイコン" width="1024" height="1024" />
+  </header>
+  <section class="hundred-section hundred-features" aria-label="できること">
+    <article><h2>100マス。</h2><p>1マス＝1時間。ストップウォッチやタイマーで計測した時間を保存すると、マスに反映されます。</p></article>
+    <article><h2>自分のペースで。</h2><p>ひとつずつでも、いろいろ並行しても。進行中の挑戦は3つまで無料です。</p></article>
+    <article><h2>次の100時間へ。</h2><p>完了・保留にすると枠が空きます。終えた挑戦や記録は、そのまま残ります。</p></article>
+  </section>
+  <section class="hundred-section" aria-labelledby="screens-title">
+    <h2 id="screens-title">使うのは、こんな画面。</h2>
+    <div class="hundred-screens">
+      {screens.map(([file, alt, caption]) => <figure><img src={`/works/do-100-hours/${file}`} alt={alt} width="1320" height="2868" loading="lazy" decoding="async" /><figcaption>{caption}</figcaption></figure>)}
+    </div>
+    <p class="hundred-muted"><small>サンプルデータを使った実際の画面です。ウィジェットはアプリ内プレビューを表示しています。</small></p>
+  </section>
+  <section class="hundred-section" aria-labelledby="price-title">
+    <h2 id="price-title">無料3枠。買い切りで無制限。</h2>
+    <p class="hundred-muted">初回リリースは、無料版と進行中の挑戦数を無制限にするアップグレードを予定しています。買い切り500円（日本）。定期購読ではありません。実際の価格は購入画面で確認できます。</p>
+    <p class="hundred-muted">アカウント登録は不要。記録は端末内に保存します。100時間での習得や上達を保証するアプリではありません。</p>
+    <div class="hundred-links"><a class="primary-link" href="/works/do-100-hours/support/">使い方・お問い合わせ →</a><a class="text-link" href="/works/do-100-hours/privacy/">プライバシーポリシー →</a></div>
+  </section>
+</Layout>

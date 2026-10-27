@@ -13,7 +13,7 @@ import "./orbit-studio.css";
 
 // These works are listed in Works without changing the Studio's spatial layout.
 const works = portfolioWorks.filter(
-  (work) => !["mi-band-stand", "zidoukaken-world", "hand-spinner", "three-tabs"].includes(work.id),
+  (work) => !["mi-band-stand", "zidoukaken-world", "hand-spinner", "three-tabs", "hundred-hours"].includes(work.id),
 );
 
 const positions: Record<string, [number, number, number]> = {

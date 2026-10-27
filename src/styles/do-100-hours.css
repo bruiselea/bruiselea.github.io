@@ -1,0 +1,37 @@
+.hundred-page { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+.hundred-nav { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; margin-bottom: clamp(2rem, 5vw, 4rem); }
+.hundred-nav > div { display: flex; flex-wrap: wrap; gap: 1.5rem; }
+.hundred-nav a { display: inline-flex; min-height: 44px; align-items: center; color: #b5b5bd; text-decoration: none; font-size: .8rem; }
+.hundred-nav a:hover { color: var(--ink); }
+.hundred-hero { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 3rem; align-items: start; padding-bottom: 4rem; }
+.hundred-page h1 { margin: 0; font-size: clamp(2.8rem, 7.2vw, 6.5rem); line-height: 1.08; font-weight: 550; letter-spacing: -.05em; text-wrap: balance; }
+.hundred-hero h1 span { white-space: nowrap; }
+.hundred-hero > img { width: 220px; height: auto; aspect-ratio: 1; object-fit: contain; border-radius: 22%; }
+.hundred-lead { font-size: clamp(1.4rem, 2.6vw, 2rem); margin: 2rem 0 1rem; }
+.hundred-muted { color: #b5b5bd; line-height: 1.9; }
+.hundred-status { display: inline-block; padding: .55rem .8rem; border: 1px solid var(--line-strong); color: #b5b5bd; font-size: .8rem; }
+.hundred-section { border-top: 1px solid var(--line); padding: clamp(2.5rem, 5vw, 4rem) 0; scroll-margin-top: 2rem; }
+.hundred-page h2 { font-size: clamp(1.6rem, 3.2vw, 2.6rem); line-height: 1.4; letter-spacing: -.03em; font-weight: 550; margin: 0 0 1.5rem; text-wrap: balance; }
+.hundred-page h3 { font-size: 1.1rem; font-weight: 550; margin: 0 0 1rem; }
+.hundred-features { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+.hundred-features p { margin: 0; color: #b5b5bd; line-height: 1.9; }
+.hundred-screens { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; }
+.hundred-screens figure { margin: 0; }
+.hundred-screens img { display: block; width: 100%; height: auto; aspect-ratio: 1320 / 2868; border-radius: .6rem; }
+.hundred-screens figcaption { font-size: .7rem; color: #b5b5bd; margin-top: .75rem; line-height: 1.6; }
+.hundred-links { display: flex; flex-wrap: wrap; gap: 1rem 2rem; }
+.hundred-page .primary-link { border-color: #d0d0d4; color: var(--ink); }
+.hundred-page .primary-link:hover { background: var(--ink); color: var(--bg); }
+.hundred-policy { max-width: 860px; }
+.hundred-policy header { padding-bottom: 3rem; }
+.hundred-policy h1 { font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.25; }
+.hundred-policy p, .hundred-policy li, .hundred-support p, .hundred-support li { color: #b5b5bd; line-height: 1.95; }
+.hundred-policy li + li, .hundred-support li + li { margin-top: .5rem; }
+.hundred-email { overflow-wrap: anywhere; }
+@media (max-width: 760px) {
+  .hundred-hero { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding-bottom: 2.5rem; }
+  .hundred-hero > img { width: 136px; grid-row: 1; }
+  .hundred-features { grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .hundred-screens { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hundred-nav > div { gap: 1rem; }
+}
