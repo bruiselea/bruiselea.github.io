@@ -24,6 +24,7 @@ export type Work = {
   tools: string[];
   accent: string;
   asset: WorkAsset;
+  gallery?: { src: string; alt: string; caption: string }[];
   externalUrl?: string;
 };
 
@@ -93,8 +94,62 @@ export const works: Work[] = [
     asset: { type: "image", src: "/generated/kb-keycap.png", scale: 2.1 },
   },
   {
-    id: "hand-spinner",
+    id: "mi-band-stand",
     index: "04",
+    symbol: "Mb",
+    slug: "mi-band-charging-stand",
+    title: "Mi Band 充電スタンド",
+    titleEn: "Mi Band Charging Stand",
+    category: "product",
+    categoryLabel: "PRODUCT",
+    summary: "Xiaomi Smart Band 8/9を、充電しながら机の上で時計として眺められる3Dプリント製スタンド。",
+    description:
+      "純正の充電器をヘッドにはめ込み、バンドを載せたまま充電と時刻表示ができるスタンドです。ヘッドと土台は直径13.2mmの球でつなぐ構造で、土台だけを自作して差し替えることもでき、ケーブルの向きに合わせてヘッドを2種類用意しています。MakerWorldで造形データを公開し（2024年12月・第2版）、評価4.4（15件）、レビュー22件をいただきました。組み立て時に細い軸が折れるという声が複数届いたため、現在は軸に鋼管を通して強度を上げる改良版を設計しています。",
+    role: ["Product Design", "CAD", "Prototype", "Release", "Iteration"],
+    tools: ["CAD", "3D Print", "PLA", "MakerWorld"],
+    accent: "#3ddc97",
+    asset: {
+      type: "image",
+      src: "/works/mi-band-stand/photo-1.webp",
+      scale: 1,
+      alt: "黒いスタンドに載せたXiaomi Smart Bandが充電中の画面を表示している写真",
+      caption: "PHOTO — MI BAND CHARGING STAND / PLA",
+    },
+    gallery: [
+      { src: "/works/mi-band-stand/photo-3.webp", alt: "スタンドのヘッドと、上端に球のある土台を分解して並べた写真", caption: "PARTS — HEAD / BASE WITH 13.2MM BALL" },
+      { src: "/works/mi-band-stand/photo-4.webp", alt: "ヘッドに純正の充電器をはめ込んだスタンド", caption: "CHARGER SEATED IN THE HEAD" },
+      { src: "/works/mi-band-stand/photo-5.webp", alt: "バンドを載せる前のスタンドのヘッド部分", caption: "HEAD — BAND CRADLE" },
+      { src: "/works/mi-band-stand/photo-2.webp", alt: "机の上でバンドを充電しているスタンド", caption: "IN USE — ON THE DESK" },
+    ],
+    externalUrl: "https://makerworld.com/en/models/854653-mi-band-charging-stand-for-band8-9",
+  },
+  {
+    id: "zidoukaken-world",
+    index: "05",
+    symbol: "Zw",
+    slug: "zidoukaken-world",
+    title: "じどうかけん ワールド",
+    titleEn: "Zidoukaken World",
+    category: "interaction",
+    categoryLabel: "WEB / 3D",
+    summary: "東北大学 自動化研究会の公式サイトを、歩いてめぐるブロックの世界にしたWebオープンワールド。",
+    description:
+      "公式サイトの7つのSTAGEを、三人称で歩き回れるボクセルの世界として再構成したWebアプリです（試作）。体の当たり判定をx→z→yの順に解く移動処理、1ブロックの段差の自動登坂、人や看板との会話、STAGEごとのスタンプとミニマップを実装し、7つ集めると裏世界のタイムアタックが開きます。",
+    role: ["Concept", "3D", "Game Design", "Frontend"],
+    tools: ["Three.js", "JavaScript", "WebGL"],
+    accent: "#3d7cc9",
+    asset: {
+      type: "image",
+      src: "/works/zidoukaken-world/world.jpg",
+      scale: 1,
+      alt: "じどうかけん ワールドのボクセルの広場と自動化研究会の歯車ロゴ",
+      caption: "LIVE WORLD — ZIDOUKAKEN WORLD / THREE.JS",
+    },
+    externalUrl: "https://zidoukaken.labo-robo.jp/world/",
+  },
+  {
+    id: "hand-spinner",
+    index: "06",
     symbol: "Hs",
     slug: "hand-spinner",
     title: "Hand Spinner",
@@ -116,7 +171,7 @@ export const works: Work[] = [
   },
   {
     id: "hondana-scan",
-    index: "05",
+    index: "07",
     symbol: "Bk",
     slug: "hondana-scan",
     title: "本棚スキャン",
@@ -138,7 +193,7 @@ export const works: Work[] = [
   },
   {
     id: "filter",
-    index: "06",
+    index: "08",
     symbol: "Yt",
     slug: "youtube-feed-filter",
     title: "YouTube Feed Filter",
@@ -157,7 +212,7 @@ export const works: Work[] = [
   },
   {
     id: "three-tabs",
-    index: "07",
+    index: "09",
     symbol: "Tb",
     slug: "3tabs",
     title: "3Tabs",
@@ -182,7 +237,7 @@ export const works: Work[] = [
   },
   {
     id: "scheduler",
-    index: "08",
+    index: "10",
     symbol: "Cs",
     slug: "circular-scheduler",
     title: "Circular Scheduler",
@@ -200,7 +255,7 @@ export const works: Work[] = [
   },
   {
     id: "robot",
-    index: "09",
+    index: "11",
     symbol: "Bm",
     slug: "desktop-companion",
     title: "デスクトップ・コンパニオン",
@@ -217,7 +272,7 @@ export const works: Work[] = [
   },
   {
     id: "print",
-    index: "10",
+    index: "12",
     symbol: "3D",
     slug: "printed-products",
     title: "3Dプリント製品開発",
@@ -234,7 +289,7 @@ export const works: Work[] = [
   },
   {
     id: "keychain",
-    index: "11",
+    index: "13",
     symbol: "Al",
     slug: "unit-keychain",
     title: "単位キーホルダー",

@@ -28,6 +28,17 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
 
     <WorkVisual work={work} eager />
 
+    {work.gallery && (
+      <div class="work-detail__gallery">
+        {work.gallery.map((image) => (
+          <figure>
+            <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+            <figcaption>{image.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    )}
+
     <section class="work-detail__story">
       <div>
         <p class="meta-label">OVERVIEW</p>
@@ -59,6 +70,10 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
   .work-detail__header > p { margin: 0; color: #b4b4bb; font-size: 1.1rem; line-height: 1.9; }
   .work-detail__en { color: var(--muted); font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; }
   .work-detail :global(.work-visual) { border: 1px solid var(--line); }
+  .work-detail__gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; margin-top: 1px; background: var(--line); }
+  .work-detail__gallery figure { margin: 0; background: var(--surface); }
+  .work-detail__gallery img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; }
+  .work-detail__gallery figcaption { padding: .8rem 1rem; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: .62rem; }
   .work-detail__story { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 10vw, 10rem); padding: clamp(4rem, 9vw, 8rem) 0; border-bottom: 1px solid var(--line); }
   .work-detail__story h2 { max-width: 14ch; margin: 1rem 0 0; font-size: clamp(2rem, 4vw, 4rem); font-weight: 500; letter-spacing: -.04em; }
   .work-detail__story > div:last-child > p { margin: 0 0 3rem; color: #b8b8bf; font-size: 1.05rem; line-height: 2; }

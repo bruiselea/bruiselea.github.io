@@ -11,8 +11,10 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { works as portfolioWorks, type Work } from "../data/works";
 import "./orbit-studio.css";
 
-// Hand Spinner and 3Tabs are listed in Works without changing the Studio's spatial layout.
-const works = portfolioWorks.filter((work) => !["hand-spinner", "three-tabs"].includes(work.id));
+// These works are listed in Works without changing the Studio's spatial layout.
+const works = portfolioWorks.filter(
+  (work) => !["mi-band-stand", "zidoukaken-world", "hand-spinner", "three-tabs"].includes(work.id),
+);
 
 const positions: Record<string, [number, number, number]> = {
   keyboard: [0.25, 0.15, 0.5],
