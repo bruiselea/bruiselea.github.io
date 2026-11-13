@@ -49,7 +49,12 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
           <div><dt>ROLE</dt><dd>{work.role.join(" / ")}</dd></div>
           <div><dt>TOOLS</dt><dd>{work.tools.join(" / ")}</dd></div>
         </dl>
-        {work.externalUrl && <a class="primary-link" href={work.externalUrl} target="_blank" rel="noreferrer">公開版を開く ↗</a>}
+        {(work.externalUrl || work.downloadUrl) && (
+          <div class="work-detail__links">
+            {work.externalUrl && <a class="primary-link" href={work.externalUrl} target="_blank" rel="noreferrer">{work.externalLabel ?? "公開版を開く ↗"}</a>}
+            {work.downloadUrl && <a class="text-link" href={work.downloadUrl}>プレビューZIPをダウンロード ↓</a>}
+          </div>
+        )}
       </div>
     </section>
 
@@ -81,6 +86,7 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
   dl div { display: grid; grid-template-columns: 100px 1fr; gap: 1rem; padding: 1rem 0; border-top: 1px solid var(--line); }
   dt { color: var(--work-accent); font-family: var(--mono); font-size: .66rem; }
   dd { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.6; }
+  .work-detail__links { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
   .work-detail__next { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: clamp(3rem, 7vw, 6rem) 0; }
   .work-detail__next-work { display: grid; gap: .6rem; text-align: right; text-decoration: none; }
   .work-detail__next-work > span:last-child { font-size: clamp(1.4rem, 3vw, 2.6rem); font-weight: 500; letter-spacing: -.03em; }

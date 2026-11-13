@@ -26,6 +26,8 @@ export type Work = {
   asset: WorkAsset;
   gallery?: { src: string; alt: string; caption: string }[];
   externalUrl?: string;
+  externalLabel?: string;
+  downloadUrl?: string;
 };
 
 export const works: Work[] = [
@@ -319,6 +321,32 @@ export const works: Work[] = [
     tools: ["SwiftUI", "WidgetKit", "StoreKit"],
     accent: "#f1f1ee",
     asset: { type: "image", src: "/works/do-100-hours/app-icon.png", scale: 1, alt: "Do 100 Hoursの白黒のアイコン", caption: "DO 100 HOURS / iOS — COMING SOON" },
+  },
+  {
+    id: "violet-rift",
+    index: "15",
+    symbol: "Vr",
+    slug: "violet-rift",
+    title: "Violet Rift by nu",
+    titleEn: "Obsidian Theme & Pixel Assets",
+    category: "software",
+    categoryLabel: "OBSIDIAN / THEME",
+    summary: "紫の鉱脈とピクセルのしずく。Obsidian用のダークテーマに、英字フォントと88点のアイコンをセットに。",
+    description: "黒紫の背景、角形のUI、流れ落ちる紫のしずくを組み合わせたObsidian用ダークテーマです。英字表示用フォント「Rift Pixel Regular」とSVGアイコン88点を同梱。GitHubで個人・非商用向けの無料プレビューを公開しています。macOS版Obsidianで検証済みで、導入は同梱ガイドに沿って手動で行います。",
+    role: ["UI Design", "Typography", "Icon Design", "Release"],
+    tools: ["Obsidian", "CSS", "SVG", "TTF / WOFF"],
+    accent: "#bc83ef",
+    asset: {
+      type: "image",
+      src: "/works/violet-rift/obsidian.png",
+      scale: 1,
+      alt: "Violet Riftを適用したObsidian。黒紫のサイドバー、紫のピクセル模様としずく、ピクセル書体の見出し。",
+      caption: "VIOLET RIFT / OBSIDIAN — macOS実機画面",
+      presentation: "screenshot",
+    },
+    externalUrl: "https://github.com/bruiselea/violet-rift",
+    externalLabel: "GitHubで見る ↗",
+    downloadUrl: "https://github.com/bruiselea/violet-rift/releases/download/0.2.0/Violet-Rift-0.2.0-preview.zip",
   },
 ];
 
