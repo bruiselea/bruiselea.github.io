@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="回転フタ付きペンケースの寸法を編集し、3Dプレビューや3MF出力ができるエディター。">
+  <title>ペンケース寸法エディター</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header><div class="header-wrap">
+    <h1>ペンケース寸法エディター</h1>
+  </div></header>
+  <main>
+    <div class="workspace">
+      <section class="panel dimensions" aria-labelledby="dimensions-title">
+        <h2 id="dimensions-title">寸法</h2>
+        <div class="preset">
+          <label for="preset">プリセット</label>
+          <select id="preset">
+            <option value="standard">50 mm 標準</option>
+            <option value="compact">42 mm コンパクト</option>
+            <option value="short">42 mm 短いフタ</option>
+            <option value="" disabled>カスタム</option>
+          </select>
+        </div>
+        <div class="part-tabs" role="tablist" aria-label="編集するパーツ">
+          <button type="button" id="tab-body" role="tab" aria-selected="true" aria-controls="panel-body" data-part="body">胴</button>
+          <button type="button" id="tab-lid" role="tab" aria-selected="false" aria-controls="panel-lid" data-part="lid" tabindex="-1">回転フタ</button>
+        </div>
+        <form id="dimensions">
+          <div class="dimension-panel" id="panel-body" role="tabpanel" aria-labelledby="tab-body">
+            <div class="dimension-input">
+              <label for="diameter">胴の外径</label>
+              <div class="field"><input id="diameter" type="number" step="0.01" inputmode="decimal" required value="50"><span>mm</span></div>
+            </div>
+            <div class="dimension-input">
+              <label for="bodyHeight">胴の高さ</label>
+              <div class="field"><input id="bodyHeight" type="number" step="0.01" inputmode="decimal" required value="120.24"><span>mm</span></div>
+            </div>
+            <label class="advanced-toggle"><input id="advanced" type="checkbox" role="switch" aria-controls="divider-options">詳細モード</label>
+            <div id="divider-options" hidden>
+              <div class="dimension-input">
+                <label for="dividerHeight">仕切りの長さ</label>
+                <div class="field"><input id="dividerHeight" type="number" step="0.01" min="1.60" inputmode="decimal" aria-describedby="divider-note"><span>mm</span></div>
+              </div>
+              <p id="divider-note" class="note">空欄にすると胴の高さに合わせます。</p>
+            </div>
+          </div>
+          <div class="dimension-panel" id="panel-lid" role="tabpanel" aria-labelledby="tab-lid" hidden>
+            <div class="dimension-input">
+              <label for="lidHeight">フタの高さ</label>
+              <div class="field"><input id="lidHeight" type="number" step="0.01" inputmode="decimal" required value="58.64"><span>mm</span></div>
+            </div>
+            <p class="note">フタの径は胴の外径に連動します。</p>
+          </div>
+        </form>
+        <p class="note">出力時に高さを積層ピッチに合わせて調整します。ねじの寸法は固定です。</p>
+        <div class="results" aria-live="polite">
+          <div><span>全高</span><strong id="closed-result"></strong></div>
+          <div><span>収納深さ</span><strong id="inside-result"></strong></div>
+          <div><span>仕切りの長さ</span><strong id="divider-result"></strong></div>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </section>
+      <section class="panel preview" aria-labelledby="preview-title">
+        <div class="preview-top">
+          <h2 id="preview-title">3Dプレビュー</h2>
+          <div class="views" role="group" aria-label="表示状態">
+            <button type="button" data-view="parts" aria-pressed="true">パーツ</button>
+            <button type="button" data-view="closed" aria-pressed="false">フタあり</button>
+            <button type="button" data-view="open" aria-pressed="false">フタなし</button>
+          </div>
+        </div>
+        <canvas id="preview" role="img" aria-label="ペンケースの3Dプレビュー。パーツ別表示"></canvas>
+        <div class="legend"><span><i class="green"></i><span id="shell-legend">胴・フタ</span></span><span id="divider-legend"><i class="orange"></i>3分割仕切り</span></div>
+      </section>
+    </div>
+    <section class="panel export" aria-labelledby="export-title">
+      <div><h2 id="export-title">造形データ</h2><p>A1 · 0.8 mmノズル · PETG<br>胴・フタはスパイラル、仕切りは通常造形</p></div>
+      <div class="downloads">
+        <div class="stl"><button type="button" data-stl="body">胴 STL</button><button type="button" data-stl="lid">フタ STL</button><button type="button" data-stl="divider">仕切り STL</button></div>
+        <button type="button" id="download" class="primary">3MFをダウンロード</button>
+        <p id="status" role="status"></p>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
