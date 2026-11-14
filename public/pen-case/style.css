@@ -14,7 +14,8 @@ p{color:var(--muted);line-height:1.65}
 .stl,.views{display:flex;gap:6px;flex-wrap:wrap}
 .preset{display:flex;align-items:center;gap:10px;margin:13px 0 20px;font-size:13px}
 .preset label{color:var(--muted);white-space:nowrap}
-.preset select{min-width:0;flex:1;min-height:35px;background:white;border:1px solid var(--line);border-radius:7px;color:inherit;font:inherit;padding:5px 7px}
+select{min-width:0;min-height:35px;background:white;border:1px solid var(--line);border-radius:7px;color:inherit;font:inherit;padding:5px 7px}
+.preset select{flex:1}
 .part-tabs{display:grid;grid-template-columns:repeat(2,1fr);position:relative;background:var(--field);padding:4px;border-radius:9px}
 .part-tabs::before{content:"";position:absolute;inset:4px auto 4px 4px;width:calc(50% - 4px);border:1px solid #a9cdb5;border-radius:7px;background:white;transition:transform .18s ease}
 .part-tabs:has(#tab-lid[aria-selected=true])::before{transform:translateX(100%)}

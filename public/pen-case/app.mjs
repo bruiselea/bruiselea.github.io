@@ -16,6 +16,7 @@ const inputs = Object.keys(defaults).map(byId);
 const preset = byId("preset");
 const advanced = byId("advanced");
 const dividerInput = byId("dividerHeight");
+const compartmentsInput = byId("compartments");
 const tabs = [...document.querySelectorAll("[data-part]")];
 const viewButtons = [...document.querySelectorAll("[data-view]")];
 let current, models, selectedPart = "body", selectedDimension = "bodyHeight", view = "parts";
@@ -29,6 +30,7 @@ function refresh() {
   let message = "";
   try {
     const values = Object.fromEntries(inputs.map(el => [el.id, el.valueAsNumber]));
+    values.compartments = Number(compartmentsInput.value);
     const automatic = dimensions(values);
     dividerInput.placeholder = automatic.maxDivider.toFixed(2);
     dividerInput.max = automatic.maxDivider;
@@ -42,6 +44,7 @@ function refresh() {
   }
   error.textContent = message;
   error.hidden = !message;
+  byId("divider-label").textContent = current ? current.compartments + "分割仕切り" : "仕切り";
   for (const [id, value] of [["closed", current?.closed], ["inside", current?.inside], ["divider", current?.divider]]) {
     byId(id + "-result").textContent = value === undefined ? "—" : `${value.toFixed(2)} mm`;
   }
@@ -223,6 +226,10 @@ advanced.addEventListener("change", () => {
   setView("parts");
   refresh();
 });
+compartmentsInput.addEventListener("change", () => {
+  if (view === "closed") setView("open");
+  refresh();
+});
 preset.addEventListener("change", () => {
   for (const el of inputs) el.value = presets[preset.value][el.id];
   dividerInput.value = "";
@@ -255,7 +262,8 @@ function save(blob, filename) {
 for (const button of stl) button.addEventListener("click", () => {
   if (!current) return;
   const part = button.dataset.stl;
-  save(new Blob([binaryStl(mesh(current, part))], { type: "model/stl" }), `pen-case-${current.diameter}-${current.closed}-${part}.stl`);
+  const variant = part === "divider" ? `divider-${current.compartments}-way` : part;
+  save(new Blob([binaryStl(mesh(current, part))], { type: "model/stl" }), `pen-case-${current.diameter}-${current.closed}-${variant}.stl`);
   status.textContent = "STLを作成しました。";
 });
 download.addEventListener("click", async () => {
@@ -266,7 +274,7 @@ download.addEventListener("click", async () => {
   status.textContent = "3MFを作成中…";
   try {
     const { project } = await import("./export.mjs");
-    save(await project(d), `pen-case-${d.diameter}-${d.closed}-A1.3mf`);
+    save(await project(d), `pen-case-${d.diameter}-${d.closed}-${d.compartments}-way-A1.3mf`);
     status.textContent = "3MFを作成しました。Bambu Studioで開けます。";
   } catch {
     status.textContent = "3MFを作成できませんでした。ページを再読み込みしてもう一度お試しください。";

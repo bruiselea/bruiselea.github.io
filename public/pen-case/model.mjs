@@ -2,11 +2,12 @@ export const defaults = { diameter: 50, bodyHeight: 120.24, lidHeight: 58.64 };
 const tau = 2 * Math.PI;
 export const floor = 0.96, engagement = 17.64, bodyWall = 1.10, lidWall = 1.45;
 const depth = 0.95, clearance = 0.35, stretch = 1.5, lead = 21.6;
+const dividerHalfWidth = 0.95, dividerBevel = 0.40;
 const clean = x => Number(x.toFixed(2));
 const align = x => clean(0.4 + Math.round((x - 0.4) / 0.56) * 0.56);
 const ramp = (x, a, b) => Math.max(0, Math.min(1, (x - a) / (b - a)));
 
-export function dimensions({ diameter, bodyHeight, lidHeight, dividerHeight }) {
+export function dimensions({ diameter, bodyHeight, lidHeight, dividerHeight, compartments = 3 }) {
   if (![diameter, bodyHeight, lidHeight].every(x => Number.isFinite(x) && x > 0)) {
     throw new Error("寸法を正の数で入力してください。");
   }
@@ -18,14 +19,16 @@ export function dimensions({ diameter, bodyHeight, lidHeight, dividerHeight }) {
   const dividerRadius = radius - bodyWall - depth - clearance;
   const maxDivider = clean(Math.floor((body - floor - 0.5) / 0.32 + 1e-9) * 0.32);
   const divider = dividerHeight === undefined ? maxDivider : clean(Math.round(dividerHeight / 0.32) * 0.32);
-  if (dividerRadius <= 1.9 / Math.sqrt(3) + 0.4) throw new Error("仕切りが入るように、胴の外径を広げてください。");
+  if (![3, 4, 5].includes(compartments)) throw new Error("仕切りは3〜5分割から選んでください。");
+  const dividerCore = dividerHalfWidth / Math.sin(Math.PI / compartments);
+  if (dividerRadius <= dividerCore + dividerBevel) throw new Error("仕切りが入るように、胴の外径を広げてください。");
   if (body < 24.39) throw new Error("ねじ部を確保するため、胴の高さを24.4 mm以上にしてください。");
   if (extension < 0) throw new Error("ねじ部を確保するため、フタの高さを18.88 mm以上にしてください。");
   if (Math.max(lidDiameter, body, lid) > 256) throw new Error("A1の造形範囲（256 mm角）に収まる寸法を入力してください。");
   if (!Number.isFinite(divider) || divider < 1.60 || divider > maxDivider) {
     throw new Error(`仕切りの長さは1.60〜${maxDivider.toFixed(2)} mmで入力してください。`);
   }
-  return { diameter, radius, body, lid, extension, lidDiameter, divider, maxDivider, dividerRadius,
+  return { diameter, radius, body, lid, extension, lidDiameter, divider, maxDivider, dividerRadius, compartments, dividerCore,
     closed: clean(body + lid - engagement), inside: clean(body + lid - engagement - 2 * floor) };
 }
 
@@ -69,17 +72,19 @@ function joinRings(rings, bottom, top) {
 
 export function mesh(d, part, preview = false) {
   if (part === "divider") {
+    const sector = tau / d.compartments;
+    const armAngles = Array.from({ length: d.compartments }, (_, i) => i * sector);
     const corners = (r, z) => {
-      const half = Math.asin(1.90 / (2 * r));
+      const half = Math.asin(dividerHalfWidth / r);
       const polar = (radius, angle) => [radius * Math.cos(angle), radius * Math.sin(angle), z];
-      return [0, tau / 3, 2 * tau / 3].flatMap(a => [
+      return armAngles.flatMap(a => [
         ...[-half, -half / 2, 0, half / 2, half].map(t => polar(r, a + t)),
-        polar(1.90 / Math.sqrt(3), a + tau / 6),
+        polar(d.dividerCore, a + sector / 2),
       ]);
     };
     const r = d.dividerRadius, h = d.divider;
-    return joinRings([corners(r - 0.40, 0), corners(r, 0.64),
-      corners(r, h - 0.64), corners(r - 0.40, h)], 0, h);
+    return joinRings([corners(r - dividerBevel, 0), corners(r, 0.64),
+      corners(r, h - 0.64), corners(r - dividerBevel, h)], 0, h);
   }
   const isBody = part === "body";
   const height = isBody ? d.body : d.lid;

@@ -71,7 +71,7 @@ export async function project(d) {
   const parts = [
     ["body", 1, "01 Pen case body"],
     ["lid", 2, "02 Twist lid"],
-    ["divider", 3, "03 PETG divider"],
+    ["divider", 3, `03 PETG divider (${d.compartments}-way)`],
   ];
   for (const [part, plate, name] of parts) {
     const m = mesh(d, part);
@@ -93,6 +93,14 @@ export async function project(d) {
   }
   let plate = 0;
   config = config.replace(/(key="plater_name" value=")[^"]+/g, (_, prefix) => prefix + parts[plate++][2]);
+  if (d.compartments !== 3) {
+    // The bundled divider images depict the original three-way insert.
+    const previewFiles = Object.keys(files).filter(name => /_3(?:_small)?\.png$/.test(name));
+    const obsolete = new Set(previewFiles);
+    config = config.replace(/^[\t ]*<metadata key="(?:thumbnail_file|thumbnail_no_light_file|top_file|pick_file)" value="([^"]+)"\/>\r?\n/gm,
+      (line, filename) => obsolete.has(filename) ? "" : line);
+    for (const filename of previewFiles) delete files[filename];
+  }
   files["Metadata/model_settings.config"] = config;
   return zip(files);
 }
