@@ -2,6 +2,9 @@
 // Shape on the removable cover. / カバーと一体にする形状
 mount_style = 0; // [0:Device holder, 1:Flat plate, 2:Add to an STL]
 
+// Front outline for Flat plate. / 平板を選んだときのカバーの外形
+cover_outline = 0; // [0:Rectangle, 1:Rounded, 2:Tapered, 3:Arch]
+
 // Device width, or plate or imported STL width along X. / 機器・平板・STLの幅
 width_mm = 60; // [10:0.1:250]
 
@@ -70,6 +73,9 @@ cover_bottom = -base_half_height - 1;
 cover_inner_top = base_half_height + 1;
 cover_face_top = cover_inner_top + 2;
 cover_rise = plate_back - cover_back;
+cover_roof_top = cover_face_top + cover_rise;
+outline_center = (cover_bottom + cover_roof_top) / 2;
+has_outline = mount_style == 1 && cover_outline != 0;
 
 side_wall = 4;
 seat = 4;
@@ -84,7 +90,8 @@ front_half_width = max(cover_outer,
     width_mm / 2 + (mount_style == 2 ? abs(stl_offset_mm.x) : 0));
 holder_panel_bottom = min(-height_mm / 2, cover_bottom - cover_rise);
 front_bottom = mount_style == 0 ? holder_panel_bottom :
-    min(cover_bottom, -height_mm / 2 + (mount_style == 2 ? stl_offset_mm.y : 0));
+    min(cover_bottom, -height_mm / 2 + (has_outline ? outline_center :
+        mount_style == 2 ? stl_offset_mm.y : 0));
 
 module box(x0, x1, y0, y1, z0, z1) {
     translate([x0, y0, z0]) cube([x1 - x0, y1 - y0, z1 - z0]);
@@ -167,6 +174,39 @@ module backing_plate(width) {
     box(-width / 2, width / 2, -height_mm / 2, height_mm / 2, plate_back, plate_front);
 }
 
+function cover_fits_outline(w, h, x, y, radius, rise, taper) =
+    x <= w / 2 && y <= h / 2 && (
+        cover_outline == 1 ?
+            norm([max(0, x - (w / 2 - radius)), max(0, y - (h / 2 - radius))]) <= radius :
+        cover_outline == 2 ?
+            x <= w / 2 - taper * (0.5 + y / h) :
+            pow(x / (w / 2), 2) + pow(max(0, y - (h / 2 - rise)) / rise, 2) <= 1
+    );
+
+module shaped_plate() {
+    w = width_mm;
+    h = height_mm;
+    radius = 12;
+    rise = h * 0.46;
+    taper = w * 0.165;
+    // Cover the full silhouette of the stock sleeve, including its rear roof.
+    // Leave a small margin for polygonal arcs and mesh export.
+    assert(cover_fits_outline(w, h, cover_outer + 0.08,
+                             (cover_roof_top - cover_bottom) / 2 + 0.08,
+                             radius, rise, taper),
+           "Cover outline must hide the wall base. Increase width or height.");
+    translate([0, outline_center, plate_back])
+        linear_extrude(height = plate_front - plate_back) {
+            if (cover_outline == 1)
+                offset(r = radius, $fn = 120) square([w - 2 * radius, h - 2 * radius], center = true);
+            else if (cover_outline == 2)
+                polygon([[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2 - taper, h / 2], [taper - w / 2, h / 2]]);
+            else
+                polygon(concat([[-w / 2, -h / 2], [w / 2, -h / 2]],
+                    [for (angle = [0 : 3 : 180]) [w / 2 * cos(angle), h / 2 - rise + rise * sin(angle)]]));
+        }
+}
+
 module device_holder() {
     y_bottom = -height_mm / 2;
     box(-front_half_width, front_half_width, holder_panel_bottom, max(height_mm / 2, cover_face_top),
@@ -192,7 +232,10 @@ module removable_cover() {
         if (mount_style == 0) {
             device_holder();
         } else if (mount_style == 1) {
-            backing_plate(width_mm);
+            if (has_outline)
+                shaped_plate();
+            else
+                backing_plate(width_mm);
         } else {
             assert(stl_file != "default.stl" && stl_file != "", "Upload your STL first.");
             assert(abs(stl_offset_mm.x) < (width_mm / 2 + cover_outer) &&
@@ -213,6 +256,8 @@ module print_cover() {
 }
 
 assert(mount_style == 0 || mount_style == 1 || mount_style == 2, "Choose a mount shape.");
+assert(cover_outline == 0 || cover_outline == 1 || cover_outline == 2 || cover_outline == 3,
+       "Choose a cover outline.");
 assert(print_part == 0 || print_part == 1 || print_part == 2 || print_part == 3, "Choose an output.");
 assert(base_size == 0 || base_size == 1 || base_size == 2, "Choose base size S, M or L.");
 assert(slide_clearance_mm >= 0.15 && slide_clearance_mm <= 0.35, "Set slide clearance to 0.15–0.35 mm.");

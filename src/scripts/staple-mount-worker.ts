@@ -84,6 +84,9 @@ async function render(part: number, base: number, vars: Record<string, number | 
     if (code !== 0) throw new Error("OpenSCAD exit " + code);
     buffer = scad.FS.readFile(output, { encoding: "binary" }).slice().buffer;
   } catch {
+    if (messages.some((line) => line.includes("Cover outline must hide"))) {
+      throw new Error("この輪郭ではベース全体を覆えません。カバーの幅か高さを広げてください。");
+    }
     if (messages.some((line) => line.includes("Move the STL"))) {
       throw new Error("自作 STL をカバー正面に重ねてください。");
     }
@@ -103,7 +106,7 @@ async function generate({ settings: s, imported }: MountRequest) {
   }
 
   const result = await render(s.style === 3 ? 3 : 2, s.base, {
-    mount_style: s.style === 3 ? 0 : s.style,
+    mount_style: s.style === 3 ? 0 : s.style, cover_outline: s.outline,
     width_mm: s.width, height_mm: s.height, device_thickness_mm: s.depth,
     clearance_mm: s.fit, lip_height_mm: s.lip, slide_clearance_mm: s.slide,
     stl_origin_mm: JSON.stringify(s.origin), stl_offset_mm: JSON.stringify(s.offset),

@@ -15,6 +15,9 @@ const viewButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-view
 const loader = new STLLoader();
 const maxFileSize = 12_000_000;
 const names = ["S", "M", "L"];
+const outlineDefaults = [[104, 78], [116, 104], [132, 146]];
+const coverHeights = [45.4, 70.9, 104.9];
+let outlineEdited = false;
 const fmt = Intl.NumberFormat("ja-JP", { maximumFractionDigits: 1 });
 
 let revision = 0;
@@ -44,9 +47,24 @@ function toggleGroup(id: string, enabled: boolean) {
   fieldset.disabled = !enabled;
 }
 
+function chosenOutline() {
+  return mode() === 1 ? Number(value("outline")) : 0;
+}
+
 function syncMode() {
   const style = mode();
-  toggleGroup("mount-dimensions", style < 2);
+  const shaped = chosenOutline() !== 0;
+  const size = Number(value("base"));
+  toggleGroup("mount-outline", style === 1);
+  toggleGroup("mount-outline-size", shaped);
+  toggleGroup("mount-dimensions", style < 2 && !shaped);
+  if (shaped && !outlineEdited) {
+    const [width, height] = outlineDefaults[size];
+    (form.elements.namedItem("outlineWidth") as HTMLInputElement).value = String(width);
+    (form.elements.namedItem("outlineHeight") as HTMLInputElement).value = String(height);
+  }
+  document.getElementById("outline-help")!.textContent =
+    "輪郭の内側に " + names[size] + " ベースの覆い範囲（73 × " + coverHeights[size] + " mm）が入る寸法にします。";
   toggleGroup("mount-holder", style === 0);
   toggleGroup("mount-import", style === 2);
   document.getElementById("mount-cad-help")!.hidden = style !== 3;
@@ -111,10 +129,11 @@ coverButton.addEventListener("click", () => save("cover"));
 
 async function inputs(): Promise<MountRequest> {
   const style = mode();
+  const outline = chosenOutline();
   const settings = {
-    style, base: Number(value("base")), slide: Number(value("slide")),
-    width: style < 2 ? Number(value("width")) : 60,
-    height: style < 2 ? Number(value("height")) : 80,
+    style, outline, base: Number(value("base")), slide: Number(value("slide")),
+    width: style < 2 ? Number(value(outline ? "outlineWidth" : "width")) : 60,
+    height: style < 2 ? Number(value(outline ? "outlineHeight" : "height")) : 80,
     depth: style === 0 ? Number(value("depth")) : 18,
     fit: style === 0 ? Number(value("fit")) : 0.5,
     lip: style === 0 ? Number(value("lip")) : 6,
@@ -174,7 +193,10 @@ function generate(request: MountRequest): Promise<MountModels> {
   });
 }
 
-form.addEventListener("input", () => {
+form.addEventListener("input", (event) => {
+  if (event.target instanceof HTMLInputElement && ["outlineWidth", "outlineHeight"].includes(event.target.name)) {
+    outlineEdited = true;
+  }
   revision += 1;
   syncMode();
   updateButtons();

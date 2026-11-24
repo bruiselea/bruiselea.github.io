@@ -3,6 +3,7 @@ export type MountView = "exploded" | "installed" | "print";
 
 export interface MountSettings {
   style: MountStyle;
+  outline: number;
   base: number;
   slide: number;
   width: number;
