@@ -12,6 +12,7 @@ export function getStaticPaths() {
 
 interface Props { work: Work }
 const { work } = Astro.props;
+const siteLink = work.externalUrl?.startsWith("/") ? work.externalUrl : undefined;
 const nextWork = works[(works.indexOf(work) + 1) % works.length];
 ---
 
@@ -23,10 +24,13 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
         <h1>{work.title}</h1>
         <p class="work-detail__en">{work.titleEn}</p>
       </div>
-      <p>{work.summary}</p>
+      <div class="work-detail__intro">
+        <p>{work.summary}</p>
+        {siteLink && <a class="primary-link" href={siteLink}>{work.externalLabel ?? "公開版を開く"}</a>}
+      </div>
     </header>
 
-    <WorkVisual work={work} eager />
+    <WorkVisual work={work} eager fullBleed={work.asset.presentation === "screenshot" && Boolean(siteLink)} />
 
     {work.gallery && (
       <div class="work-detail__gallery">
@@ -49,9 +53,9 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
           <div><dt>ROLE</dt><dd>{work.role.join(" / ")}</dd></div>
           <div><dt>TOOLS</dt><dd>{work.tools.join(" / ")}</dd></div>
         </dl>
-        {(work.externalUrl || work.downloadUrl) && (
+        {((work.externalUrl && !siteLink) || work.downloadUrl) && (
           <div class="work-detail__links">
-            {work.externalUrl && <a class="primary-link" href={work.externalUrl} target="_blank" rel="noreferrer">{work.externalLabel ?? "公開版を開く ↗"}</a>}
+            {work.externalUrl && !siteLink && <a class="primary-link" href={work.externalUrl} target="_blank" rel="noreferrer">{work.externalLabel ?? "公開版を開く ↗"}</a>}
             {work.downloadUrl && <a class="text-link" href={work.downloadUrl}>プレビューZIPをダウンロード ↓</a>}
           </div>
         )}
@@ -72,7 +76,8 @@ const nextWork = works[(works.indexOf(work) + 1) % works.length];
 <style>
   .work-detail__header { display: grid; grid-template-columns: 1.25fr .75fr; gap: 4rem; align-items: end; padding-bottom: clamp(3rem, 7vw, 6rem); }
   .work-detail__header h1 { max-width: 12ch; margin: 0; font-size: clamp(3.2rem, 8vw, 7rem); font-weight: 500; letter-spacing: -.055em; line-height: .92; }
-  .work-detail__header > p { margin: 0; color: #b4b4bb; font-size: 1.1rem; line-height: 1.9; }
+  .work-detail__intro > p { margin: 0; color: #b4b4bb; font-size: 1.1rem; line-height: 1.9; }
+  .work-detail__intro .primary-link { --accent: var(--work-accent); margin-top: 1.5rem; }
   .work-detail__en { color: var(--muted); font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; }
   .work-detail :global(.work-visual) { border: 1px solid var(--line); }
   .work-detail__gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; margin-top: 1px; background: var(--line); }

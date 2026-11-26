@@ -4,12 +4,19 @@ import type { Work } from "../data/works";
 interface Props {
   work: Work;
   eager?: boolean;
+  fullBleed?: boolean;
 }
 
-const { work, eager = false } = Astro.props;
+const { work, eager = false, fullBleed = false } = Astro.props;
 ---
 
-<figure class:list={["work-visual", { "work-visual--low-res": work.asset.lowRes }]} style={`--work-accent:${work.accent}`}>
+<figure
+  class:list={["work-visual", {
+    "work-visual--low-res": work.asset.lowRes,
+    "work-visual--full-bleed": fullBleed,
+  }]}
+  style={`--work-accent:${work.accent}`}
+>
   <img
     src={work.asset.src}
     alt={work.asset.alt ?? `${work.title}のイメージレンダー`}

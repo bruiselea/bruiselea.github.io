@@ -2,7 +2,10 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Footer from "../../components/Footer.astro";
 import WorkVisual from "../../components/WorkVisual.astro";
-import { works } from "../../data/works";
+import { getWorkBySlug, works } from "../../data/works";
+
+const featured = getWorkBySlug("staple-mount-maker");
+const archive = works.filter((work) => work !== featured);
 ---
 
 <BaseLayout title="Works — Natsuki Sato" description="iOS/macOSアプリ、Webツール、Chrome拡張、ハードウェア、3Dプリントなどの制作物一覧。">
@@ -17,8 +20,23 @@ import { works } from "../../data/works";
       </p>
     </header>
 
+    {featured && (
+      <article class="featured-work" style={`--work-accent:${featured.accent}`}>
+        <div class="featured-work__body">
+          <p class="eyebrow">公開アルファ</p>
+          <h2>{featured.title}</h2>
+          <p class="featured-work__summary">{featured.summary}</p>
+          <div class="featured-work__links">
+            {featured.externalUrl && <a class="primary-link" href={featured.externalUrl}>{featured.externalLabel}</a>}
+            <a class="text-link" href={`/works/${featured.slug}/`}>作品の詳細を見る →</a>
+          </div>
+        </div>
+        <WorkVisual work={featured} eager fullBleed />
+      </article>
+    )}
+
     <div class="works-grid">
-      {works.map((work, index) => (
+      {archive.map((work, index) => (
         <article class="work-card" style={`--work-accent:${work.accent}`}>
           <a href={`/works/${work.slug}/`} aria-label={`${work.title}の詳細を見る`}>
             <WorkVisual work={work} eager={index < 2} />
@@ -39,6 +57,14 @@ import { works } from "../../data/works";
 </BaseLayout>
 
 <style>
+  .featured-work { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; border: 1px solid var(--line); }
+  .featured-work__body { padding: clamp(1.4rem, 4vw, 3.5rem); padding-block-start: clamp(1.4rem, 6vw, 5.5rem); }
+  .featured-work .eyebrow { color: var(--work-accent); }
+  .featured-work h2 { margin: .7rem 0 1rem; font-size: clamp(1.55rem, 2.25vw, 2.25rem); font-weight: 520; line-height: 1.25; letter-spacing: -.035em; word-break: auto-phrase; overflow-wrap: anywhere; }
+  .featured-work__summary { max-width: 32ch; margin: 0 0 1.5rem; color: var(--muted); line-height: 1.8; }
+  .featured-work__links { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; }
+  .featured-work .primary-link { --accent: var(--work-accent); }
+  .featured-work :global(.work-visual) { align-self: stretch; align-content: center; border-inline-start: 1px solid var(--line); }
   .works-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin-top: 1px; background: var(--line); }
   .work-card { background: var(--bg); }
   .work-card > a { display: block; height: 100%; text-decoration: none; }
@@ -48,5 +74,8 @@ import { works } from "../../data/works";
   .work-card__meta { display: flex; justify-content: space-between; color: var(--work-accent); font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; }
   .work-card h2 { margin: 2rem 0 .8rem; font-size: clamp(1.6rem, 3vw, 2.7rem); font-weight: 520; letter-spacing: -.035em; }
   .work-card p { max-width: 42ch; margin: 0 0 2rem; color: var(--muted); line-height: 1.8; }
-  @media (max-width: 760px) { .works-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) {
+    .featured-work, .works-grid { grid-template-columns: 1fr; }
+    .featured-work :global(.work-visual) { border-inline-start: 0; border-block-start: 1px solid var(--line); }
+  }
 </style>

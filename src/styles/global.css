@@ -323,6 +323,11 @@ textarea {
   object-fit: scale-down;
 }
 
+.work-visual--full-bleed img {
+  aspect-ratio: auto;
+  padding: 0;
+}
+
 .work-visual figcaption {
   padding: 0.8rem 1rem;
   border-top: 1px solid var(--line);
