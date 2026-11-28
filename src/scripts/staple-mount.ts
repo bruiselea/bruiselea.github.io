@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { coverInAssembly, createMountViewer } from "./staple-mount-viewer";
-import { mountFiles } from "./staple-mount-types";
+import { mountFiles, shelfDefaults } from "./staple-mount-types";
 import type { MountModels, MountRequest, MountResponse, MountStyle, MountView } from "./staple-mount-types";
 
 const form = document.querySelector<HTMLFormElement>("#mount-form")!;
@@ -66,12 +66,13 @@ function syncMode() {
   }
   document.getElementById("outline-help")!.textContent =
     "輪郭の内側に " + names[size] + " ベースの覆い範囲（73 × " + coverHeights[size] + " mm）が入る寸法にします。";
+  toggleGroup("mount-shelf", style === 4);
   toggleGroup("mount-holder", style === 0);
   toggleGroup("mount-import", style === 2);
   document.getElementById("mount-cad-help")!.hidden = style !== 3;
   document.getElementById("mount-width-label")!.textContent = style === 1 ? "平板の幅" : "機器の幅";
   document.getElementById("mount-height-label")!.textContent = style === 1 ? "平板の高さ" : "背板の高さ";
-  coverButton.textContent = style === 3 ? "CAD用 STL" : "カバー STL";
+  coverButton.textContent = style === 4 ? "棚 STL" : style === 3 ? "CAD用 STL" : "カバー STL";
 }
 
 function message(text: string, error = false) {
@@ -93,7 +94,7 @@ function render(models: MountModels, visibleRevision: number) {
   const geometry = coverInAssembly(models);
   geometry.computeBoundingBox();
   const size = geometry.boundingBox!.getSize(new Vector3());
-  dimensions.textContent = "カバー " + [size.x, size.y, size.z].map((n) => fmt.format(n)).join(" × ") + " mm";
+  dimensions.textContent = (models.style === 4 ? "棚全体 " : "カバー ") + [size.x, size.y, size.z].map((n) => fmt.format(n)).join(" × ") + " mm";
   geometry.dispose();
   viewer?.show(models, view);
   updateButtons();
@@ -110,7 +111,8 @@ for (const button of viewButtons) {
 }
 
 function filename(part: "base" | "cover", models: MountModels) {
-  return "staple-mount-" + names[models.size] + "-" + (part === "cover" && models.style === 3 ? "cad-cover" : part) + ".stl";
+  const suffix = part === "base" ? "base" : models.style === 4 ? "shelf" : models.style === 3 ? "cad-cover" : "cover";
+  return "staple-mount-" + names[models.size] + "-" + suffix + ".stl";
 }
 
 function save(part: "base" | "cover") {
@@ -133,9 +135,10 @@ async function inputs(): Promise<MountRequest> {
   const outline = chosenOutline();
   const settings = {
     style, outline, base: Number(value("base")), slide: Number(value("slide")),
-    width: style < 2 ? Number(value(outline ? "outlineWidth" : "width")) : 60,
+    width: style === 4 ? Number(value("shelfWidth"))
+      : style < 2 ? Number(value(outline ? "outlineWidth" : "width")) : 60,
     height: style < 2 ? Number(value(outline ? "outlineHeight" : "height")) : 80,
-    depth: style === 0 ? Number(value("depth")) : 18,
+    depth: style === 4 ? Number(value("shelfDepth")) : style === 0 ? Number(value("depth")) : 18,
     fit: style === 0 ? Number(value("fit")) : 0.5,
     lip: style === 0 ? Number(value("lip")) : 6,
     origin: [0, 0, 0] as [number, number, number],
@@ -232,10 +235,11 @@ async function sample(file: string) {
 }
 
 syncMode();
-void Promise.all([sample("Slide-Mount-S-Base.stl"), sample("Slide-Mount-S-Holder-60x18.stl")]).then(([base, cover]) => {
+void Promise.all([sample("Slide-Mount-S-Base.stl"), sample("Slide-Mount-S-Shelf-100x50.stl")]).then(([base, cover]) => {
   if (revision !== 0 || busy) return;
-  render({ base, cover, style: 0, size: 0, frontBottom: -40, frontPlane: 12.4, lift: 75 }, 0);
-  message(viewer ? "Sベースと幅60 mm・厚み18 mmのサンプルです。" : "3D表示を利用できない環境です。サンプルSTLはダウンロードできます。");
+  render({ base, cover, style: 4, size: 0, frontBottom: -18, printPlane: 20, lift: 53 }, 0);
+  message(viewer ? `Sベースと幅${shelfDefaults.width} mm・奥行き${shelfDefaults.depth} mmの棚のサンプルです。`
+    : "3D表示を利用できない環境です。サンプルSTLはダウンロードできます。");
 }).catch(() => {
   if (revision === 0 && !busy) message("サンプルを読み込めませんでした。「3Dモデルを生成」で作り直せます。", true);
 });

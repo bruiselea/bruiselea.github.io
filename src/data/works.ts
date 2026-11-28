@@ -359,7 +359,7 @@ export const works: Work[] = [
     category: "software",
     categoryLabel: "CAD TOOL",
     summary: "石膏ボードにホチキスで留める、スライド式の壁掛けをブラウザから設計。",
-    description: "ホチキスで固定した壁側ベースに、上からカバーを差し込むと針が隠れます。機器の寸法に合わせた受け、平板、自作STLを取り付けたカバーを生成でき、自由設計用のSTEPもダウンロードできます。",
+    description: "ホチキスで固定した壁側ベースに、上からカバーを差し込むと針が隠れます。幅と奥行きを指定した棚、機器の寸法に合わせた受け、平板、自作STLを取り付けたカバーを生成でき、自由設計用のSTEPもダウンロードできます。",
     role: ["Product", "CAD", "3D Printing", "Web"],
     tools: ["OpenSCAD", "WebAssembly", "Three.js"],
     accent: "#faa16e",

@@ -73,7 +73,7 @@ async function render(part: number, base: number, vars: Record<string, number | 
       printErr: (line) => messages.push(line),
     }),
   ]);
-  scad.FS.writeFile("/mount.scad", program + '\necho("WEB_POSE", front_bottom, plate_front, base_half_height - front_bottom + 18);\n');
+  scad.FS.writeFile("/mount.scad", program + '\necho("WEB_POSE", front_bottom, mount_style == 4 ? cover_face_top : plate_front, base_half_height - front_bottom + 18);\n');
   if (imported) scad.FS.writeFile("/user.stl", new Uint8Array(imported));
 
   const flags = Object.entries({ base_size: base, print_part: part, ...vars }).flatMap(([key, val]) => ["-D", key + "=" + val]);
@@ -95,7 +95,7 @@ async function render(part: number, base: number, vars: Record<string, number | 
   const pose = messages.join("\n").match(/"WEB_POSE",\s*([-\d.]+),\s*([-\d.]+),\s*([-\d.]+)/);
   if (!pose) throw new Error("モデルの配置を取得できませんでした。");
   checkBinarySTL(buffer, imported !== undefined);
-  return { buffer, frontBottom: Number(pose[1]), frontPlane: Number(pose[2]), lift: Number(pose[3]) };
+  return { buffer, frontBottom: Number(pose[1]), printPlane: Number(pose[2]), lift: Number(pose[3]) };
 }
 
 async function generate({ settings: s, imported }: MountRequest) {
@@ -108,13 +108,14 @@ async function generate({ settings: s, imported }: MountRequest) {
   const result = await render(s.style === 3 ? 3 : 2, s.base, {
     mount_style: s.style === 3 ? 0 : s.style, cover_outline: s.outline,
     width_mm: s.width, height_mm: s.height, device_thickness_mm: s.depth,
+    ...(s.style === 4 ? { shelf_width_mm: s.width, shelf_depth_mm: s.depth } : {}),
     clearance_mm: s.fit, lip_height_mm: s.lip, slide_clearance_mm: s.slide,
     stl_origin_mm: JSON.stringify(s.origin), stl_offset_mm: JSON.stringify(s.offset),
     ...(imported ? { stl_file: '"/user.stl"' } : {}),
   }, imported);
   return {
     base: base.slice(0), cover: result.buffer, style: s.style, size: s.base,
-    frontBottom: result.frontBottom, frontPlane: result.frontPlane, lift: result.lift,
+    frontBottom: result.frontBottom, printPlane: result.printPlane, lift: result.lift,
   };
 }
 

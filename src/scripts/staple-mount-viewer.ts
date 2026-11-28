@@ -11,9 +11,11 @@ const loader = new STLLoader();
 export function coverInAssembly(models: MountModels) {
   const geometry = loader.parse(models.cover);
   if (models.style === 1) {
-    geometry.translate(0, 0, -models.frontPlane).rotateX(-Math.PI);
+    geometry.translate(0, 0, -models.printPlane).rotateX(-Math.PI);
   } else if (models.style === 3) {
-    geometry.translate(0, 0, models.frontPlane);
+    geometry.translate(0, 0, models.printPlane);
+  } else if (models.style === 4) {
+    geometry.translate(0, 0, -models.printPlane).rotateX(Math.PI / 2);
   } else {
     geometry.translate(0, 0, models.frontBottom).rotateX(-Math.PI / 2);
   }
@@ -87,7 +89,8 @@ export function createMountViewer(stage: HTMLElement) {
     const aspect = Math.max(stage.clientWidth / Math.max(stage.clientHeight, 1), 0.45);
     const halfFov = Math.atan(Math.tan(Math.PI / 10) * Math.min(1, aspect));
     const distance = radius / Math.sin(halfFov) * (view === "exploded" ? 0.95 : 1.14);
-    const direction = view === "print" ? new Vector3(0.65, 0.85, 1.15) : new Vector3(0.29, 0.17, 1.48);
+    const direction = view === "print" ? new Vector3(0.65, 0.85, 1.15)
+      : models.style === 4 ? new Vector3(0.64, 0.50, 1.48) : new Vector3(0.29, 0.17, 1.48);
     camera.position.copy(center).add(direction.normalize().multiplyScalar(distance));
     orbit.target.copy(center);
     orbit.update();

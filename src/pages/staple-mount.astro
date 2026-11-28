@@ -1,18 +1,18 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Footer from "../components/Footer.astro";
-const files = "/staple-mount/files/";
+import { mountFiles as files, shelfDefaults } from "../scripts/staple-mount-types";
 ---
 <BaseLayout
   title="ホチキス壁掛けメーカー — Natsuki Sato"
   description="石膏ボード用のスライド式壁掛けを設計。寸法を入力するか自作STLを読み込み、ブラウザから印刷用データを書き出せます。"
-  image={files + "assembly.png"}
+  image={files + "starter-shelf.png"}
 >
   <main class="mount-page">
     <header class="mount-intro">
       <p class="mount-release">公開アルファ</p>
       <h1>ホチキス壁掛けメーカー</h1>
-      <p>ベースを石膏ボードに留め、ホルダーを上から差し込むと針が隠れます。寸法を合わせて、3Dプリント用の部品を作れます。</p>
+      <p>ベースを石膏ボードに留め、棚やホルダーを上から差し込むと針が隠れます。寸法を合わせて、3Dプリント用の部品を作れます。</p>
     </header>
 
     <div class="mount-workspace">
@@ -20,6 +20,7 @@ const files = "/staple-mount/files/";
         <label class="mount-field">
           <span>作る形</span>
           <select name="style">
+            <option value="4" selected>棚</option>
             <option value="0">受け付きホルダー</option>
             <option value="1">平板</option>
             <option value="2">自作 STL を取り付ける</option>
@@ -69,7 +70,19 @@ const files = "/staple-mount/files/";
           <p id="outline-help" class="field-note"></p>
         </fieldset>
 
-        <fieldset id="mount-dimensions" class="mount-pair">
+        <fieldset id="mount-shelf" class="mount-pair">
+          <legend class="visually-hidden">棚板の寸法</legend>
+          <label class="mount-field">
+            <span>棚板の幅</span>
+            <div class="number-field"><input name="shelfWidth" type="number" min="73" max="250" step="0.1" value={shelfDefaults.width} required /><span>mm</span></div>
+          </label>
+          <label class="mount-field">
+            <span>棚板の奥行き</span>
+            <div class="number-field"><input name="shelfDepth" type="number" min="20" max="120" step="0.1" value={shelfDefaults.depth} required /><span>mm</span></div>
+          </label>
+        </fieldset>
+
+        <fieldset id="mount-dimensions" class="mount-pair" hidden disabled>
           <legend class="visually-hidden">本体の寸法</legend>
           <label class="mount-field">
             <span id="mount-width-label">機器の幅</span>
@@ -81,7 +94,7 @@ const files = "/staple-mount/files/";
           </label>
         </fieldset>
 
-        <fieldset id="mount-holder" class="mount-holder">
+        <fieldset id="mount-holder" class="mount-holder" hidden disabled>
           <legend class="visually-hidden">受け付きホルダー</legend>
           <div class="mount-pair">
             <label class="mount-field">
@@ -132,7 +145,7 @@ const files = "/staple-mount/files/";
           </div>
         </div>
         <div class="mount-stage" id="mount-stage">
-          <img class="preview-fallback" src={files + "assembly.png"} alt="ホルダーを壁側ベースに差し込む前と装着後の形状" width="1280" height="640" />
+          <img class="preview-fallback" src={files + "starter-shelf.png"} alt="棚を壁側ベースに差し込む前の形状" width="1200" height="630" />
         </div>
         <div class="preview-footer">
           <div class="mount-legend">
@@ -143,7 +156,7 @@ const files = "/staple-mount/files/";
         </div>
         <div class="mount-downloads">
           <button id="mount-download-base" type="button" disabled>ベース STL</button>
-          <button id="mount-download-cover" type="button" disabled>カバー STL</button>
+          <button id="mount-download-cover" type="button" disabled>棚 STL</button>
         </div>
         <p id="mount-status" class="mount-status" role="status" aria-live="polite">サンプルを読み込んでいます。</p>
         <noscript>ブラウザのJavaScriptを有効にすると寸法を変更できます。</noscript>

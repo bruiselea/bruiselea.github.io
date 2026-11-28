@@ -1,6 +1,6 @@
 /* [Mount / 形状] */
 // Shape on the removable cover. / カバーと一体にする形状
-mount_style = 0; // [0:Device holder, 1:Flat plate, 2:Add to an STL]
+mount_style = 4; // [4:Shelf, 0:Device holder, 1:Flat plate, 2:Add to an STL]
 
 // Front outline for Flat plate. / 平板を選んだときのカバーの外形
 cover_outline = 0; // [0:Rectangle, 1:Rounded, 2:Tapered, 3:Arch]
@@ -17,6 +17,11 @@ base_size = 0; // [0:S - 6 staples, 1:M - 12 staples, 2:L - 20 staples]
 
 // Dovetail clearance per side. / あり溝の片側のすき間
 slide_clearance_mm = 0.25; // [0.15:0.05:0.35]
+
+/* [Shelf / 棚] */
+// Width and depth of the shelf board. / 棚板の幅と奥行き
+shelf_width_mm = 100; // [73:0.1:250]
+shelf_depth_mm = 50; // [20:0.1:120]
 
 /* [Device holder / 機器の受け] */
 // Thickness where the device sits. / 受けに入る部分の厚み
@@ -86,9 +91,11 @@ holder_front = lip_start + lip_height_mm + 3;
 guide_height = max(lip_top, min(26, height_mm));
 front_half_width = max(cover_outer,
     mount_style == 0 ? holder_width / 2 :
+    mount_style == 4 ? shelf_width_mm / 2 :
     width_mm / 2 + (mount_style == 2 ? abs(stl_offset_mm.x) : 0));
 holder_panel_bottom = min(-height_mm / 2, cover_bottom - skirt_rise);
 front_bottom = mount_style == 0 ? holder_panel_bottom :
+    mount_style == 4 ? cover_bottom :
     min(cover_bottom, -height_mm / 2 + (has_outline ? outline_center :
         mount_style == 2 ? stl_offset_mm.y : 0));
 
@@ -220,10 +227,39 @@ module device_holder() {
     ], -holder_width / 2, holder_width / 2);
 }
 
+module shelf() {
+    half = shelf_width_mm / 2;
+    radius = 4;
+    board_top = cover_face_top;
+    board_bottom = board_top - 5;
+    front = cover_back + shelf_depth_mm;
+    outline = concat(
+        [[-half, plate_back], [half, plate_back]],
+        [for (angle = [0 : 7.5 : 90])
+            [half - radius + radius * cos(angle), front - radius + radius * sin(angle)]],
+        [for (angle = [90 : 7.5 : 180])
+            [-half + radius + radius * cos(angle), front - radius + radius * sin(angle)]]
+    );
+    along_y(outline, board_bottom, board_top);
+    // Keep the rear edge straight, above the opening for the wall base.
+    box(-half, half, cover_inner_top, board_top, cover_back, plate_back + 0.1);
+
+    // Two ribs join the shelf board to the carrier's front panel.
+    rib_end = min(front - 4, plate_front + 28);
+    for (center = [-20, 20])
+        across_x([
+            [board_top - 23, plate_front - 0.6],
+            [board_bottom + 0.5, plate_front - 0.6],
+            [board_bottom + 0.5, rib_end]
+        ], center - 3, center + 3);
+}
+
 module removable_cover() {
     union() {
         covered_carrier();
-        if (mount_style == 0) {
+        if (mount_style == 4) {
+            shelf();
+        } else if (mount_style == 0) {
             device_holder();
         } else if (mount_style == 1) {
             if (has_outline)
@@ -243,13 +279,18 @@ module removable_cover() {
 }
 
 module print_cover() {
-    if (mount_style == 1)
+    if (mount_style == 4)
+        translate([0, 0, cover_face_top]) rotate([-90, 0, 0]) removable_cover();
+    else if (mount_style == 1)
         translate([0, 0, plate_front]) rotate([180, 0, 0]) removable_cover();
     else
         translate([0, 0, -front_bottom]) rotate([90, 0, 0]) removable_cover();
 }
 
-assert(mount_style == 0 || mount_style == 1 || mount_style == 2, "Choose a mount shape.");
+assert(mount_style == 0 || mount_style == 1 || mount_style == 2 || mount_style == 4,
+       "Choose a mount shape.");
+assert(mount_style != 4 || (shelf_width_mm >= 2 * cover_outer && shelf_width_mm <= 250 &&
+       shelf_depth_mm >= 20 && shelf_depth_mm <= 120), "Check shelf width and depth.");
 assert(cover_outline == 0 || cover_outline == 1 || cover_outline == 2 || cover_outline == 3,
        "Choose a cover outline.");
 assert(print_part == 0 || print_part == 1 || print_part == 2 || print_part == 3, "Choose an output.");

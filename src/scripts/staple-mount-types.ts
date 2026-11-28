@@ -1,4 +1,4 @@
-export type MountStyle = 0 | 1 | 2 | 3;
+export type MountStyle = 0 | 1 | 2 | 3 | 4;
 export type MountView = "exploded" | "installed" | "print";
 
 export interface MountSettings {
@@ -21,7 +21,7 @@ export interface MountModels {
   style: MountStyle;
   size: number;
   frontBottom: number;
-  frontPlane: number;
+  printPlane: number;
   lift: number;
 }
 
@@ -33,3 +33,4 @@ export interface MountRequest {
 export type MountResponse = { models: MountModels } | { error: string };
 
 export const mountFiles = "/staple-mount/files/";
+export const shelfDefaults = { width: 100, depth: 50 };
