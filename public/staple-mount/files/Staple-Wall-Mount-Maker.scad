@@ -72,9 +72,8 @@ cover_outer = cover_inner + 2;
 cover_bottom = -base_half_height - 1;
 cover_inner_top = base_half_height + 1;
 cover_face_top = cover_inner_top + 2;
-cover_rise = plate_back - cover_back;
-cover_roof_top = cover_face_top + cover_rise;
-outline_center = (cover_bottom + cover_roof_top) / 2;
+skirt_rise = plate_back - cover_back;
+outline_center = (cover_bottom + cover_face_top) / 2;
 has_outline = mount_style == 1 && cover_outline != 0;
 
 side_wall = 4;
@@ -88,7 +87,7 @@ guide_height = max(lip_top, min(26, height_mm));
 front_half_width = max(cover_outer,
     mount_style == 0 ? holder_width / 2 :
     width_mm / 2 + (mount_style == 2 ? abs(stl_offset_mm.x) : 0));
-holder_panel_bottom = min(-height_mm / 2, cover_bottom - cover_rise);
+holder_panel_bottom = min(-height_mm / 2, cover_bottom - skirt_rise);
 front_bottom = mount_style == 0 ? holder_panel_bottom :
     min(cover_bottom, -height_mm / 2 + (has_outline ? outline_center :
         mount_style == 2 ? stl_offset_mm.y : 0));
@@ -158,14 +157,9 @@ module sliding_tongue() {
 
 module covered_carrier() {
     difference() {
-        across_x([
-            [cover_bottom, cover_back], [cover_face_top + cover_rise, cover_back],
-            [cover_face_top, plate_back], [cover_face_top, plate_front], [cover_bottom, plate_front]
-        ], -cover_outer, cover_outer);
-        across_x([
-            [cover_bottom - 1, 0], [cover_inner_top + plate_back, 0],
-            [cover_inner_top, plate_back], [cover_bottom - 1, plate_back]
-        ], -cover_inner, cover_inner);
+        // Flat roof with a 2 mm wall above the cavity.
+        box(-cover_outer, cover_outer, cover_bottom, cover_face_top, cover_back, plate_front);
+        box(-cover_inner, cover_inner, cover_bottom - 1, cover_inner_top, 0, plate_back);
     }
     sliding_tongue();
 }
@@ -189,10 +183,10 @@ module shaped_plate() {
     radius = 12;
     rise = h * 0.46;
     taper = w * 0.165;
-    // Cover the full silhouette of the stock sleeve, including its rear roof.
+    // Cover the full silhouette of the stock sleeve.
     // Leave a small margin for polygonal arcs and mesh export.
     assert(cover_fits_outline(w, h, cover_outer + 0.08,
-                             (cover_roof_top - cover_bottom) / 2 + 0.08,
+                             (cover_face_top - cover_bottom) / 2 + 0.08,
                              radius, rise, taper),
            "Cover outline must hide the wall base. Increase width or height.");
     translate([0, outline_center, plate_back])
@@ -214,8 +208,8 @@ module device_holder() {
     // Grow the lower side skirts from the front panel as the upright print rises.
     for (x = [-cover_outer, cover_inner])
         across_x([
-            [cover_bottom - cover_rise, plate_back], [cover_bottom + 0.1, cover_back],
-            [cover_bottom + 0.1, plate_back + 0.1], [cover_bottom - cover_rise, plate_back + 0.1]
+            [cover_bottom - skirt_rise, plate_back], [cover_bottom + 0.1, cover_back],
+            [cover_bottom + 0.1, plate_back + 0.1], [cover_bottom - skirt_rise, plate_back + 0.1]
         ], x, x + 2);
     box(-holder_width / 2, holder_width / 2, y_bottom, y_bottom + seat, plate_back, holder_front);
     for (x = [-holder_width / 2, holder_inner_width / 2])

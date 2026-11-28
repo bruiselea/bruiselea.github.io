@@ -16,7 +16,8 @@ const loader = new STLLoader();
 const maxFileSize = 12_000_000;
 const names = ["S", "M", "L"];
 const outlineDefaults = [[104, 78], [116, 104], [132, 146]];
-const coverHeights = [45.4, 70.9, 104.9];
+// Sleeve height is the base height plus 1 mm at the bottom and 3 mm at the top.
+const coverHeights = [38, 63.5, 97.5];
 let outlineEdited = false;
 const fmt = Intl.NumberFormat("ja-JP", { maximumFractionDigits: 1 });
 
